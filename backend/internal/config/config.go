@@ -15,11 +15,11 @@ type Config struct {
 
 func Load() (*Config, error) {
 	cfg := &Config{
-		DBUser:     os.Getenv("POSTGRES_USER"),
-		DBPassword: os.Getenv("POSTGRES_PASSWORD"),
-		DBHost:     os.Getenv("POSTGRES_HOST"),
-		DBPort:     os.Getenv("POSTGRES_PORT"),
-		DBName:     os.Getenv("POSTGRES_DB"),
+		DBUser:     os.Getenv("DB_USER"),
+		DBPassword: os.Getenv("DB_PASSWORD"),
+		DBHost:     os.Getenv("DB_HOST"),
+		DBPort:     os.Getenv("DB_PORT"),
+		DBName:     os.Getenv("DB_NAME"),
 	}
 
 	if cfg.DBUser == "" || cfg.DBPassword == "" || cfg.DBHost == "" || cfg.DBPort == "" || cfg.DBName == "" {

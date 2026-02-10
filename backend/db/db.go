@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"task_tracker/internal/config"
+	"buggy_insurance/internal/config"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

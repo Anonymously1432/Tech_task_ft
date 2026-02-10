@@ -1,5 +1,7 @@
 package user
 
-func (u *UseCase) Refresh() error {
+import "context"
+
+func (u *UseCase) Refresh(ctx context.Context) error {
 	return nil
 }

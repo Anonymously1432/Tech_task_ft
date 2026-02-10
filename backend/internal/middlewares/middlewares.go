@@ -3,6 +3,7 @@ package middlewares
 import (
 	"errors"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -72,7 +73,9 @@ func JWTMiddleware(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
 	}
 
-	newAccess, newRefresh, err := helpers.GenerateTokens(userID)
+	userIDInt, _ := strconv.Atoi(userID)
+
+	newAccess, newRefresh, err := helpers.GenerateTokens(int32(userIDInt))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate tokens"})
 	}
