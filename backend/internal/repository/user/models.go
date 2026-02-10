@@ -78,6 +78,7 @@ type RefreshToken struct {
 	UserID    *int32           `db:"user_id" json:"user_id"`
 	Token     string           `db:"token" json:"token"`
 	ExpiresAt pgtype.Timestamp `db:"expires_at" json:"expires_at"`
+	DeletedAt pgtype.Timestamp `db:"deleted_at" json:"deleted_at"`
 	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
 }
 

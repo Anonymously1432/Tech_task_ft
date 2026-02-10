@@ -11,6 +11,7 @@ import (
 type Querier interface {
 	CreateToken(ctx context.Context, arg *CreateTokenParams) error
 	CreateUser(ctx context.Context, arg *CreateUserParams) (*CreateUserRow, error)
+	DeleteToken(ctx context.Context, arg *DeleteTokenParams) error
 	GetByEmail(ctx context.Context, arg *GetByEmailParams) (*GetByEmailRow, error)
 }
 

@@ -20,14 +20,7 @@ type IUseCase interface {
 		userEmail, userPassword string,
 	) (*user_repository.GetByEmailRow, string, string, error)
 	Refresh(ctx context.Context, refreshToken string) (string, error)
-	//WhoAmI(ctx context.Context, userID string) (*user_repository.GetByIDRow, error)
-	//AddingInfo(ctx context.Context,
-	//	userUUID uuid.UUID,
-	//	userPhone, userReserveEmail string,
-	//	userBirthDate time.Time,
-	//) (*user_repository.GetUserRow, error)
-	//GetUser(ctx context.Context, userUUID uuid.UUID) (*user_repository.GetUserRow, error)
-	//SetAvatar(ctx context.Context, userUUID uuid.UUID, avatar *string) (*user_repository.GetUserRow, error)
+	Logout(ctx context.Context, refreshToken string) error
 }
 
 type UseCase struct {

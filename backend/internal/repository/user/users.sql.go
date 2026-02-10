@@ -60,6 +60,21 @@ func (q *Queries) CreateUser(ctx context.Context, arg *CreateUserParams) (*Creat
 	return &i, err
 }
 
+const deleteToken = `-- name: DeleteToken :exec
+UPDATE refresh_tokens
+SET deleted_at = NOW()
+WHERE token = $1
+`
+
+type DeleteTokenParams struct {
+	Token string `db:"token" json:"token"`
+}
+
+func (q *Queries) DeleteToken(ctx context.Context, arg *DeleteTokenParams) error {
+	_, err := q.db.Exec(ctx, deleteToken, arg.Token)
+	return err
+}
+
 const getByEmail = `-- name: GetByEmail :one
 SELECT id, email, role, password_hash
 FROM users

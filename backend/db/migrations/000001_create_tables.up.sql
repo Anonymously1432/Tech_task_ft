@@ -21,6 +21,7 @@ CREATE TABLE refresh_tokens (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     token VARCHAR(500) NOT NULL,
     expires_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

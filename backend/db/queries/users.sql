@@ -11,3 +11,8 @@ WHERE email = $1;
 -- name: CreateToken :exec
 INSERT INTO refresh_tokens (user_id, token, expires_at)
 VALUES ($1, $2, $3);
+
+-- name: DeleteToken :exec
+UPDATE refresh_tokens
+SET deleted_at = NOW()
+WHERE token = $1;
