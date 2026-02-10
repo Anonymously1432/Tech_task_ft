@@ -1,8 +1,25 @@
 package user
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"buggy_insurance/internal/domain"
+
+	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
+)
 
 func (h *Handler) Refresh(c *fiber.Ctx) error {
-	_ = h.Uc.Refresh(c.Context())
-	return nil
+	req := new(domain.RefreshRequest)
+	if err := c.BodyParser(req); err != nil {
+		h.logger.Error("Body parsing error", zap.Error(err))
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+	accessToken, err := h.Uc.Refresh(c.Context(), req.RefreshToken)
+	if err != nil {
+		h.logger.Error("Error refreshing access token", zap.Error(err))
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.Status(fiber.StatusOK).JSON(domain.RefreshResponse{
+		AccessToken: accessToken,
+		ExpiresIn:   3600,
+	})
 }

@@ -19,7 +19,7 @@ type IUseCase interface {
 		ctx context.Context,
 		userEmail, userPassword string,
 	) (*user_repository.GetByEmailRow, string, string, error)
-	Refresh(ctx context.Context) error
+	Refresh(ctx context.Context, refreshToken string) (string, error)
 	//WhoAmI(ctx context.Context, userID string) (*user_repository.GetByIDRow, error)
 	//AddingInfo(ctx context.Context,
 	//	userUUID uuid.UUID,
@@ -33,6 +33,7 @@ type IUseCase interface {
 type UseCase struct {
 	logger *zap.Logger
 	repo   *user_repository.Queries
+	secret string
 	salt   int
 }
 
@@ -40,6 +41,10 @@ func NewUseCase(logger *zap.Logger, repo *user_repository.Queries) IUseCase {
 	saltStr := os.Getenv("BCRYPT_SALT")
 	if saltStr == "" {
 		logger.Fatal("BCRYPT_SALT is not set")
+	}
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		logger.Fatal("JWT_SECRET is not set")
 	}
 
 	intSalt, err := strconv.Atoi(saltStr)
@@ -50,5 +55,6 @@ func NewUseCase(logger *zap.Logger, repo *user_repository.Queries) IUseCase {
 		logger: logger,
 		repo:   repo,
 		salt:   intSalt,
+		secret: secret,
 	}
 }

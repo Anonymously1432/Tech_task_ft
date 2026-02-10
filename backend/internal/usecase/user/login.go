@@ -29,7 +29,13 @@ func (u *UseCase) Login(
 		return nil, "", "", err
 	}
 
-	accessToken, refreshToken, err := helpers.GenerateTokens(user.ID)
+	accessToken, err := helpers.GenerateAccessToken(user.ID, u.secret)
+	if err != nil {
+		u.logger.Error("Generate tokens error", zap.Error(err))
+		return nil, "", "", err
+	}
+
+	refreshToken, err := helpers.GenerateRefreshToken(user.ID, u.secret)
 	if err != nil {
 		u.logger.Error("Generate tokens error", zap.Error(err))
 		return nil, "", "", err
