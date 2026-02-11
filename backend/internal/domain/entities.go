@@ -290,3 +290,18 @@ type UpdateUserRequest struct {
 	Email    string `json:"email"`
 	Address  string `json:"address"`
 }
+
+type CreateApplicationRequest struct {
+	ProductType string `json:"productType"`
+	ProductID   int32  `json:"productId"`
+	ManagerID   int32  `json:"managerId"`
+	Data        []byte `json:"data"`
+}
+
+type CreateApplicationResponse struct {
+	ID              int32     `json:"id"`
+	Status          string    `json:"status"`
+	ProductType     string    `json:"productType"`
+	CalculatedPrice int       `json:"calculatedPrice"`
+	CreatedAt       time.Time `json:"createdAt"`
+}
