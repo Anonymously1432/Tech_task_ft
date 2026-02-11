@@ -50,3 +50,13 @@ type LogoutRequest struct {
 type LogoutResponse struct {
 	Message string `json:"message"`
 }
+
+type ErrorResponse struct {
+	Error   string  `json:"error"`
+	Code    int8    `json:"code"`
+	Details Details `json:"details"`
+}
+
+type Details struct {
+	Field string `json:"field"`
+}
