@@ -3,7 +3,6 @@ package application
 import (
 	"buggy_insurance/internal/domain"
 	"strconv"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -22,18 +21,12 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	}
 	ID, _ := strconv.Atoi(userID.(string))
 
-	application, err := h.Uc.Create(c.Context(), ID, req.Data, req.ProductType, req.ProductID, req.ManagerID)
+	application, err := h.Uc.Create(c.Context(), req.Data, int32(ID), req.ProductID, req.ManagerID, req.ProductType)
 	if err != nil {
 		h.logger.Error("Create error", zap.Error(err))
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err})
 	}
 
 	h.logger.Info("Create Application", zap.Any("application", application))
-	return c.Status(fiber.StatusCreated).JSON(domain.CreateApplicationResponse{
-		ID:              application.ID,
-		Status:          application.Status,
-		ProductType:     req.ProductType,
-		CalculatedPrice: application.CalculatedPrice,
-		CreatedAt:       application.CreatedAt.Time,
-	})
+	return c.Status(fiber.StatusCreated).JSON(application)
 }

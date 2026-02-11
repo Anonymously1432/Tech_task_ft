@@ -2,7 +2,7 @@ package application
 
 import (
 	"buggy_insurance/internal/middlewares"
-	"buggy_insurance/internal/usecase/client"
+	"buggy_insurance/internal/usecase/application"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -13,12 +13,11 @@ type Handler struct {
 	logger *zap.Logger
 }
 
-func NewHandler(log *zap.Logger, uc client.IUseCase) *Handler {
+func NewHandler(log *zap.Logger, uc application.IUseCase) *Handler {
 	return &Handler{Uc: uc, logger: log}
 }
 
 func RegisterRoutes(users fiber.Router, h *Handler) {
 	users.Use(middlewares.JWTMiddleware)
 	users.Post("/", h.Create)
-	//users.Put("/me", h.UpdateUser)
 }
