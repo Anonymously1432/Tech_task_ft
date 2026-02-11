@@ -1,6 +1,7 @@
 package user
 
 import (
+	"buggy_insurance/internal/middlewares"
 	"buggy_insurance/internal/usecase/user"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,5 +21,7 @@ func RegisterRoutes(auth fiber.Router, h *Handler) {
 	auth.Post("/register", h.Register)
 	auth.Post("/login", h.Login)
 	auth.Post("/refresh", h.Refresh)
+
+	auth.Use(middlewares.JWTMiddleware)
 	auth.Post("/logout", h.Logout)
 }
