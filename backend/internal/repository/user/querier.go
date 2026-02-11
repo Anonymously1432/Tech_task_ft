@@ -13,6 +13,8 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg *CreateUserParams) (*CreateUserRow, error)
 	DeleteToken(ctx context.Context, arg *DeleteTokenParams) error
 	GetByEmail(ctx context.Context, arg *GetByEmailParams) (*GetByEmailRow, error)
+	GetByID(ctx context.Context, arg *GetByIDParams) (*GetByIDRow, error)
+	UpdateUser(ctx context.Context, arg *UpdateUserParams) (*UpdateUserRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

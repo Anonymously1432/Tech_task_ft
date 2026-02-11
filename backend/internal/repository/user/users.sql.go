@@ -103,3 +103,78 @@ func (q *Queries) GetByEmail(ctx context.Context, arg *GetByEmailParams) (*GetBy
 	)
 	return &i, err
 }
+
+const getByID = `-- name: GetByID :one
+SELECT email, full_name, phone, birth_date, address, role
+FROM users
+WHERE id = $1
+`
+
+type GetByIDParams struct {
+	ID int32 `db:"id" json:"id"`
+}
+
+type GetByIDRow struct {
+	Email     string      `db:"email" json:"email"`
+	FullName  string      `db:"full_name" json:"full_name"`
+	Phone     *string     `db:"phone" json:"phone"`
+	BirthDate pgtype.Date `db:"birth_date" json:"birth_date"`
+	Address   *string     `db:"address" json:"address"`
+	Role      string      `db:"role" json:"role"`
+}
+
+func (q *Queries) GetByID(ctx context.Context, arg *GetByIDParams) (*GetByIDRow, error) {
+	row := q.db.QueryRow(ctx, getByID, arg.ID)
+	var i GetByIDRow
+	err := row.Scan(
+		&i.Email,
+		&i.FullName,
+		&i.Phone,
+		&i.BirthDate,
+		&i.Address,
+		&i.Role,
+	)
+	return &i, err
+}
+
+const updateUser = `-- name: UpdateUser :one
+UPDATE users
+SET (full_name, email, address) = ($2, $3, $4)
+WHERE id = $1
+RETURNING email, full_name, phone, birth_date, address, role
+`
+
+type UpdateUserParams struct {
+	ID       int32   `db:"id" json:"id"`
+	FullName string  `db:"full_name" json:"full_name"`
+	Email    string  `db:"email" json:"email"`
+	Address  *string `db:"address" json:"address"`
+}
+
+type UpdateUserRow struct {
+	Email     string      `db:"email" json:"email"`
+	FullName  string      `db:"full_name" json:"full_name"`
+	Phone     *string     `db:"phone" json:"phone"`
+	BirthDate pgtype.Date `db:"birth_date" json:"birth_date"`
+	Address   *string     `db:"address" json:"address"`
+	Role      string      `db:"role" json:"role"`
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg *UpdateUserParams) (*UpdateUserRow, error) {
+	row := q.db.QueryRow(ctx, updateUser,
+		arg.ID,
+		arg.FullName,
+		arg.Email,
+		arg.Address,
+	)
+	var i UpdateUserRow
+	err := row.Scan(
+		&i.Email,
+		&i.FullName,
+		&i.Phone,
+		&i.BirthDate,
+		&i.Address,
+		&i.Role,
+	)
+	return &i, err
+}

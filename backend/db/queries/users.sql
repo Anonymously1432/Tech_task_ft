@@ -16,3 +16,14 @@ VALUES ($1, $2, $3);
 UPDATE refresh_tokens
 SET deleted_at = NOW()
 WHERE token = $1;
+
+-- name: GetByID :one
+SELECT email, full_name, phone, birth_date, address, role
+FROM users
+WHERE id = $1;
+
+-- name: UpdateUser :one
+UPDATE users
+SET (full_name, email, address) = ($2, $3, $4)
+WHERE id = $1
+RETURNING email, full_name, phone, birth_date, address, role;

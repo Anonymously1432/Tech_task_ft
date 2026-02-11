@@ -274,3 +274,19 @@ type Product struct {
 	Description string `json:"description"`
 	BasePrice   int    `json:"basePrice"`
 }
+
+type GetUserResponse struct {
+	ID        int32     `json:"id"`
+	Email     string    `json:"email"`
+	FullName  string    `json:"fullName"`
+	Phone     *string   `json:"phone"`
+	BirthDate time.Time `json:"birthDate"`
+	Address   *string   `json:"address"`
+	Role      string    `json:"role"`
+}
+
+type UpdateUserRequest struct {
+	FullName string `json:"fullName"`
+	Email    string `json:"email"`
+	Address  string `json:"address"`
+}

@@ -10,6 +10,9 @@ import (
 	product_handler "buggy_insurance/internal/handler/product"
 	product_repository "buggy_insurance/internal/repository/product"
 	product_usecase "buggy_insurance/internal/usecase/product"
+
+	client_handler "buggy_insurance/internal/handler/client"
+	client_usecase "buggy_insurance/internal/usecase/client"
 	"log"
 	"os"
 
@@ -66,11 +69,18 @@ func main() {
 	productUseCase := product_usecase.NewUseCase(logger, productRepo)
 	productHandler := product_handler.NewHandler(logger, productUseCase)
 
+	clientRepo := user_repository.New(database)
+	clientUseCase := client_usecase.NewUseCase(logger, clientRepo)
+	clientHandler := client_handler.NewHandler(logger, clientUseCase)
+
 	auth := api.Group("/auth")
 	user_handler.RegisterRoutes(auth, userHandler)
 
 	products := api.Group("/products")
 	product_handler.RegisterRoutes(products, productHandler)
+
+	users := api.Group("/users")
+	client_handler.RegisterRoutes(users, clientHandler)
 
 	serverPort := os.Getenv("API_PORT")
 	if serverPort == "" {
