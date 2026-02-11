@@ -9,6 +9,7 @@ import (
 )
 
 type Querier interface {
+	GetProductWithType(ctx context.Context, arg *GetProductWithTypeParams) ([]*GetProductWithTypeRow, error)
 	GetProducts(ctx context.Context) ([]*GetProductsRow, error)
 }
 

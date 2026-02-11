@@ -2,6 +2,196 @@ package domain
 
 import "time"
 
+var (
+	AutoFormFields = []FormField{
+		{
+			Name:     "brand",
+			Type:     "select",
+			Label:    "Марка автомобиля",
+			Required: true,
+			Options:  []string{"Toyota", "Honda", "BMW", "Mercedes"},
+		},
+		{
+			Name:     "model",
+			Type:     "string",
+			Label:    "Модель",
+			Required: true,
+		},
+		{
+			Name:     "year",
+			Type:     "number",
+			Label:    "Год выпуска",
+			Required: true,
+			Min:      1990,
+			Max:      2026,
+		},
+		{
+			Name:     "vin",
+			Type:     "string",
+			Label:    "VIN",
+			Required: true,
+		},
+		{
+			Name:     "plateNumber",
+			Type:     "string",
+			Label:    "Госномер",
+			Required: true,
+		},
+		{
+			Name:     "insuranceType",
+			Type:     "select",
+			Label:    "Тип страхования",
+			Required: true,
+			Options:  []string{"OSAGO", "KASKO"},
+		},
+		{
+			Name:     "drivingExperience",
+			Type:     "number",
+			Label:    "Стаж вождения (лет)",
+			Required: true,
+			Min:      0,
+			Max:      60,
+		},
+	}
+
+	HomeFormFields = []FormField{
+		{
+			Name:     "propertyType",
+			Type:     "select",
+			Label:    "Тип недвижимости",
+			Required: true,
+			Options:  []string{"apartment", "house"},
+		},
+		{
+			Name:     "address",
+			Type:     "string",
+			Label:    "Адрес",
+			Required: true,
+		},
+		{
+			Name:     "area",
+			Type:     "number",
+			Label:    "Площадь (м²)",
+			Required: true,
+			Min:      10,
+		},
+		{
+			Name:     "floor",
+			Type:     "number",
+			Label:    "Этаж",
+			Required: true,
+		},
+		{
+			Name:     "buildYear",
+			Type:     "number",
+			Label:    "Год постройки",
+			Required: true,
+			Min:      1900,
+			Max:      2026,
+		},
+		{
+			Name:     "coverageAmount",
+			Type:     "number",
+			Label:    "Страховая сумма",
+			Required: true,
+		},
+	}
+
+	TravelFormFields = []FormField{
+		{
+			Name:     "country",
+			Type:     "string",
+			Label:    "Страна",
+			Required: true,
+		},
+		{
+			Name:     "startDate",
+			Type:     "date",
+			Label:    "Дата начала поездки",
+			Required: true,
+		},
+		{
+			Name:     "endDate",
+			Type:     "date",
+			Label:    "Дата окончания поездки",
+			Required: true,
+		},
+		{
+			Name:     "travelers",
+			Type:     "number",
+			Label:    "Количество путешественников",
+			Required: true,
+			Min:      1,
+		},
+		{
+			Name:     "activeLeisure",
+			Type:     "boolean",
+			Label:    "Активный отдых",
+			Required: true,
+		},
+		{
+			Name:     "coverageAmount",
+			Type:     "number",
+			Label:    "Страховая сумма",
+			Required: true,
+		},
+	}
+
+	LifeFormFields = []FormField{
+		{
+			Name:     "birthDate",
+			Type:     "date",
+			Label:    "Дата рождения",
+			Required: true,
+		},
+		{
+			Name:     "coverageAmount",
+			Type:     "number",
+			Label:    "Страховая сумма",
+			Required: true,
+		},
+		{
+			Name:     "termYears",
+			Type:     "number",
+			Label:    "Срок страхования (лет)",
+			Required: true,
+			Min:      1,
+			Max:      30,
+		},
+	}
+
+	HealthFormFields = []FormField{
+		{
+			Name:     "age",
+			Type:     "number",
+			Label:    "Возраст",
+			Required: true,
+			Min:      0,
+			Max:      100,
+		},
+		{
+			Name:     "coverageAmount",
+			Type:     "number",
+			Label:    "Страховая сумма",
+			Required: true,
+		},
+		{
+			Name:     "hasChronicDiseases",
+			Type:     "boolean",
+			Label:    "Хронические заболевания",
+			Required: true,
+		},
+	}
+
+	ProductFormFields = map[string][]FormField{
+		"AUTO":   AutoFormFields,
+		"HOME":   HomeFormFields,
+		"TRAVEL": TravelFormFields,
+		"LIFE":   LifeFormFields,
+		"HEALTH": HealthFormFields,
+	}
+)
+
 type RegisterRequest struct {
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
@@ -57,6 +247,30 @@ type ErrorResponse struct {
 	Details Details `json:"details"`
 }
 
+type FormField struct {
+	Name     string `json:"name"`
+	Type     string `json:"type"`
+	Label    string `json:"label"`
+	Required bool   `json:"required"`
+
+	Options []string `json:"options,omitempty"`
+	Min     int      `json:"min,omitempty"`
+	Max     int      `json:"max,omitempty"`
+}
+
 type Details struct {
 	Field string `json:"field"`
+}
+
+type ProductResponse struct {
+	Products   []Product   `json:"products"`
+	FormFields []FormField `json:"formFields"`
+}
+
+type Product struct {
+	ID          int    `json:"id"`
+	Type        string `json:"type"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	BasePrice   int    `json:"basePrice"`
 }

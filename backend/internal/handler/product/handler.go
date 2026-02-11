@@ -18,4 +18,5 @@ func NewHandler(log *zap.Logger, uc product.IUseCase) *Handler {
 
 func RegisterRoutes(product fiber.Router, h *Handler) {
 	product.Get("/", h.Get)
+	product.Get("/:type", h.GetProduct)
 }

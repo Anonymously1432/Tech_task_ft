@@ -11,6 +11,50 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const getProductWithType = `-- name: GetProductWithType :many
+SELECT id, type, name, description, base_price
+FROM products
+WHERE type = $1 AND is_active = true
+`
+
+type GetProductWithTypeParams struct {
+	Type string `db:"type" json:"type"`
+}
+
+type GetProductWithTypeRow struct {
+	ID          int32          `db:"id" json:"id"`
+	Type        string         `db:"type" json:"type"`
+	Name        string         `db:"name" json:"name"`
+	Description *string        `db:"description" json:"description"`
+	BasePrice   pgtype.Numeric `db:"base_price" json:"base_price"`
+}
+
+func (q *Queries) GetProductWithType(ctx context.Context, arg *GetProductWithTypeParams) ([]*GetProductWithTypeRow, error) {
+	rows, err := q.db.Query(ctx, getProductWithType, arg.Type)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetProductWithTypeRow
+	for rows.Next() {
+		var i GetProductWithTypeRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.Name,
+			&i.Description,
+			&i.BasePrice,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getProducts = `-- name: GetProducts :many
 SELECT id, type, name, description, base_price
 FROM products

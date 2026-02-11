@@ -1,6 +1,7 @@
 package product
 
 import (
+	"buggy_insurance/internal/domain"
 	product_repository "buggy_insurance/internal/repository/product"
 	"context"
 
@@ -9,6 +10,7 @@ import (
 
 type IUseCase interface {
 	GetProducts(ctx context.Context) ([]*product_repository.GetProductsRow, error)
+	GetProduct(ctx context.Context, productType string) (*domain.ProductResponse, error)
 }
 
 type UseCase struct {
