@@ -337,3 +337,19 @@ type ApplicationStatus struct {
 	Comment   string    `json:"comment,omitempty"`
 	ChangedAt time.Time `json:"changedAt"`
 }
+
+type GetPoliciesResponse struct {
+	Policies   []Policy   `json:"policies"`
+	Pagination Pagination `json:"pagination"`
+}
+
+type Policy struct {
+	ID             int32     `json:"id"`
+	PolicyNumber   string    `json:"policyNumber"`
+	ProductType    string    `json:"productType"`
+	Status         string    `json:"status"`
+	StartDate      time.Time `json:"startDate"`
+	EndDate        time.Time `json:"endDate"`
+	CoverageAmount int       `json:"coverageAmount"`
+	Premium        int       `json:"premium"`
+}

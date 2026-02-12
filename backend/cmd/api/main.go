@@ -17,6 +17,10 @@ import (
 	application_handler "buggy_insurance/internal/handler/application"
 	application_repository "buggy_insurance/internal/repository/application"
 	application_usecase "buggy_insurance/internal/usecase/application"
+
+	policy_handler "buggy_insurance/internal/handler/policy"
+	policy_repository "buggy_insurance/internal/repository/policy"
+	policy_usecase "buggy_insurance/internal/usecase/policy"
 	"log"
 	"os"
 
@@ -81,6 +85,10 @@ func main() {
 	applicationUseCase := application_usecase.NewUseCase(logger, applicationRepo)
 	applicationHandler := application_handler.NewHandler(logger, applicationUseCase)
 
+	policyRepo := policy_repository.New(database)
+	policyUseCase := policy_usecase.NewUseCase(logger, policyRepo)
+	policyHandler := policy_handler.NewHandler(logger, policyUseCase)
+
 	auth := api.Group("/auth")
 	user_handler.RegisterRoutes(auth, userHandler)
 
@@ -92,6 +100,9 @@ func main() {
 
 	applications := api.Group("/applications")
 	application_handler.RegisterRoutes(applications, applicationHandler)
+
+	policies := api.Group("/policies")
+	policy_handler.RegisterRoutes(policies, policyHandler)
 
 	serverPort := os.Getenv("API_PORT")
 	if serverPort == "" {

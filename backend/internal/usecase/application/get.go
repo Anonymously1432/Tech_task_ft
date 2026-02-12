@@ -37,7 +37,7 @@ func (u *UseCase) Get(ctx context.Context, userID, page, limit, offset int32, st
 	res.Pagination = domain.Pagination{
 		Page:  page,
 		Limit: limit,
-		Total: count,
+		Total: int32(count),
 	}
 	return res, nil
 }

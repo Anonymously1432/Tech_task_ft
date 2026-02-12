@@ -15,7 +15,7 @@ func (h *Handler) Get(c *fiber.Ctx) error {
 	}
 	ID, _ := strconv.Atoi(userID.(string))
 
-	status := c.Query("status", "NEW")
+	status := c.Query("status")
 	pageStr := c.Query("page", "1")
 	limitStr := c.Query("limit", "10")
 
