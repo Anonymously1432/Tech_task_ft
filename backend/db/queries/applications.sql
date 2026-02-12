@@ -22,3 +22,26 @@ SELECT COUNT(*) AS total
 FROM applications
 WHERE user_id = $1
   AND ($2::text IS NULL OR status = $2);
+
+-- name: GetApplicationByID :one
+SELECT
+    a.id,
+    a.status,
+    a.data,
+    a.calculated_price,
+    a.created_at,
+    p.type AS product_type
+FROM applications a
+         JOIN products p ON a.product_id = p.id
+WHERE a.id = $1;
+
+-- name: GetApplicationStatusHistory :many
+SELECT
+    old_status,
+    new_status,
+    changed_by,
+    comment,
+    created_at
+FROM application_status_history
+WHERE application_id = $1
+ORDER BY created_at ASC;

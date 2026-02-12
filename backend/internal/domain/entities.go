@@ -1,6 +1,9 @@
 package domain
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 var (
 	AutoFormFields = []FormField{
@@ -315,4 +318,22 @@ type Pagination struct {
 	Page  int32 `json:"page"`
 	Limit int32 `json:"limit"`
 	Total int32 `json:"total"`
+}
+
+type ApplicationDetail struct {
+	ID              int32               `json:"id"`
+	ProductType     string              `json:"productType"`
+	Status          string              `json:"status"`
+	Data            json.RawMessage     `json:"data"`
+	CalculatedPrice int                 `json:"calculatedPrice"`
+	CreatedAt       time.Time           `json:"createdAt"`
+	StatusHistory   []ApplicationStatus `json:"statusHistory"`
+}
+
+type ApplicationStatus struct {
+	OldStatus string    `json:"oldStatus,omitempty"`
+	NewStatus string    `json:"newStatus"`
+	ChangedBy int64     `json:"changedBy,omitempty"`
+	Comment   string    `json:"comment,omitempty"`
+	ChangedAt time.Time `json:"changedAt"`
 }

@@ -11,6 +11,7 @@ import (
 type IUseCase interface {
 	Create(ctx context.Context, data []byte, userID, productID, managerID int32, productType string) (*domain.Application, error)
 	Get(ctx context.Context, userID, page, limit, offset int32, status string) (*domain.GetApplicationsResponse, error)
+	GetByID(ctx context.Context, applicationID int32) (*domain.ApplicationDetail, error)
 }
 
 type UseCase struct {

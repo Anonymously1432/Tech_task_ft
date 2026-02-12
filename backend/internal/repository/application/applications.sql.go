@@ -50,6 +50,96 @@ func (q *Queries) CreateApplication(ctx context.Context, arg *CreateApplicationP
 	return &i, err
 }
 
+const getApplicationByID = `-- name: GetApplicationByID :one
+SELECT
+    a.id,
+    a.status,
+    a.data,
+    a.calculated_price,
+    a.created_at,
+    p.type AS product_type
+FROM applications a
+         JOIN products p ON a.product_id = p.id
+WHERE a.id = $1
+`
+
+type GetApplicationByIDParams struct {
+	ID int32 `db:"id" json:"id"`
+}
+
+type GetApplicationByIDRow struct {
+	ID              int32            `db:"id" json:"id"`
+	Status          string           `db:"status" json:"status"`
+	Data            []byte           `db:"data" json:"data"`
+	CalculatedPrice pgtype.Numeric   `db:"calculated_price" json:"calculated_price"`
+	CreatedAt       pgtype.Timestamp `db:"created_at" json:"created_at"`
+	ProductType     string           `db:"product_type" json:"product_type"`
+}
+
+func (q *Queries) GetApplicationByID(ctx context.Context, arg *GetApplicationByIDParams) (*GetApplicationByIDRow, error) {
+	row := q.db.QueryRow(ctx, getApplicationByID, arg.ID)
+	var i GetApplicationByIDRow
+	err := row.Scan(
+		&i.ID,
+		&i.Status,
+		&i.Data,
+		&i.CalculatedPrice,
+		&i.CreatedAt,
+		&i.ProductType,
+	)
+	return &i, err
+}
+
+const getApplicationStatusHistory = `-- name: GetApplicationStatusHistory :many
+SELECT
+    old_status,
+    new_status,
+    changed_by,
+    comment,
+    created_at
+FROM application_status_history
+WHERE application_id = $1
+ORDER BY created_at ASC
+`
+
+type GetApplicationStatusHistoryParams struct {
+	ApplicationID *int32 `db:"application_id" json:"application_id"`
+}
+
+type GetApplicationStatusHistoryRow struct {
+	OldStatus *string          `db:"old_status" json:"old_status"`
+	NewStatus string           `db:"new_status" json:"new_status"`
+	ChangedBy *int32           `db:"changed_by" json:"changed_by"`
+	Comment   *string          `db:"comment" json:"comment"`
+	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
+}
+
+func (q *Queries) GetApplicationStatusHistory(ctx context.Context, arg *GetApplicationStatusHistoryParams) ([]*GetApplicationStatusHistoryRow, error) {
+	rows, err := q.db.Query(ctx, getApplicationStatusHistory, arg.ApplicationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetApplicationStatusHistoryRow
+	for rows.Next() {
+		var i GetApplicationStatusHistoryRow
+		if err := rows.Scan(
+			&i.OldStatus,
+			&i.NewStatus,
+			&i.ChangedBy,
+			&i.Comment,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getApplications = `-- name: GetApplications :many
 SELECT
     a.id,
