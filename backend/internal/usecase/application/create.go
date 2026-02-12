@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-func (u *UseCase) Create(ctx context.Context, data []byte, userID, productID, managerID int32, productType string) (*domain.CreateApplicationResponse, error) {
+func (u *UseCase) Create(ctx context.Context, data []byte, userID, productID, managerID int32, productType string) (*domain.Application, error) {
 	price := RandomInt(30000, 50000)
 
 	var calculatedPrice pgtype.Numeric
@@ -27,7 +27,7 @@ func (u *UseCase) Create(ctx context.Context, data []byte, userID, productID, ma
 	if err != nil {
 		return nil, err
 	}
-	return &domain.CreateApplicationResponse{
+	return &domain.Application{
 		ID:              application.ID,
 		Status:          application.Status,
 		ProductType:     productType,

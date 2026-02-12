@@ -298,10 +298,21 @@ type CreateApplicationRequest struct {
 	Data        []byte `json:"data"`
 }
 
-type CreateApplicationResponse struct {
+type Application struct {
 	ID              int32     `json:"id"`
 	Status          string    `json:"status"`
 	ProductType     string    `json:"productType"`
 	CalculatedPrice int       `json:"calculatedPrice"`
 	CreatedAt       time.Time `json:"createdAt"`
+}
+
+type GetApplicationsResponse struct {
+	Applications []Application `json:"applications"`
+	Pagination   Pagination    `json:"pagination"`
+}
+
+type Pagination struct {
+	Page  int32 `json:"page"`
+	Limit int32 `json:"limit"`
+	Total int32 `json:"total"`
 }

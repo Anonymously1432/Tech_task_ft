@@ -17,7 +17,8 @@ func NewHandler(log *zap.Logger, uc application.IUseCase) *Handler {
 	return &Handler{Uc: uc, logger: log}
 }
 
-func RegisterRoutes(users fiber.Router, h *Handler) {
-	users.Use(middlewares.JWTMiddleware)
-	users.Post("/", h.Create)
+func RegisterRoutes(applications fiber.Router, h *Handler) {
+	applications.Use(middlewares.JWTMiddleware)
+	applications.Post("/", h.Create)
+	applications.Get("/", h.Get)
 }

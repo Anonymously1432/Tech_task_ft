@@ -10,6 +10,8 @@ import (
 
 type Querier interface {
 	CreateApplication(ctx context.Context, arg *CreateApplicationParams) (*CreateApplicationRow, error)
+	GetApplications(ctx context.Context, arg *GetApplicationsParams) ([]*GetApplicationsRow, error)
+	GetApplicationsCount(ctx context.Context, arg *GetApplicationsCountParams) (int64, error)
 }
 
 var _ Querier = (*Queries)(nil)
