@@ -1009,7 +1009,7 @@ const docTemplate = `{
             }
         },
         "/api/v1/users/dashboard": {
-            "put": {
+            "get": {
                 "description": "Retrieve statistics and recent activity for the currently authenticated user",
                 "consumes": [
                     "application/json"

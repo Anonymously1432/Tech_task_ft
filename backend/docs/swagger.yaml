@@ -1200,7 +1200,7 @@ paths:
       tags:
       - Products
   /api/v1/users/dashboard:
-    put:
+    get:
       consumes:
       - application/json
       description: Retrieve statistics and recent activity for the currently authenticated
