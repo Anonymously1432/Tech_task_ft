@@ -15,7 +15,6 @@ func (u *UseCase) GetByID(ctx context.Context, applicationID int32) (*domain.App
 		ID: applicationID,
 	})
 	if err != nil {
-		// Если запись не найдена
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, custom_errors.ErrNotFound
 		}

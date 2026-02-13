@@ -25,7 +25,6 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	}
 	ID, _ := strconv.Atoi(userIDVal.(string))
 
-	// Валидация полей
 	if req.ProductID == 0 {
 		return handler.SendError(c, 422, "UNPROCESSABLE_ENTITY", "Validation failed", map[string]string{"productID": "ProductID is required"})
 	}
