@@ -510,3 +510,7 @@ type RecentApplicationEntry struct {
 	CalculatedPrice int64     `json:"calculatedPrice"`
 	CreatedAt       time.Time `json:"createdAt"`
 }
+
+type GetProductsResponse struct {
+	Products []Product `json:"products"`
+}

@@ -9,7 +9,7 @@ import (
 )
 
 type IUseCase interface {
-	GetProducts(ctx context.Context) ([]*product_repository.GetProductsRow, error)
+	GetProducts(ctx context.Context) (*domain.GetProductsResponse, error)
 	GetProduct(ctx context.Context, productType string) (*domain.ProductResponse, error)
 }
 

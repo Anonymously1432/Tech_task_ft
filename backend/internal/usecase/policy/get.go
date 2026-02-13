@@ -2,12 +2,17 @@ package policy
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
 	policy_repository "buggy_insurance/internal/repository/policy"
 	"context"
+	"fmt"
 )
 
-func (u *UseCase) GetPolicies(ctx context.Context, userID, page, limit, offset int32, status string) (*domain.GetPoliciesResponse, error) {
-	res := new(domain.GetPoliciesResponse)
+func (u *UseCase) GetPolicies(
+	ctx context.Context,
+	userID, page, limit, offset int32,
+	status string,
+) (*domain.GetPoliciesResponse, error) {
 
 	policies, err := u.repo.GetPolicies(ctx, &policy_repository.GetPoliciesParams{
 		UserID:  &userID,
@@ -16,7 +21,7 @@ func (u *UseCase) GetPolicies(ctx context.Context, userID, page, limit, offset i
 		Offset:  offset,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get policies: %w", custom_errors.ErrInternal)
 	}
 
 	total, err := u.repo.GetPoliciesCount(ctx, &policy_repository.GetPoliciesCountParams{
@@ -24,10 +29,18 @@ func (u *UseCase) GetPolicies(ctx context.Context, userID, page, limit, offset i
 		Column2: status,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get policies count: %w", custom_errors.ErrInternal)
 	}
 
-	res.Policies = make([]domain.Policy, len(policies))
+	res := &domain.GetPoliciesResponse{
+		Policies: make([]domain.Policy, len(policies)),
+		Pagination: domain.Pagination{
+			Page:  page,
+			Limit: limit,
+			Total: int32(total),
+		},
+	}
+
 	for i, p := range policies {
 		res.Policies[i] = domain.Policy{
 			ID:             p.ID,
@@ -39,12 +52,6 @@ func (u *UseCase) GetPolicies(ctx context.Context, userID, page, limit, offset i
 			CoverageAmount: int(p.CoverageAmount.Int.Int64()),
 			Premium:        int(p.Premium.Int.Int64()),
 		}
-	}
-
-	res.Pagination = domain.Pagination{
-		Page:  page,
-		Limit: limit,
-		Total: int32(total),
 	}
 
 	return res, nil

@@ -1,6 +1,10 @@
 package product
 
 import (
+	custom_errors "buggy_insurance/internal/errors"
+	utils "buggy_insurance/internal/handler"
+	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
@@ -8,17 +12,50 @@ import (
 func (h *Handler) GetProduct(c *fiber.Ctx) error {
 	productType := c.Params("type")
 	if productType == "" {
-		h.logger.Error("productType is empty")
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "product type is required",
-		})
+		return utils.SendError(
+			c,
+			fiber.StatusBadRequest,
+			"BAD_REQUEST",
+			"product type is required",
+			map[string]string{
+				"type": "cannot be empty",
+			},
+		)
 	}
+
 	res, err := h.Uc.GetProduct(c.Context(), productType)
 	if err != nil {
 		h.logger.Error("GetProduct error", zap.Error(err))
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+
+		switch {
+		case errors.Is(err, custom_errors.ErrBadRequest):
+			return utils.SendError(
+				c,
+				fiber.StatusBadRequest,
+				"BAD_REQUEST",
+				err.Error(),
+				nil,
+			)
+
+		case errors.Is(err, custom_errors.ErrNotFound):
+			return utils.SendError(
+				c,
+				fiber.StatusNotFound,
+				"NOT_FOUND",
+				"product not found",
+				nil,
+			)
+
+		default:
+			return utils.SendError(
+				c,
+				fiber.StatusInternalServerError,
+				"INTERNAL_SERVER_ERROR",
+				"internal server error",
+				nil,
+			)
+		}
 	}
 
-	h.logger.Info("GetProduct", zap.Any("product", res))
 	return c.Status(fiber.StatusOK).JSON(res)
 }
