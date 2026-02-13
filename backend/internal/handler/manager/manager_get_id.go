@@ -1,6 +1,7 @@
-package application
+package manager
 
 import (
+	"buggy_insurance/internal/handler/application"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"

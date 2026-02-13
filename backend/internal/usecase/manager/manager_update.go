@@ -1,7 +1,8 @@
-package application
+package manager
 
 import (
 	"buggy_insurance/internal/domain"
+
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
 	"errors"

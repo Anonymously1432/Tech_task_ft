@@ -1,4 +1,4 @@
-package application
+package manager
 
 import (
 	"buggy_insurance/internal/domain"

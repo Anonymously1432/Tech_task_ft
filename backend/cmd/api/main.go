@@ -21,6 +21,9 @@ import (
 	policy_handler "buggy_insurance/internal/handler/policy"
 	policy_repository "buggy_insurance/internal/repository/policy"
 	policy_usecase "buggy_insurance/internal/usecase/policy"
+
+	manager_handler "buggy_insurance/internal/handler/manager"
+	manager_usecase "buggy_insurance/internal/usecase/manager"
 	"log"
 	"os"
 
@@ -88,6 +91,13 @@ func main() {
 	policyRepo := policy_repository.New(database)
 	policyUseCase := policy_usecase.NewUseCase(logger, policyRepo)
 	policyHandler := policy_handler.NewHandler(logger, policyUseCase)
+
+	managerRepo := application_repository.New(database)
+	managerUseCase := manager_usecase.NewUseCase(logger, managerRepo)
+	managerHandler := manager_handler.NewHandler(logger, managerUseCase)
+
+	manager := api.Group("/manager")
+	manager_handler.RegisterRoutes(manager, managerHandler)
 
 	auth := api.Group("/auth")
 	user_handler.RegisterRoutes(auth, userHandler)
