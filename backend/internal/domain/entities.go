@@ -455,3 +455,28 @@ type ConversionStats struct {
 	Rejected int32   `json:"rejected"`
 	Rate     float64 `json:"rate"`
 }
+
+type DashboardResponse struct {
+	User           DashboardUser   `json:"user"`
+	Stats          DashboardStats  `json:"stats"`
+	RecentActivity []ActivityEntry `json:"recentActivity"`
+}
+
+type DashboardUser struct {
+	FullName string `json:"fullName"`
+}
+
+type DashboardStats struct {
+	ActivePolicies      int32   `json:"activePolicies"`
+	TotalCoverage       float64 `json:"totalCoverage"`
+	PendingApplications int32   `json:"pendingApplications"`
+}
+
+type ActivityEntry struct {
+	ID              int32     `json:"id"`
+	Type            string    `json:"type"`
+	Status          string    `json:"status"`
+	CreatedAt       time.Time `json:"createdAt"`
+	ProductType     string    `json:"productType"`
+	CalculatedPrice float64   `json:"calculatedPrice,omitempty"`
+}

@@ -21,4 +21,5 @@ func RegisterRoutes(users fiber.Router, h *Handler) {
 	users.Use(middlewares.JWTMiddleware)
 	users.Get("/me", h.GetUser)
 	users.Put("/me", h.UpdateUser)
+	users.Put("/dashboard", h.GetDashboard)
 }
