@@ -425,3 +425,19 @@ type UpdateApplicationStatusResponse struct {
 	Status    string    `json:"status"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
+
+type CreateApplicationCommentRequest struct {
+	Comment string `json:"comment"`
+}
+
+type CreateApplicationCommentResponse struct {
+	ID        int32         `json:"id"`
+	Comment   string        `json:"comment"`
+	CreatedAt time.Time     `json:"createdAt"`
+	Author    CommentAuthor `json:"author"`
+}
+
+type CommentAuthor struct {
+	ID       int32  `json:"id"`
+	FullName string `json:"fullName"`
+}

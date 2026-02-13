@@ -130,3 +130,22 @@ INSERT INTO application_comments (
     $2,
     NOW()
 );
+
+-- name: GetUserByID :one
+SELECT id, full_name
+FROM users
+WHERE id = $1;
+
+-- name: CreateApplicationCommentt :one
+INSERT INTO application_comments (
+    application_id,
+    user_id,
+    comment,
+    created_at
+) VALUES (
+             $1,
+             $2,
+             $3,
+             NOW()
+         )
+    RETURNING id, comment, created_at;

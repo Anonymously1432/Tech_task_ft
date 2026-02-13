@@ -31,6 +31,11 @@ type IUseCase interface {
 		comment string,
 		rejectionReason *string,
 	) (*domain.UpdateApplicationStatusResponse, error)
+	CreateApplicationComment(
+		ctx context.Context,
+		applicationID, managerID int32,
+		comment string,
+	) (*domain.CreateApplicationCommentResponse, error)
 }
 
 type UseCase struct {

@@ -74,6 +74,40 @@ func (q *Queries) CreateApplicationComment(ctx context.Context, arg *CreateAppli
 	return err
 }
 
+const createApplicationCommentt = `-- name: CreateApplicationCommentt :one
+INSERT INTO application_comments (
+    application_id,
+    user_id,
+    comment,
+    created_at
+) VALUES (
+             $1,
+             $2,
+             $3,
+             NOW()
+         )
+    RETURNING id, comment, created_at
+`
+
+type CreateApplicationCommenttParams struct {
+	ApplicationID *int32 `db:"application_id" json:"application_id"`
+	UserID        *int32 `db:"user_id" json:"user_id"`
+	Comment       string `db:"comment" json:"comment"`
+}
+
+type CreateApplicationCommenttRow struct {
+	ID        int32            `db:"id" json:"id"`
+	Comment   string           `db:"comment" json:"comment"`
+	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
+}
+
+func (q *Queries) CreateApplicationCommentt(ctx context.Context, arg *CreateApplicationCommenttParams) (*CreateApplicationCommenttRow, error) {
+	row := q.db.QueryRow(ctx, createApplicationCommentt, arg.ApplicationID, arg.UserID, arg.Comment)
+	var i CreateApplicationCommenttRow
+	err := row.Scan(&i.ID, &i.Comment, &i.CreatedAt)
+	return &i, err
+}
+
 const getApplicationByID = `-- name: GetApplicationByID :one
 SELECT
     a.id,
@@ -461,6 +495,28 @@ func (q *Queries) GetManagerApplicationsCount(ctx context.Context, arg *GetManag
 	var total int64
 	err := row.Scan(&total)
 	return total, err
+}
+
+const getUserByID = `-- name: GetUserByID :one
+SELECT id, full_name
+FROM users
+WHERE id = $1
+`
+
+type GetUserByIDParams struct {
+	ID int32 `db:"id" json:"id"`
+}
+
+type GetUserByIDRow struct {
+	ID       int32  `db:"id" json:"id"`
+	FullName string `db:"full_name" json:"full_name"`
+}
+
+func (q *Queries) GetUserByID(ctx context.Context, arg *GetUserByIDParams) (*GetUserByIDRow, error) {
+	row := q.db.QueryRow(ctx, getUserByID, arg.ID)
+	var i GetUserByIDRow
+	err := row.Scan(&i.ID, &i.FullName)
+	return &i, err
 }
 
 const updateApplicationStatus = `-- name: UpdateApplicationStatus :one

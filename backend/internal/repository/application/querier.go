@@ -11,6 +11,7 @@ import (
 type Querier interface {
 	CreateApplication(ctx context.Context, arg *CreateApplicationParams) (*CreateApplicationRow, error)
 	CreateApplicationComment(ctx context.Context, arg *CreateApplicationCommentParams) error
+	CreateApplicationCommentt(ctx context.Context, arg *CreateApplicationCommenttParams) (*CreateApplicationCommenttRow, error)
 	GetApplicationByID(ctx context.Context, arg *GetApplicationByIDParams) (*GetApplicationByIDRow, error)
 	GetApplicationComments(ctx context.Context, arg *GetApplicationCommentsParams) ([]*GetApplicationCommentsRow, error)
 	GetApplicationStatusHistory(ctx context.Context, arg *GetApplicationStatusHistoryParams) ([]*GetApplicationStatusHistoryRow, error)
@@ -19,6 +20,7 @@ type Querier interface {
 	GetManagerApplicationByID(ctx context.Context, arg *GetManagerApplicationByIDParams) (*GetManagerApplicationByIDRow, error)
 	GetManagerApplications(ctx context.Context, arg *GetManagerApplicationsParams) ([]*GetManagerApplicationsRow, error)
 	GetManagerApplicationsCount(ctx context.Context, arg *GetManagerApplicationsCountParams) (int64, error)
+	GetUserByID(ctx context.Context, arg *GetUserByIDParams) (*GetUserByIDRow, error)
 	UpdateApplicationStatus(ctx context.Context, arg *UpdateApplicationStatusParams) (*UpdateApplicationStatusRow, error)
 }
 
