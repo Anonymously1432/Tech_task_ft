@@ -1,0 +1,1317 @@
+basePath: /api/v1
+definitions:
+  domain.ActivityEntry:
+    properties:
+      calculatedPrice:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      productType:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+    type: object
+  domain.Application:
+    properties:
+      calculatedPrice:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      productType:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.ApplicationComment:
+    properties:
+      author:
+        type: string
+      authorId:
+        type: integer
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+    type: object
+  domain.ApplicationDetail:
+    properties:
+      calculatedPrice:
+        type: integer
+      createdAt:
+        type: string
+      data:
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+      productType:
+        type: string
+      status:
+        type: string
+      statusHistory:
+        items:
+          $ref: '#/definitions/domain.ApplicationStatus'
+        type: array
+    type: object
+  domain.ApplicationStatus:
+    properties:
+      changedAt:
+        type: string
+      changedBy:
+        type: integer
+      comment:
+        type: string
+      newStatus:
+        type: string
+      oldStatus:
+        type: string
+    type: object
+  domain.ApplicationStatusHistory:
+    properties:
+      changedBy:
+        type: integer
+      comment:
+        type: string
+      createdAt:
+        type: string
+      newStatus:
+        type: string
+      oldStatus:
+        type: string
+    type: object
+  domain.ChartDataEntry:
+    properties:
+      approved:
+        type: integer
+      date:
+        type: string
+      new:
+        type: integer
+      rejected:
+        type: integer
+    type: object
+  domain.ClientFull:
+    properties:
+      email:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+    type: object
+  domain.ClientShort:
+    properties:
+      email:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: integer
+    type: object
+  domain.CommentAuthor:
+    properties:
+      fullName:
+        type: string
+      id:
+        type: integer
+    type: object
+  domain.ConversionStats:
+    properties:
+      approved:
+        type: integer
+      rate:
+        type: number
+      rejected:
+        type: integer
+      total:
+        type: integer
+    type: object
+  domain.CreateApplicationCommentRequest:
+    properties:
+      comment:
+        type: string
+    type: object
+  domain.CreateApplicationCommentResponse:
+    properties:
+      author:
+        $ref: '#/definitions/domain.CommentAuthor'
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+    type: object
+  domain.CreateApplicationRequest:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      managerId:
+        type: integer
+      productId:
+        type: integer
+      productType:
+        type: string
+    type: object
+  domain.DashboardResponse:
+    properties:
+      recentActivity:
+        items:
+          $ref: '#/definitions/domain.ActivityEntry'
+        type: array
+      stats:
+        $ref: '#/definitions/domain.DashboardStats'
+      user:
+        $ref: '#/definitions/domain.DashboardUser'
+    type: object
+  domain.DashboardStats:
+    properties:
+      activePolicies:
+        type: integer
+      pendingApplications:
+        type: integer
+      totalCoverage:
+        type: number
+    type: object
+  domain.DashboardUser:
+    properties:
+      fullName:
+        type: string
+    type: object
+  domain.Details:
+    properties:
+      field:
+        additionalProperties:
+          type: string
+        type: object
+    type: object
+  domain.ErrorResponse:
+    properties:
+      code:
+        type: string
+      details:
+        $ref: '#/definitions/domain.Details'
+      error:
+        type: string
+    type: object
+  domain.FieldsForLogin:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      role:
+        type: string
+    type: object
+  domain.FormField:
+    properties:
+      label:
+        type: string
+      max:
+        type: integer
+      min:
+        type: integer
+      name:
+        type: string
+      options:
+        items:
+          type: string
+        type: array
+      required:
+        type: boolean
+      type:
+        type: string
+    type: object
+  domain.GetApplicationsResponse:
+    properties:
+      applications:
+        items:
+          $ref: '#/definitions/domain.Application'
+        type: array
+      pagination:
+        $ref: '#/definitions/domain.Pagination'
+    type: object
+  domain.GetManagerApplicationsResponse:
+    properties:
+      applications:
+        items:
+          $ref: '#/definitions/domain.ManagerApplication'
+        type: array
+      pagination:
+        $ref: '#/definitions/domain.Pagination'
+    type: object
+  domain.GetPoliciesResponse:
+    properties:
+      pagination:
+        $ref: '#/definitions/domain.Pagination'
+      policies:
+        items:
+          $ref: '#/definitions/domain.Policy'
+        type: array
+    type: object
+  domain.GetProductsResponse:
+    properties:
+      products:
+        items:
+          $ref: '#/definitions/domain.Product'
+        type: array
+    type: object
+  domain.GetUserResponse:
+    properties:
+      address:
+        type: string
+      birthDate:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+      role:
+        type: string
+    type: object
+  domain.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  domain.LoginResponse:
+    properties:
+      accessToken:
+        type: string
+      expiresIn:
+        type: integer
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/domain.FieldsForLogin'
+    type: object
+  domain.LogoutRequest:
+    properties:
+      refreshToken:
+        type: string
+    type: object
+  domain.LogoutResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  domain.ManagerApplication:
+    properties:
+      calculatedPrice:
+        type: integer
+      client:
+        $ref: '#/definitions/domain.ClientShort'
+      createdAt:
+        type: string
+      id:
+        type: integer
+      productType:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.ManagerApplicationDetail:
+    properties:
+      calculatedPrice:
+        type: integer
+      client:
+        $ref: '#/definitions/domain.ClientFull'
+      comments:
+        items:
+          $ref: '#/definitions/domain.ApplicationComment'
+        type: array
+      createdAt:
+        type: string
+      data:
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+      productType:
+        type: string
+      status:
+        type: string
+      statusHistory:
+        items:
+          $ref: '#/definitions/domain.ApplicationStatusHistory'
+        type: array
+    type: object
+  domain.ManagerDashboardResponse:
+    properties:
+      chartData:
+        items:
+          $ref: '#/definitions/domain.ChartDataEntry'
+        type: array
+      recentApplications:
+        items:
+          $ref: '#/definitions/domain.RecentApplicationEntry'
+        type: array
+      stats:
+        $ref: '#/definitions/domain.ManagerDashboardStats'
+    type: object
+  domain.ManagerDashboardStats:
+    properties:
+      approvedThisMonth:
+        type: integer
+      newToday:
+        type: integer
+      rejectedThisMonth:
+        type: integer
+      underReview:
+        type: integer
+    type: object
+  domain.ManagerStatisticsResponse:
+    properties:
+      byStatus:
+        additionalProperties:
+          format: int32
+          type: integer
+        type: object
+      byType:
+        additionalProperties:
+          format: int32
+          type: integer
+        type: object
+      conversion:
+        $ref: '#/definitions/domain.ConversionStats'
+      period:
+        type: string
+    type: object
+  domain.Pagination:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  domain.Policy:
+    properties:
+      coverageAmount:
+        type: integer
+      endDate:
+        type: string
+      id:
+        type: integer
+      policyNumber:
+        type: string
+      premium:
+        type: integer
+      productType:
+        type: string
+      startDate:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.Product:
+    properties:
+      basePrice:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      type:
+        type: string
+    type: object
+  domain.ProductResponse:
+    properties:
+      formFields:
+        items:
+          $ref: '#/definitions/domain.FormField'
+        type: array
+      products:
+        items:
+          $ref: '#/definitions/domain.Product'
+        type: array
+    type: object
+  domain.RecentApplicationEntry:
+    properties:
+      calculatedPrice:
+        type: integer
+      clientFullName:
+        type: string
+      clientId:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      productType:
+        type: string
+      status:
+        type: string
+    type: object
+  domain.RefreshRequest:
+    properties:
+      refreshToken:
+        type: string
+    type: object
+  domain.RefreshResponse:
+    properties:
+      accessToken:
+        type: string
+      expiresIn:
+        type: integer
+    type: object
+  domain.RegisterRequest:
+    properties:
+      birthDate:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  domain.RegisterResponse:
+    properties:
+      email:
+        type: string
+      fullName:
+        type: string
+      id:
+        type: integer
+    type: object
+  domain.UpdateApplicationStatusRequest:
+    properties:
+      comment:
+        type: string
+      rejectionReason:
+        type: string
+      status:
+        type: string
+    required:
+    - status
+    type: object
+  domain.UpdateApplicationStatusResponse:
+    properties:
+      id:
+        type: integer
+      status:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  domain.UpdateUserRequest:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: rostovshchikov.fortech@gmail.com
+    name: Alexander Rostovshchikov
+  description: Buggy Insurance backend API
+  title: Buggy Insurance Backend API
+  version: "1"
+paths:
+  /api/v1/applications:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of applications for the authenticated
+        user
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filter by status
+        in: query
+        name: status
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetApplicationsResponse'
+        "400":
+          description: Bad Request — invalid parameters
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized — user not logged in
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found — resource not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity — validation error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get applications list
+      tags:
+      - Applications
+    post:
+      consumes:
+      - application/json
+      description: Create a new application for the authenticated user
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Application data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateApplicationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Application'
+        "400":
+          description: Bad Request — invalid request body
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized — user not logged in
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found — resource not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "409":
+          description: Conflict — resource conflict (e.g. duplicate)
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity — validation error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Create a new application
+      tags:
+      - Applications
+  /api/v1/applications/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details of a specific application by its ID
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ApplicationDetail'
+        "400":
+          description: Bad Request — invalid application ID
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized — user not logged in
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found — application not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Unprocessable Entity — validation error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get application by ID
+      tags:
+      - Applications
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and get access/refresh tokens
+      parameters:
+      - description: User login data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.LoginResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: User login
+      tags:
+      - Auth
+  /api/v1/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Invalidate refresh token to log out the user
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Logout request with refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.LogoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.LogoutResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: User logout
+      tags:
+      - Auth
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh JWT access token using a valid refresh token
+      parameters:
+      - description: Refresh token request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.RefreshResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Refresh access token
+      tags:
+      - Auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account
+      parameters:
+      - description: User registration data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.RegisterResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - Auth
+  /api/v1/manager/applications:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of applications with filters
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filter by application status
+        in: query
+        name: status
+        type: string
+      - description: Filter by product type
+        in: query
+        name: productType
+        type: string
+      - description: Search by client ID
+        in: query
+        name: search
+        type: string
+      - description: Start date filter (RFC3339)
+        in: query
+        name: dateFrom
+        type: string
+      - description: End date filter (RFC3339)
+        in: query
+        name: dateTo
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetManagerApplicationsResponse'
+        "400":
+          description: Invalid query parameters
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: List manager applications
+      tags:
+      - Manager
+  /api/v1/manager/applications/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve detailed information for a specific application
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ManagerApplicationDetail'
+        "400":
+          description: Invalid application ID
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Application not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Failed to retrieve application
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get application details
+      tags:
+      - Manager
+  /api/v1/manager/applications/{id}/comments:
+    post:
+      consumes:
+      - application/json
+      description: Allows a manager to add a comment to a specific application
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Comment payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateApplicationCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.CreateApplicationCommentResponse'
+        "400":
+          description: Invalid application id or request body
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Manager or application not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Comment is required
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Create a comment for an application
+      tags:
+      - Manager
+  /api/v1/manager/applications/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      description: Change the status of an application (e.g., APPROVED, REJECTED)
+        with optional comment
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Application ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Status update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateApplicationStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UpdateApplicationStatusResponse'
+        "400":
+          description: Invalid request or application ID
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: rejectionReason required for REJECTED status
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Update application status
+      tags:
+      - Manager
+  /api/v1/manager/dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve overview stats for the manager
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ManagerDashboardResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Failed to retrieve dashboard
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get manager dashboard
+      tags:
+      - Manager
+  /api/v1/manager/statistics:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve application statistics by period (week, month, quarter,
+        year)
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: month
+        description: 'Period filter: week, month, quarter, year'
+        in: query
+        name: period
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ManagerStatisticsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "422":
+          description: Invalid period
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Failed to retrieve statistics
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get manager statistics
+      tags:
+      - Manager
+  /api/v1/policies:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of policies for the currently authenticated
+        user, optionally filtered by status
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Filter by policy status (e.g., ACTIVE, EXPIRED)
+        in: query
+        name: status
+        type: string
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page (default 10)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetPoliciesResponse'
+        "400":
+          description: Bad Request — invalid query parameters (page or limit)
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized — authentication required or invalid user ID
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found — user or policies not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get user policies
+      tags:
+      - Policies
+  /api/v1/products:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all available products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetProductsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get all products
+      tags:
+      - Products
+  /api/v1/products/{type}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details for a specific product by its type
+      parameters:
+      - description: Product type
+        in: path
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.ProductResponse'
+        "400":
+          description: Bad Request — missing or invalid product type
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found — product not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get product by type
+      tags:
+      - Products
+  /api/v1/users/dashboard:
+    put:
+      consumes:
+      - application/json
+      description: Retrieve statistics and recent activity for the currently authenticated
+        user
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.DashboardResponse'
+        "401":
+          description: Unauthorized — authentication required or invalid user ID
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found — user not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get user dashboard
+      tags:
+      - Users
+  /api/v1/users/me:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve information about the currently authenticated user
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetUserResponse'
+        "401":
+          description: Unauthorized — authentication required or invalid user ID
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "404":
+          description: Not Found — user not found
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Get current user
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Update full name, email, and address of the currently authenticated
+        user
+      parameters:
+      - description: Bearer {accessToken}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: User update payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetUserResponse'
+        "400":
+          description: Bad Request — invalid request body
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "401":
+          description: Unauthorized — authentication required or invalid user ID
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "409":
+          description: Conflict — email already exists
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: Update current user
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

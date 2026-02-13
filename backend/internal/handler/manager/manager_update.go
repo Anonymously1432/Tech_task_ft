@@ -10,6 +10,21 @@ import (
 	"go.uber.org/zap"
 )
 
+// UpdateApplicationStatus godoc
+// @Summary      Update application status
+// @Description  Change the status of an application (e.g., APPROVED, REJECTED) with optional comment
+// @Tags         Manager
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Param        id             path      int     true  "Application ID"
+// @Param        request        body      domain.UpdateApplicationStatusRequest  true  "Status update payload"
+// @Success      200  {object}  domain.UpdateApplicationStatusResponse
+// @Failure      400  {object}  domain.ErrorResponse  "Invalid request or application ID"
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
+// @Failure      422  {object}  domain.ErrorResponse  "rejectionReason required for REJECTED status"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal server error"
+// @Router       /api/v1/manager/applications/{id}/status [patch]
 func (h *Handler) UpdateApplicationStatus(c *fiber.Ctx) error {
 	userID := c.Locals("user_id")
 	if userID == nil {

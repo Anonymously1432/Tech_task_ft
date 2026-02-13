@@ -12,6 +12,20 @@ import (
 	"go.uber.org/zap"
 )
 
+// UpdateUser godoc
+// @Summary      Update current user
+// @Description  Update full name, email, and address of the currently authenticated user
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Param        request        body      domain.UpdateUserRequest  true  "User update payload"
+// @Success      200  {object}  domain.GetUserResponse
+// @Failure      400  {object}  domain.ErrorResponse  "Bad Request — invalid request body"
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized — authentication required or invalid user ID"
+// @Failure      409  {object}  domain.ErrorResponse  "Conflict — email already exists"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/users/me [put]
 func (h *Handler) UpdateUser(c *fiber.Ctx) error {
 	req := new(domain.UpdateUserRequest)
 	if err := c.BodyParser(req); err != nil {

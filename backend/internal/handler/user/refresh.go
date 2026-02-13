@@ -7,6 +7,17 @@ import (
 	"go.uber.org/zap"
 )
 
+// Refresh godoc
+// @Summary      Refresh access token
+// @Description  Refresh JWT access token using a valid refresh token
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body   domain.RefreshRequest  true  "Refresh token request"
+// @Success      200   {object}  domain.RefreshResponse
+// @Failure      400   {object}  domain.ErrorResponse  "Invalid request body"
+// @Failure      500   {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/auth/refresh [post]
 func (h *Handler) Refresh(c *fiber.Ctx) error {
 	req := new(domain.RefreshRequest)
 	if err := c.BodyParser(req); err != nil {

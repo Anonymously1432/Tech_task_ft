@@ -10,6 +10,23 @@ import (
 	"go.uber.org/zap"
 )
 
+// Get GetApplications godoc
+// @Summary      Get applications list
+// @Description  Retrieve a paginated list of applications for the authenticated user
+// @Tags         Applications
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Param        status         query     string  false "Filter by status"
+// @Param        page           query     int     false "Page number" default(1)
+// @Param        limit          query     int     false "Items per page" default(10)
+// @Success      200  {object}  domain.GetApplicationsResponse
+// @Failure      400  {object}  domain.ErrorResponse  "Bad Request — invalid parameters"
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized — user not logged in"
+// @Failure      404  {object}  domain.ErrorResponse  "Not Found — resource not found"
+// @Failure      422  {object}  domain.ErrorResponse  "Unprocessable Entity — validation error"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/applications [get]
 func (h *Handler) Get(c *fiber.Ctx) error {
 	userIDVal := c.Locals("user_id")
 	if userIDVal == nil {

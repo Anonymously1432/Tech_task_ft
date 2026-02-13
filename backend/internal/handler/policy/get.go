@@ -11,6 +11,22 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetPolicies godoc
+// @Summary      Get user policies
+// @Description  Retrieve a paginated list of policies for the currently authenticated user, optionally filtered by status
+// @Tags         Policies
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true   "Bearer {accessToken}"
+// @Param        status         query     string  false  "Filter by policy status (e.g., ACTIVE, EXPIRED)"
+// @Param        page           query     int     false  "Page number (default 1)"
+// @Param        limit          query     int     false  "Number of items per page (default 10)"
+// @Success      200  {object}  domain.GetPoliciesResponse
+// @Failure      400  {object}  domain.ErrorResponse  "Bad Request — invalid query parameters (page or limit)"
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized — authentication required or invalid user ID"
+// @Failure      404  {object}  domain.ErrorResponse  "Not Found — user or policies not found"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/policies [get]
 func (h *Handler) GetPolicies(c *fiber.Ctx) error {
 	userID := c.Locals("user_id")
 	if userID == nil {

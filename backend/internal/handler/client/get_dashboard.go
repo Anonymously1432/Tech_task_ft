@@ -9,6 +9,18 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetDashboard godoc
+// @Summary      Get user dashboard
+// @Description  Retrieve statistics and recent activity for the currently authenticated user
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Success      200  {object}  domain.DashboardResponse
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized — authentication required or invalid user ID"
+// @Failure      404  {object}  domain.ErrorResponse  "Not Found — user not found"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/users/dashboard [get]
 func (h *Handler) GetDashboard(c *fiber.Ctx) error {
 	userIDVal := c.Locals("user_id")
 	if userIDVal == nil {

@@ -7,6 +7,17 @@ import (
 	"go.uber.org/zap"
 )
 
+// Register godoc
+// @Summary      Register a new user
+// @Description  Create a new user account
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      domain.RegisterRequest  true  "User registration data"
+// @Success      201   {object}  domain.RegisterResponse
+// @Failure      400   {object}  domain.ErrorResponse  "Invalid request body"
+// @Failure      500   {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/auth/register [post]
 func (h *Handler) Register(c *fiber.Ctx) error {
 	req := new(domain.RegisterRequest)
 	if err := c.BodyParser(req); err != nil {

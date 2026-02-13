@@ -10,6 +10,21 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetByID GetApplicationByID godoc
+// @Summary      Get application by ID
+// @Description  Retrieve details of a specific application by its ID
+// @Tags         Applications
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Param        id             path      int     true  "Application ID"
+// @Success      200  {object}  domain.ApplicationDetail
+// @Failure      400  {object}  domain.ErrorResponse  "Bad Request — invalid application ID"
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized — user not logged in"
+// @Failure      404  {object}  domain.ErrorResponse  "Not Found — application not found"
+// @Failure      422  {object}  domain.ErrorResponse  "Unprocessable Entity — validation error"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/applications/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.Atoi(idStr)
@@ -25,7 +40,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 		case errors.Is(err, custom_errors.ErrNotFound):
 			return utils.SendError(c, fiber.StatusNotFound, "NOT_FOUND", "Application not found", nil)
 		case errors.Is(err, custom_errors.ErrValidation):
-			return utils.SendError(c, 422, "UNPROCESSABLE_ENTITY", err.Error(), nil)
+			return utils.SendError(c, fiber.StatusUnprocessableEntity, "UNPROCESSABLE_ENTITY", err.Error(), nil)
 		default:
 			return utils.SendError(c, fiber.StatusInternalServerError, "INTERNAL_SERVER_ERROR", "Internal server error", nil)
 		}

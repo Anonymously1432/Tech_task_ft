@@ -7,6 +7,17 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetManagerDashboard godoc
+// @Summary      Get manager dashboard
+// @Description  Retrieve overview stats for the manager
+// @Tags         Manager
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Success      200  {object}  domain.ManagerDashboardResponse
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
+// @Failure      500  {object}  domain.ErrorResponse  "Failed to retrieve dashboard"
+// @Router       /api/v1/manager/dashboard [get]
 func (h *Handler) GetManagerDashboard(c *fiber.Ctx) error {
 	resp, err := h.Uc.GetManagerDashboard(c.Context())
 	if err != nil {

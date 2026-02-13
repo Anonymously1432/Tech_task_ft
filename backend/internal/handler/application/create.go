@@ -11,6 +11,22 @@ import (
 	"go.uber.org/zap"
 )
 
+// Create CreateApplication godoc
+// @Summary      Create a new application
+// @Description  Create a new application for the authenticated user
+// @Tags         Applications
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Param        request        body      domain.CreateApplicationRequest  true  "Application data"
+// @Success      201  {object}  domain.Application
+// @Failure      400  {object}  domain.ErrorResponse  "Bad Request — invalid request body"
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized — user not logged in"
+// @Failure      404  {object}  domain.ErrorResponse  "Not Found — resource not found"
+// @Failure      409  {object}  domain.ErrorResponse  "Conflict — resource conflict (e.g. duplicate)"
+// @Failure      422  {object}  domain.ErrorResponse  "Unprocessable Entity — validation error"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/applications [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
 	req := new(domain.CreateApplicationRequest)
 	if err := c.BodyParser(req); err != nil {
@@ -42,7 +58,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 		case errors.Is(err, custom_errors.ErrConflict):
 			return utils.SendError(c, fiber.StatusConflict, "CONFLICT", err.Error(), nil)
 		case errors.Is(err, custom_errors.ErrValidation):
-			return utils.SendError(c, 422, "UNPROCESSABLE_ENTITY", err.Error(), nil)
+			return utils.SendError(c, fiber.StatusUnprocessableEntity, "UNPROCESSABLE_ENTITY", err.Error(), nil)
 		case errors.Is(err, custom_errors.ErrUnauthorized):
 			return utils.SendError(c, fiber.StatusUnauthorized, "UNAUTHORIZED", err.Error(), nil)
 		default:

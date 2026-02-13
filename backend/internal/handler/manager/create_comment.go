@@ -12,6 +12,22 @@ import (
 	"go.uber.org/zap"
 )
 
+// CreateApplicationComment godoc
+// @Summary      Create a comment for an application
+// @Description  Allows a manager to add a comment to a specific application
+// @Tags         Manager
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string                                   true   "Bearer {accessToken}"
+// @Param        id             path      int                                      true   "Application ID"
+// @Param        request        body      domain.CreateApplicationCommentRequest  true   "Comment payload"
+// @Success      201            {object}  domain.CreateApplicationCommentResponse
+// @Failure      400            {object}  domain.ErrorResponse  "Invalid application id or request body"
+// @Failure      401            {object}  domain.ErrorResponse  "Unauthorized"
+// @Failure      422            {object}  domain.ErrorResponse  "Comment is required"
+// @Failure      404            {object}  domain.ErrorResponse  "Manager or application not found"
+// @Failure      500            {object}  domain.ErrorResponse  "Internal server error"
+// @Router       /api/v1/manager/applications/{id}/comments [post]
 func (h *Handler) CreateApplicationComment(c *fiber.Ctx) error {
 	req := new(domain.CreateApplicationCommentRequest)
 	if err := c.BodyParser(req); err != nil {

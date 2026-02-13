@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"encoding/json"
 	"time"
 )
 
@@ -246,7 +245,7 @@ type LogoutResponse struct {
 
 type ErrorResponse struct {
 	Error   string  `json:"error"`
-	Code    int8    `json:"code"`
+	Code    string  `json:"code"`
 	Details Details `json:"details"`
 }
 
@@ -262,7 +261,7 @@ type FormField struct {
 }
 
 type Details struct {
-	Field string `json:"field"`
+	Field map[string]string `json:"field"`
 }
 
 type ProductResponse struct {
@@ -324,7 +323,7 @@ type ApplicationDetail struct {
 	ID              int32               `json:"id"`
 	ProductType     string              `json:"productType"`
 	Status          string              `json:"status"`
-	Data            json.RawMessage     `json:"data"`
+	Data            []byte              `json:"data"`
 	CalculatedPrice int                 `json:"calculatedPrice"`
 	CreatedAt       time.Time           `json:"createdAt"`
 	StatusHistory   []ApplicationStatus `json:"statusHistory"`
@@ -381,11 +380,11 @@ type ManagerApplicationDetail struct {
 
 	Client ClientFull `json:"client"`
 
-	ProductType     string          `json:"productType"`
-	Status          string          `json:"status"`
-	Data            json.RawMessage `json:"data"`
-	CalculatedPrice int             `json:"calculatedPrice"`
-	CreatedAt       time.Time       `json:"createdAt"`
+	ProductType     string    `json:"productType"`
+	Status          string    `json:"status"`
+	Data            []byte    `json:"data"`
+	CalculatedPrice int       `json:"calculatedPrice"`
+	CreatedAt       time.Time `json:"createdAt"`
 
 	StatusHistory []ApplicationStatusHistory `json:"statusHistory"`
 	Comments      []ApplicationComment       `json:"comments"`

@@ -9,6 +9,18 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetProduct godoc
+// @Summary      Get product by type
+// @Description  Retrieve details for a specific product by its type
+// @Tags         Products
+// @Accept       json
+// @Produce      json
+// @Param        type   path      string  true   "Product type"
+// @Success      200    {object}  domain.ProductResponse
+// @Failure      400    {object}  domain.ErrorResponse  "Bad Request — missing or invalid product type"
+// @Failure      404    {object}  domain.ErrorResponse  "Not Found — product not found"
+// @Failure      500    {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /api/v1/products/{type} [get]
 func (h *Handler) GetProduct(c *fiber.Ctx) error {
 	productType := c.Params("type")
 	if productType == "" {

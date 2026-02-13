@@ -9,6 +9,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetStatistics godoc
+// @Summary      Get manager statistics
+// @Description  Retrieve application statistics by period (week, month, quarter, year)
+// @Tags         Manager
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Param        period         query     string  false "Period filter: week, month, quarter, year"  default(month)
+// @Success      200  {object}  domain.ManagerStatisticsResponse
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
+// @Failure      422  {object}  domain.ErrorResponse  "Invalid period"
+// @Failure      500  {object}  domain.ErrorResponse  "Failed to retrieve statistics"
+// @Router       /api/v1/manager/statistics [get]
 func (h *Handler) GetStatistics(c *fiber.Ctx) error {
 	period := c.Query("period", "month")
 

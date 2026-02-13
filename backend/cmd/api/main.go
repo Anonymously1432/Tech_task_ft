@@ -27,12 +27,27 @@ import (
 	"log"
 	"os"
 
+	_ "buggy_insurance/docs"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
 	"go.uber.org/zap"
 )
 
+// @title Buggy Insurance Backend API
+// @version 1
+// @description Buggy Insurance backend API
+
+// @contact.name    Alexander Rostovshchikov
+// @contact.email   rostovshchikov.fortech@gmail.com
+
+// @host localhost:8080
+// @BasePath /api/v1
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	app := fiber.New()
 
@@ -54,7 +69,7 @@ func main() {
 	})
 
 	// Swagger
-	api.Get("/docs", swagger.HandlerDefault)
+	api.Get("/docs/*", swagger.HandlerDefault)
 
 	logger, err := zap.NewProduction()
 	if err != nil {

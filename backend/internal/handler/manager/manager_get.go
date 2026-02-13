@@ -11,6 +11,25 @@ import (
 	"go.uber.org/zap"
 )
 
+// GetManagerApplications godoc
+// @Summary      List manager applications
+// @Description  Retrieve a paginated list of applications with filters
+// @Tags         Manager
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header    string  true  "Bearer {accessToken}"
+// @Param        status         query     string  false "Filter by application status"
+// @Param        productType    query     string  false "Filter by product type"
+// @Param        search         query     string  false "Search by client ID"
+// @Param        dateFrom       query     string  false "Start date filter (RFC3339)"
+// @Param        dateTo         query     string  false "End date filter (RFC3339)"
+// @Param        page           query     int     false "Page number"  default(1)
+// @Param        limit          query     int     false "Page size"  default(10)
+// @Success      200  {object}  domain.GetManagerApplicationsResponse
+// @Failure      400  {object}  domain.ErrorResponse  "Invalid query parameters"
+// @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal server error"
+// @Router       /api/v1/manager/applications [get]
 func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 	status := c.Query("status")
 	productType := c.Query("productType")
