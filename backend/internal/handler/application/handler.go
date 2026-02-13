@@ -25,4 +25,5 @@ func RegisterRoutes(applications fiber.Router, h *Handler) {
 	applications.Get("/manager/applications/:id", h.GetManagerApplicationByID)
 	applications.Patch("manager/applications/:id/status", h.UpdateApplicationStatus)
 	applications.Post("manager/applications/:id/comments", h.CreateApplicationComment)
+	applications.Get("manager/statistics", h.GetStatistics)
 }

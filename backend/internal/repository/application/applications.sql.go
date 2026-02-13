@@ -310,6 +310,32 @@ func (q *Queries) GetApplications(ctx context.Context, arg *GetApplicationsParam
 	return items, nil
 }
 
+const getApplicationsConversion = `-- name: GetApplicationsConversion :one
+SELECT
+    COUNT(*) AS total,
+    COUNT(*) FILTER (WHERE status = 'APPROVED') AS approved,
+    COUNT(*) FILTER (WHERE status = 'REJECTED') AS rejected
+FROM applications
+WHERE created_at >= $1
+`
+
+type GetApplicationsConversionParams struct {
+	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
+}
+
+type GetApplicationsConversionRow struct {
+	Total    int64 `db:"total" json:"total"`
+	Approved int64 `db:"approved" json:"approved"`
+	Rejected int64 `db:"rejected" json:"rejected"`
+}
+
+func (q *Queries) GetApplicationsConversion(ctx context.Context, arg *GetApplicationsConversionParams) (*GetApplicationsConversionRow, error) {
+	row := q.db.QueryRow(ctx, getApplicationsConversion, arg.CreatedAt)
+	var i GetApplicationsConversionRow
+	err := row.Scan(&i.Total, &i.Approved, &i.Rejected)
+	return &i, err
+}
+
 const getApplicationsCount = `-- name: GetApplicationsCount :one
 SELECT COUNT(*) AS total
 FROM applications
@@ -327,6 +353,79 @@ func (q *Queries) GetApplicationsCount(ctx context.Context, arg *GetApplications
 	var total int64
 	err := row.Scan(&total)
 	return total, err
+}
+
+const getApplicationsCountByStatus = `-- name: GetApplicationsCountByStatus :many
+SELECT status, COUNT(*) AS total
+FROM applications
+WHERE created_at >= $1
+GROUP BY status
+`
+
+type GetApplicationsCountByStatusParams struct {
+	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
+}
+
+type GetApplicationsCountByStatusRow struct {
+	Status string `db:"status" json:"status"`
+	Total  int64  `db:"total" json:"total"`
+}
+
+func (q *Queries) GetApplicationsCountByStatus(ctx context.Context, arg *GetApplicationsCountByStatusParams) ([]*GetApplicationsCountByStatusRow, error) {
+	rows, err := q.db.Query(ctx, getApplicationsCountByStatus, arg.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetApplicationsCountByStatusRow
+	for rows.Next() {
+		var i GetApplicationsCountByStatusRow
+		if err := rows.Scan(&i.Status, &i.Total); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getApplicationsCountByType = `-- name: GetApplicationsCountByType :many
+SELECT p.type AS product_type, COUNT(*) AS total
+FROM applications a
+         JOIN products p ON a.product_id = p.id
+WHERE a.created_at >= $1
+GROUP BY p.type
+`
+
+type GetApplicationsCountByTypeParams struct {
+	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
+}
+
+type GetApplicationsCountByTypeRow struct {
+	ProductType string `db:"product_type" json:"product_type"`
+	Total       int64  `db:"total" json:"total"`
+}
+
+func (q *Queries) GetApplicationsCountByType(ctx context.Context, arg *GetApplicationsCountByTypeParams) ([]*GetApplicationsCountByTypeRow, error) {
+	rows, err := q.db.Query(ctx, getApplicationsCountByType, arg.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetApplicationsCountByTypeRow
+	for rows.Next() {
+		var i GetApplicationsCountByTypeRow
+		if err := rows.Scan(&i.ProductType, &i.Total); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getManagerApplicationByID = `-- name: GetManagerApplicationByID :one

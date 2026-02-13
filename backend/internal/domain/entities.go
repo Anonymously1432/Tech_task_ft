@@ -441,3 +441,17 @@ type CommentAuthor struct {
 	ID       int32  `json:"id"`
 	FullName string `json:"fullName"`
 }
+
+type ManagerStatisticsResponse struct {
+	Period     string           `json:"period"`
+	ByType     map[string]int32 `json:"byType"`
+	ByStatus   map[string]int32 `json:"byStatus"`
+	Conversion ConversionStats  `json:"conversion"`
+}
+
+type ConversionStats struct {
+	Total    int32   `json:"total"`
+	Approved int32   `json:"approved"`
+	Rejected int32   `json:"rejected"`
+	Rate     float64 `json:"rate"`
+}
