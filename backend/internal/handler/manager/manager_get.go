@@ -1,7 +1,6 @@
 package manager
 
 import (
-	"buggy_insurance/internal/handler/application"
 	"strconv"
 	"time"
 
