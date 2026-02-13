@@ -14,12 +14,12 @@ func (h *Handler) Get(c *fiber.Ctx) error {
 	userIDVal := c.Locals("user_id")
 	if userIDVal == nil {
 		h.logger.Error("User ID isn't in context.")
-		return handler.SendError(c, fiber.StatusUnauthorized, "UNAUTHORIZED", "User ID isn't in context", nil)
+		return utils.SendError(c, fiber.StatusUnauthorized, "UNAUTHORIZED", "User ID isn't in context", nil)
 	}
 	ID, err := strconv.Atoi(userIDVal.(string))
 	if err != nil {
 		h.logger.Error("Invalid user ID", zap.Error(err))
-		return handler.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "Invalid user ID", nil)
+		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "Invalid user ID", nil)
 	}
 
 	status := c.Query("status", "")
@@ -44,11 +44,11 @@ func (h *Handler) Get(c *fiber.Ctx) error {
 
 		switch {
 		case errors.Is(err, custom_errors.ErrNotFound):
-			return handler.SendError(c, fiber.StatusNotFound, "NOT_FOUND", err.Error(), nil)
+			return utils.SendError(c, fiber.StatusNotFound, "NOT_FOUND", err.Error(), nil)
 		case errors.Is(err, custom_errors.ErrValidation):
-			return handler.SendError(c, 422, "UNPROCESSABLE_ENTITY", err.Error(), nil)
+			return utils.SendError(c, 422, "UNPROCESSABLE_ENTITY", err.Error(), nil)
 		default:
-			return handler.SendError(c, fiber.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error(), nil)
+			return utils.SendError(c, fiber.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error(), nil)
 		}
 	}
 

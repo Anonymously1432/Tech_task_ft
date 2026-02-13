@@ -14,7 +14,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id < 1 {
-		return handler.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "Invalid application ID", map[string]string{"id": "Must be a positive integer"})
+		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "Invalid application ID", map[string]string{"id": "Must be a positive integer"})
 	}
 
 	appDetail, err := h.Uc.GetByID(c.Context(), int32(id))
@@ -23,11 +23,11 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 
 		switch {
 		case errors.Is(err, custom_errors.ErrNotFound):
-			return handler.SendError(c, fiber.StatusNotFound, "NOT_FOUND", "Application not found", nil)
+			return utils.SendError(c, fiber.StatusNotFound, "NOT_FOUND", "Application not found", nil)
 		case errors.Is(err, custom_errors.ErrValidation):
-			return handler.SendError(c, 422, "UNPROCESSABLE_ENTITY", err.Error(), nil)
+			return utils.SendError(c, 422, "UNPROCESSABLE_ENTITY", err.Error(), nil)
 		default:
-			return handler.SendError(c, fiber.StatusInternalServerError, "INTERNAL_SERVER_ERROR", "Internal server error", nil)
+			return utils.SendError(c, fiber.StatusInternalServerError, "INTERNAL_SERVER_ERROR", "Internal server error", nil)
 		}
 	}
 
