@@ -2,18 +2,23 @@ package client
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
 	user_repository "buggy_insurance/internal/repository/user"
 	"context"
-
-	"go.uber.org/zap"
+	"database/sql"
+	"errors"
+	"fmt"
 )
 
 func (u *UseCase) GetUser(ctx context.Context, ID int32) (*domain.GetUserResponse, error) {
 	user, err := u.repo.GetByID(ctx, &user_repository.GetByIDParams{ID: ID})
 	if err != nil {
-		u.logger.Error("GetUser error", zap.Error(err))
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, fmt.Errorf("user not found: %w", custom_errors.ErrNotFound)
+		}
+		return nil, fmt.Errorf("get user by id: %w", custom_errors.ErrInternal)
 	}
+
 	return &domain.GetUserResponse{
 		ID:        ID,
 		Email:     user.Email,
@@ -22,5 +27,5 @@ func (u *UseCase) GetUser(ctx context.Context, ID int32) (*domain.GetUserRespons
 		BirthDate: user.BirthDate.Time,
 		Address:   user.Address,
 		Role:      user.Role,
-	}, err
+	}, nil
 }
