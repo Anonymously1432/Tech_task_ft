@@ -1,7 +1,7 @@
 package application
 
 import (
-	custom_errors "buggy_insurance/internal/errors"
+	"buggy_insurance/internal/errors"
 	"buggy_insurance/internal/handler"
 	"errors"
 	"strconv"

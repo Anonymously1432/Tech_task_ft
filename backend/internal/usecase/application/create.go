@@ -2,7 +2,7 @@ package application
 
 import (
 	"buggy_insurance/internal/domain"
-	custom_errors "buggy_insurance/internal/errors"
+	"buggy_insurance/internal/errors"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
 	"fmt"
