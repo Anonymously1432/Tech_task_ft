@@ -2,8 +2,13 @@ package manager
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
+	"errors"
+	"fmt"
+
+	"github.com/jackc/pgx/v5"
 )
 
 func (u *UseCase) GetManagerApplicationByID(
@@ -13,17 +18,20 @@ func (u *UseCase) GetManagerApplicationByID(
 
 	app, err := u.repo.GetManagerApplicationByID(ctx, &application_repository.GetManagerApplicationByIDParams{ID: applicationID})
 	if err != nil {
-		return nil, err
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, custom_errors.ErrNotFound
+		}
+		return nil, fmt.Errorf("fetch application: %w", custom_errors.ErrInternal)
 	}
 
-	history, err := u.repo.GetApplicationStatusHistory(ctx, &application_repository.GetApplicationStatusHistoryParams{ApplicationID: &applicationID})
+	historyRows, err := u.repo.GetApplicationStatusHistory(ctx, &application_repository.GetApplicationStatusHistoryParams{ApplicationID: &applicationID})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fetch status history: %w", custom_errors.ErrInternal)
 	}
 
-	comments, err := u.repo.GetApplicationComments(ctx, &application_repository.GetApplicationCommentsParams{ApplicationID: &applicationID})
+	commentRows, err := u.repo.GetApplicationComments(ctx, &application_repository.GetApplicationCommentsParams{ApplicationID: &applicationID})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fetch comments: %w", custom_errors.ErrInternal)
 	}
 
 	res := &domain.ManagerApplicationDetail{
@@ -32,36 +40,55 @@ func (u *UseCase) GetManagerApplicationByID(
 			ID:       app.ClientID,
 			FullName: app.ClientFullName,
 			Email:    app.ClientEmail,
-			Phone:    *app.ClientPhone,
+			Phone:    "",
 		},
 		ProductType:     app.ProductType,
 		Status:          app.Status,
 		Data:            app.Data,
 		CalculatedPrice: int(app.CalculatedPrice.Int.Int64()),
 		CreatedAt:       app.CreatedAt.Time,
-		StatusHistory:   make([]domain.ApplicationStatusHistory, len(history)),
-		Comments:        make([]domain.ApplicationComment, len(comments)),
+		StatusHistory:   make([]domain.ApplicationStatusHistory, len(historyRows)),
+		Comments:        make([]domain.ApplicationComment, len(commentRows)),
 	}
 
-	for i, h := range history {
+	// безопасная работа с nullable полями
+	if app.ClientPhone != nil {
+		res.Client.Phone = *app.ClientPhone
+	}
+
+	for i, h := range historyRows {
 		res.StatusHistory[i] = domain.ApplicationStatusHistory{
-			OldStatus: *h.OldStatus,
+			OldStatus: safeString(h.OldStatus),
 			NewStatus: h.NewStatus,
-			ChangedBy: int64(*h.ChangedBy),
-			Comment:   *h.Comment,
+			ChangedBy: int64(safeInt32(h.ChangedBy)),
+			Comment:   safeString(h.Comment),
 			CreatedAt: h.CreatedAt.Time,
 		}
 	}
 
-	for i, c := range comments {
+	for i, c := range commentRows {
 		res.Comments[i] = domain.ApplicationComment{
 			ID:        c.ID,
-			AuthorID:  c.AuthorID,
-			Author:    c.AuthorFullName,
+			AuthorID:  safeInt32(&c.AuthorID),
+			Author:    safeString(&c.AuthorFullName),
 			Comment:   c.Comment,
 			CreatedAt: c.CreatedAt.Time,
 		}
 	}
 
 	return res, nil
+}
+
+func safeString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
+func safeInt32(i *int32) int32 {
+	if i == nil {
+		return 0
+	}
+	return *i
 }

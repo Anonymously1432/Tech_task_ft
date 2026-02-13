@@ -1,6 +1,9 @@
 package manager
 
 import (
+	custom_errors "buggy_insurance/internal/errors"
+	utils "buggy_insurance/internal/handler"
+	"errors"
 	"strconv"
 	"time"
 
@@ -24,33 +27,37 @@ func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 	var clientID *int32
 	if search != "" {
 		id, err := strconv.Atoi(search)
-		if err == nil {
-			tmp := int32(id)
-			clientID = &tmp
+		if err != nil {
+			return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid client id in search", map[string]string{"search": "must be a number"})
 		}
+		tmp := int32(id)
+		clientID = &tmp
 	}
 
 	var dateFromPtr, dateToPtr *time.Time
 	if v := c.Query("dateFrom"); v != "" {
-		if t, err := time.Parse(time.RFC3339, v); err == nil {
-			dateFromPtr = &t
+		t, err := time.Parse(time.RFC3339, v)
+		if err != nil {
+			return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid dateFrom format", map[string]string{"dateFrom": "must be RFC3339"})
 		}
+		dateFromPtr = &t
 	}
 	if v := c.Query("dateTo"); v != "" {
-		if t, err := time.Parse(time.RFC3339, v); err == nil {
-			dateToPtr = &t
+		t, err := time.Parse(time.RFC3339, v)
+		if err != nil {
+			return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid dateTo format", map[string]string{"dateTo": "must be RFC3339"})
 		}
+		dateToPtr = &t
 	}
 
-	page, _ := strconv.Atoi(c.Query("page", "1"))
-	limit, _ := strconv.Atoi(c.Query("limit", "10"))
-	if page < 1 {
+	page, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || page < 1 {
 		page = 1
 	}
-	if limit < 1 {
+	limit, err := strconv.Atoi(c.Query("limit", "10"))
+	if err != nil || limit < 1 {
 		limit = 10
 	}
-
 	offset := (page - 1) * limit
 
 	resp, err := h.Uc.GetManagerApplications(
@@ -66,7 +73,10 @@ func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 	)
 	if err != nil {
 		h.logger.Error("GetManagerApplications error", zap.Error(err))
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		if errors.Is(err, custom_errors.ErrInternal) {
+			return utils.SendError(c, fiber.StatusInternalServerError, "INTERNAL_SERVER_ERROR", "failed to fetch manager applications", nil)
+		}
+		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", err.Error(), nil)
 	}
 
 	return c.Status(fiber.StatusOK).JSON(resp)

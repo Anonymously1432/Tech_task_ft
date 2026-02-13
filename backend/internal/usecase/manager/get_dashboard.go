@@ -2,8 +2,10 @@ package manager
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
@@ -20,14 +22,14 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 		CreatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("count new applications today: %w", custom_errors.ErrInternal)
 	}
 
 	underReview, err := u.repo.CountApplicationsByStatus(ctx, &application_repository.CountApplicationsByStatusParams{
 		Status: "UNDER_REVIEW",
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("count under review applications: %w", custom_errors.ErrInternal)
 	}
 
 	approvedThisMonth, err := u.repo.CountApplicationsByStatusAndDateRange(ctx, &application_repository.CountApplicationsByStatusAndDateRangeParams{
@@ -36,7 +38,7 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 		CreatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("count approved applications: %w", custom_errors.ErrInternal)
 	}
 
 	rejectedThisMonth, err := u.repo.CountApplicationsByStatusAndDateRange(ctx, &application_repository.CountApplicationsByStatusAndDateRangeParams{
@@ -45,12 +47,12 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 		CreatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("count rejected applications: %w", custom_errors.ErrInternal)
 	}
 
 	chartRows, err := u.repo.GetApplicationsChartData(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get chart data: %w", custom_errors.ErrInternal)
 	}
 
 	chartData := make([]domain.ChartDataEntry, len(chartRows))
@@ -65,8 +67,9 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 
 	recentApps, err := u.repo.GetRecentApplications(ctx, &application_repository.GetRecentApplicationsParams{Limit: 5})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get recent applications: %w", custom_errors.ErrInternal)
 	}
+
 	recent := make([]domain.RecentApplicationEntry, len(recentApps))
 	for i, r := range recentApps {
 		recent[i] = domain.RecentApplicationEntry{

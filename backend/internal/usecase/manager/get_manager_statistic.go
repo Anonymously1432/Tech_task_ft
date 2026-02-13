@@ -2,16 +2,18 @@ package manager
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (u *UseCase) GetManagerStatistics(ctx context.Context, period string) (*domain.ManagerStatisticsResponse, error) {
-	var periodStart time.Time
 	now := time.Now()
+	var periodStart time.Time
 
 	switch period {
 	case "week":
@@ -23,20 +25,28 @@ func (u *UseCase) GetManagerStatistics(ctx context.Context, period string) (*dom
 	case "year":
 		periodStart = now.AddDate(-1, 0, 0)
 	default:
-		periodStart = now.AddDate(0, -1, 0)
+		return nil, fmt.Errorf("invalid period: %s: %w", period, custom_errors.ErrValidation)
 	}
 
-	byTypeRows, err := u.repo.GetApplicationsCountByType(ctx, &application_repository.GetApplicationsCountByTypeParams{CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true}})
+	byTypeRows, err := u.repo.GetApplicationsCountByType(ctx, &application_repository.GetApplicationsCountByTypeParams{
+		CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true},
+	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get applications by type: %w", custom_errors.ErrInternal)
 	}
-	byStatusRows, err := u.repo.GetApplicationsCountByStatus(ctx, &application_repository.GetApplicationsCountByStatusParams{CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true}})
+
+	byStatusRows, err := u.repo.GetApplicationsCountByStatus(ctx, &application_repository.GetApplicationsCountByStatusParams{
+		CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true},
+	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get applications by status: %w", custom_errors.ErrInternal)
 	}
-	conv, err := u.repo.GetApplicationsConversion(ctx, &application_repository.GetApplicationsConversionParams{CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true}})
+
+	conv, err := u.repo.GetApplicationsConversion(ctx, &application_repository.GetApplicationsConversionParams{
+		CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true},
+	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("get applications conversion: %w", custom_errors.ErrInternal)
 	}
 
 	byType := make(map[string]int32)

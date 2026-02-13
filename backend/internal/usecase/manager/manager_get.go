@@ -2,8 +2,10 @@ package manager
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
@@ -16,28 +18,51 @@ func (u *UseCase) GetManagerApplications(
 	dateFrom, dateTo *time.Time,
 	clientID *int32,
 ) (*domain.GetManagerApplicationsResponse, error) {
+
+	s := ""
+	pt := ""
+	cid := int32(0)
+	from := time.Time{}
+	to := time.Time{}
+
+	if status != nil {
+		s = *status
+	}
+	if productType != nil {
+		pt = *productType
+	}
+	if clientID != nil {
+		cid = *clientID
+	}
+	if dateFrom != nil {
+		from = *dateFrom
+	}
+	if dateTo != nil {
+		to = *dateTo
+	}
+
 	apps, err := u.repo.GetManagerApplications(ctx, &application_repository.GetManagerApplicationsParams{
-		Column1: *status,
-		Column2: *productType,
-		Column3: pgtype.Timestamp{Time: *dateFrom, Valid: true},
-		Column4: pgtype.Timestamp{Time: *dateTo, Valid: true},
-		Column5: *clientID,
+		Column1: s,
+		Column2: pt,
+		Column3: pgtype.Timestamp{Time: from, Valid: !from.IsZero()},
+		Column4: pgtype.Timestamp{Time: to, Valid: !to.IsZero()},
+		Column5: cid,
 		Limit:   limit,
 		Offset:  offset,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fetch applications: %w", custom_errors.ErrInternal)
 	}
 
 	total, err := u.repo.GetManagerApplicationsCount(ctx, &application_repository.GetManagerApplicationsCountParams{
-		Column1: *status,
-		Column2: *productType,
-		Column3: pgtype.Timestamp{Time: *dateFrom, Valid: true},
-		Column4: pgtype.Timestamp{Time: *dateTo, Valid: true},
-		Column5: *clientID,
+		Column1: s,
+		Column2: pt,
+		Column3: pgtype.Timestamp{Time: from, Valid: !from.IsZero()},
+		Column4: pgtype.Timestamp{Time: to, Valid: !to.IsZero()},
+		Column5: cid,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("fetch applications count: %w", custom_errors.ErrInternal)
 	}
 
 	res := &domain.GetManagerApplicationsResponse{

@@ -2,10 +2,11 @@ package manager
 
 import (
 	"buggy_insurance/internal/domain"
+	"fmt"
+	"strings"
 
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
-	"errors"
 )
 
 func (u *UseCase) UpdateApplicationStatus(
@@ -17,7 +18,7 @@ func (u *UseCase) UpdateApplicationStatus(
 ) (*domain.UpdateApplicationStatusResponse, error) {
 
 	if status == "REJECTED" && rejectionReason == nil {
-		return nil, errors.New("rejectionReason is required for REJECTED status")
+		return nil, fmt.Errorf("rejectionReason is required for REJECTED status")
 	}
 
 	app, err := u.repo.UpdateApplicationStatus(ctx, &application_repository.UpdateApplicationStatusParams{
@@ -26,16 +27,15 @@ func (u *UseCase) UpdateApplicationStatus(
 		RejectionReason: rejectionReason,
 	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to update application status: %w", err)
 	}
 
-	if comment != "" {
-		err = u.repo.CreateApplicationComment(ctx, &application_repository.CreateApplicationCommentParams{
+	if strings.TrimSpace(comment) != "" {
+		if err := u.repo.CreateApplicationComment(ctx, &application_repository.CreateApplicationCommentParams{
 			ApplicationID: &applicationID,
 			Comment:       comment,
-		})
-		if err != nil {
-			return nil, err
+		}); err != nil {
+			return nil, fmt.Errorf("failed to create comment: %w", err)
 		}
 	}
 
