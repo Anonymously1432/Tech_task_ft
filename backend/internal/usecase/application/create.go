@@ -2,9 +2,12 @@ package application
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
+	"fmt"
 	"math/rand"
+	"strings"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -14,7 +17,7 @@ func (u *UseCase) Create(ctx context.Context, data []byte, userID, productID, ma
 
 	var calculatedPrice pgtype.Numeric
 	if err := calculatedPrice.Scan(price); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to calculate price: %w", custom_errors.ErrInternal)
 	}
 
 	application, err := u.repo.CreateApplication(ctx, &application_repository.CreateApplicationParams{
@@ -25,8 +28,12 @@ func (u *UseCase) Create(ctx context.Context, data []byte, userID, productID, ma
 		ManagerID:       &managerID,
 	})
 	if err != nil {
-		return nil, err
+		if strings.Contains(err.Error(), "duplicate key") {
+			return nil, fmt.Errorf("application already exists: %w", custom_errors.ErrConflict)
+		}
+		return nil, fmt.Errorf("failed to create application: %w", custom_errors.ErrInternal)
 	}
+
 	return &domain.Application{
 		ID:              application.ID,
 		Status:          application.Status,

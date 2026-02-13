@@ -1,6 +1,9 @@
 package application
 
 import (
+	custom_errors "buggy_insurance/internal/errors"
+	"buggy_insurance/internal/handler"
+	"errors"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -8,14 +11,18 @@ import (
 )
 
 func (h *Handler) Get(c *fiber.Ctx) error {
-	userID := c.Locals("user_id")
-	if userID == nil {
+	userIDVal := c.Locals("user_id")
+	if userIDVal == nil {
 		h.logger.Error("User ID isn't in context.")
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "User ID isn't in context."})
+		return handler.SendError(c, fiber.StatusUnauthorized, "UNAUTHORIZED", "User ID isn't in context", nil)
 	}
-	ID, _ := strconv.Atoi(userID.(string))
+	ID, err := strconv.Atoi(userIDVal.(string))
+	if err != nil {
+		h.logger.Error("Invalid user ID", zap.Error(err))
+		return handler.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "Invalid user ID", nil)
+	}
 
-	status := c.Query("status")
+	status := c.Query("status", "")
 	pageStr := c.Query("page", "1")
 	limitStr := c.Query("limit", "10")
 
@@ -33,8 +40,16 @@ func (h *Handler) Get(c *fiber.Ctx) error {
 
 	applications, err := h.Uc.Get(c.Context(), int32(ID), int32(page), int32(limit), int32(offset), status)
 	if err != nil {
-		h.logger.Info("GetApplications error", zap.Error(err))
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		h.logger.Error("GetApplications error", zap.Error(err))
+
+		switch {
+		case errors.Is(err, custom_errors.ErrNotFound):
+			return handler.SendError(c, fiber.StatusNotFound, "NOT_FOUND", err.Error(), nil)
+		case errors.Is(err, custom_errors.ErrValidation):
+			return handler.SendError(c, 422, "UNPROCESSABLE_ENTITY", err.Error(), nil)
+		default:
+			return handler.SendError(c, fiber.StatusInternalServerError, "INTERNAL_SERVER_ERROR", err.Error(), nil)
+		}
 	}
 
 	h.logger.Info("GetApplications success", zap.Any("applications", applications))
