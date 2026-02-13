@@ -69,5 +69,5 @@ func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	return c.JSON(resp)
+	return c.Status(fiber.StatusOK).JSON(resp)
 }

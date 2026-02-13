@@ -20,6 +20,10 @@ type IUseCase interface {
 		dateFrom, dateTo *time.Time,
 		clientID *int32,
 	) (*domain.GetManagerApplicationsResponse, error)
+	GetManagerApplicationByID(
+		ctx context.Context,
+		applicationID int32,
+	) (*domain.ManagerApplicationDetail, error)
 }
 
 type UseCase struct {

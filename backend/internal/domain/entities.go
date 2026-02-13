@@ -375,3 +375,53 @@ type ClientShort struct {
 	FullName string `json:"fullName"`
 	Email    string `json:"email"`
 }
+
+type ManagerApplicationDetail struct {
+	ID int32 `json:"id"`
+
+	Client ClientFull `json:"client"`
+
+	ProductType     string          `json:"productType"`
+	Status          string          `json:"status"`
+	Data            json.RawMessage `json:"data"`
+	CalculatedPrice int             `json:"calculatedPrice"`
+	CreatedAt       time.Time       `json:"createdAt"`
+
+	StatusHistory []ApplicationStatusHistory `json:"statusHistory"`
+	Comments      []ApplicationComment       `json:"comments"`
+}
+
+type ClientFull struct {
+	ID       int32  `json:"id"`
+	FullName string `json:"fullName"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
+}
+
+type ApplicationStatusHistory struct {
+	OldStatus string    `json:"oldStatus,omitempty"`
+	NewStatus string    `json:"newStatus"`
+	ChangedBy int64     `json:"changedBy,omitempty"`
+	Comment   string    `json:"comment,omitempty"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type ApplicationComment struct {
+	ID        int32     `json:"id"`
+	AuthorID  int32     `json:"authorId"`
+	Author    string    `json:"author"`
+	Comment   string    `json:"comment"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type UpdateApplicationStatusRequest struct {
+	Status          string  `json:"status" validate:"required"`
+	Comment         string  `json:"comment"`
+	RejectionReason *string `json:"rejectionReason"`
+}
+
+type UpdateApplicationStatusResponse struct {
+	ID        int64     `json:"id"`
+	Status    string    `json:"status"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}

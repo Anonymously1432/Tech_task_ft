@@ -21,4 +21,6 @@ func RegisterRoutes(applications fiber.Router, h *Handler) {
 	applications.Use(middlewares.JWTMiddleware)
 	applications.Post("/", h.Create)
 	applications.Get("/", h.Get)
+	applications.Get("/manager/applications", h.GetManagerApplications)
+	applications.Get("/manager/applications/:id", h.GetManagerApplicationByID)
 }

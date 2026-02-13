@@ -50,6 +50,30 @@ func (q *Queries) CreateApplication(ctx context.Context, arg *CreateApplicationP
 	return &i, err
 }
 
+const createApplicationComment = `-- name: CreateApplicationComment :exec
+INSERT INTO application_comments (
+    application_id,
+    author_role,
+    comment,
+    created_at
+) VALUES (
+    $1,
+    'MANAGER',
+    $2,
+    NOW()
+)
+`
+
+type CreateApplicationCommentParams struct {
+	ApplicationID *int32 `db:"application_id" json:"application_id"`
+	Comment       string `db:"comment" json:"comment"`
+}
+
+func (q *Queries) CreateApplicationComment(ctx context.Context, arg *CreateApplicationCommentParams) error {
+	_, err := q.db.Exec(ctx, createApplicationComment, arg.ApplicationID, arg.Comment)
+	return err
+}
+
 const getApplicationByID = `-- name: GetApplicationByID :one
 SELECT
     a.id,
@@ -88,6 +112,57 @@ func (q *Queries) GetApplicationByID(ctx context.Context, arg *GetApplicationByI
 		&i.ProductType,
 	)
 	return &i, err
+}
+
+const getApplicationComments = `-- name: GetApplicationComments :many
+SELECT
+    ac.id,
+    ac.comment,
+    ac.created_at,
+    u.id        AS author_id,
+    u.full_name AS author_full_name
+FROM application_comments ac
+         JOIN users u ON ac.user_id = u.id
+WHERE ac.application_id = $1
+ORDER BY ac.created_at ASC
+`
+
+type GetApplicationCommentsParams struct {
+	ApplicationID *int32 `db:"application_id" json:"application_id"`
+}
+
+type GetApplicationCommentsRow struct {
+	ID             int32            `db:"id" json:"id"`
+	Comment        string           `db:"comment" json:"comment"`
+	CreatedAt      pgtype.Timestamp `db:"created_at" json:"created_at"`
+	AuthorID       int32            `db:"author_id" json:"author_id"`
+	AuthorFullName string           `db:"author_full_name" json:"author_full_name"`
+}
+
+func (q *Queries) GetApplicationComments(ctx context.Context, arg *GetApplicationCommentsParams) ([]*GetApplicationCommentsRow, error) {
+	rows, err := q.db.Query(ctx, getApplicationComments, arg.ApplicationID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetApplicationCommentsRow
+	for rows.Next() {
+		var i GetApplicationCommentsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Comment,
+			&i.CreatedAt,
+			&i.AuthorID,
+			&i.AuthorFullName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getApplicationStatusHistory = `-- name: GetApplicationStatusHistory :many
@@ -220,6 +295,59 @@ func (q *Queries) GetApplicationsCount(ctx context.Context, arg *GetApplications
 	return total, err
 }
 
+const getManagerApplicationByID = `-- name: GetManagerApplicationByID :one
+SELECT
+    a.id,
+    a.status,
+    a.data,
+    a.calculated_price,
+    a.created_at,
+    p.type AS product_type,
+    u.id        AS client_id,
+    u.full_name AS client_full_name,
+    u.email     AS client_email,
+    u.phone     AS client_phone
+FROM applications a
+         JOIN users u ON a.user_id = u.id
+         JOIN products p ON a.product_id = p.id
+WHERE a.id = $1
+`
+
+type GetManagerApplicationByIDParams struct {
+	ID int32 `db:"id" json:"id"`
+}
+
+type GetManagerApplicationByIDRow struct {
+	ID              int32            `db:"id" json:"id"`
+	Status          string           `db:"status" json:"status"`
+	Data            []byte           `db:"data" json:"data"`
+	CalculatedPrice pgtype.Numeric   `db:"calculated_price" json:"calculated_price"`
+	CreatedAt       pgtype.Timestamp `db:"created_at" json:"created_at"`
+	ProductType     string           `db:"product_type" json:"product_type"`
+	ClientID        int32            `db:"client_id" json:"client_id"`
+	ClientFullName  string           `db:"client_full_name" json:"client_full_name"`
+	ClientEmail     string           `db:"client_email" json:"client_email"`
+	ClientPhone     *string          `db:"client_phone" json:"client_phone"`
+}
+
+func (q *Queries) GetManagerApplicationByID(ctx context.Context, arg *GetManagerApplicationByIDParams) (*GetManagerApplicationByIDRow, error) {
+	row := q.db.QueryRow(ctx, getManagerApplicationByID, arg.ID)
+	var i GetManagerApplicationByIDRow
+	err := row.Scan(
+		&i.ID,
+		&i.Status,
+		&i.Data,
+		&i.CalculatedPrice,
+		&i.CreatedAt,
+		&i.ProductType,
+		&i.ClientID,
+		&i.ClientFullName,
+		&i.ClientEmail,
+		&i.ClientPhone,
+	)
+	return &i, err
+}
+
 const getManagerApplications = `-- name: GetManagerApplications :many
 SELECT
     a.id,
@@ -333,4 +461,33 @@ func (q *Queries) GetManagerApplicationsCount(ctx context.Context, arg *GetManag
 	var total int64
 	err := row.Scan(&total)
 	return total, err
+}
+
+const updateApplicationStatus = `-- name: UpdateApplicationStatus :one
+UPDATE applications
+SET
+    status = $2,
+    updated_at = NOW(),
+    rejection_reason = $3
+WHERE id = $1
+    RETURNING id, status, updated_at
+`
+
+type UpdateApplicationStatusParams struct {
+	ID              int32   `db:"id" json:"id"`
+	Status          string  `db:"status" json:"status"`
+	RejectionReason *string `db:"rejection_reason" json:"rejection_reason"`
+}
+
+type UpdateApplicationStatusRow struct {
+	ID        int32            `db:"id" json:"id"`
+	Status    string           `db:"status" json:"status"`
+	UpdatedAt pgtype.Timestamp `db:"updated_at" json:"updated_at"`
+}
+
+func (q *Queries) UpdateApplicationStatus(ctx context.Context, arg *UpdateApplicationStatusParams) (*UpdateApplicationStatusRow, error) {
+	row := q.db.QueryRow(ctx, updateApplicationStatus, arg.ID, arg.Status, arg.RejectionReason)
+	var i UpdateApplicationStatusRow
+	err := row.Scan(&i.ID, &i.Status, &i.UpdatedAt)
+	return &i, err
 }
