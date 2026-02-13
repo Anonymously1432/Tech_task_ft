@@ -31,7 +31,7 @@ func (u *UseCase) UpdateApplicationStatus(
 	}
 
 	if strings.TrimSpace(comment) != "" {
-		if err := u.repo.CreateApplicationComment(ctx, &application_repository.CreateApplicationCommentParams{
+		if err = u.repo.CreateApplicationComment(ctx, &application_repository.CreateApplicationCommentParams{
 			ApplicationID: &applicationID,
 			Comment:       comment,
 		}); err != nil {
