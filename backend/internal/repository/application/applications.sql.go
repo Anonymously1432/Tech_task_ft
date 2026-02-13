@@ -11,6 +11,61 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countApplicationsByStatus = `-- name: CountApplicationsByStatus :one
+SELECT COUNT(*) AS total
+FROM applications
+WHERE status = $1
+`
+
+type CountApplicationsByStatusParams struct {
+	Status string `db:"status" json:"status"`
+}
+
+func (q *Queries) CountApplicationsByStatus(ctx context.Context, arg *CountApplicationsByStatusParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countApplicationsByStatus, arg.Status)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
+const countApplicationsByStatusAndDate = `-- name: CountApplicationsByStatusAndDate :one
+SELECT COUNT(*) AS total
+FROM applications
+WHERE status = $1 AND created_at >= $2 AND created_at <= $3
+`
+
+type CountApplicationsByStatusAndDateParams struct {
+	Status      string           `db:"status" json:"status"`
+	CreatedAt   pgtype.Timestamp `db:"created_at" json:"created_at"`
+	CreatedAt_2 pgtype.Timestamp `db:"created_at_2" json:"created_at_2"`
+}
+
+func (q *Queries) CountApplicationsByStatusAndDate(ctx context.Context, arg *CountApplicationsByStatusAndDateParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countApplicationsByStatusAndDate, arg.Status, arg.CreatedAt, arg.CreatedAt_2)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
+const countApplicationsByStatusAndDateRange = `-- name: CountApplicationsByStatusAndDateRange :one
+SELECT COUNT(*) AS total
+FROM applications
+WHERE status = $1 AND created_at BETWEEN $2 AND $3
+`
+
+type CountApplicationsByStatusAndDateRangeParams struct {
+	Status      string           `db:"status" json:"status"`
+	CreatedAt   pgtype.Timestamp `db:"created_at" json:"created_at"`
+	CreatedAt_2 pgtype.Timestamp `db:"created_at_2" json:"created_at_2"`
+}
+
+func (q *Queries) CountApplicationsByStatusAndDateRange(ctx context.Context, arg *CountApplicationsByStatusAndDateRangeParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countApplicationsByStatusAndDateRange, arg.Status, arg.CreatedAt, arg.CreatedAt_2)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const createApplication = `-- name: CreateApplication :one
 INSERT INTO applications(user_id, product_id, data, calculated_price, manager_id)
 VALUES ($1, $2, $3, $4, $5)
@@ -310,6 +365,49 @@ func (q *Queries) GetApplications(ctx context.Context, arg *GetApplicationsParam
 	return items, nil
 }
 
+const getApplicationsChartData = `-- name: GetApplicationsChartData :many
+SELECT DATE(created_at) AS date,
+    COUNT(*) FILTER (WHERE status = 'NEW') AS new,
+    COUNT(*) FILTER (WHERE status = 'APPROVED') AS approved,
+    COUNT(*) FILTER (WHERE status = 'REJECTED') AS rejected
+FROM applications
+WHERE created_at >= NOW() - INTERVAL '7 days'
+GROUP BY DATE(created_at)
+ORDER BY date ASC
+`
+
+type GetApplicationsChartDataRow struct {
+	Date     pgtype.Date `db:"date" json:"date"`
+	New      int64       `db:"new" json:"new"`
+	Approved int64       `db:"approved" json:"approved"`
+	Rejected int64       `db:"rejected" json:"rejected"`
+}
+
+func (q *Queries) GetApplicationsChartData(ctx context.Context) ([]*GetApplicationsChartDataRow, error) {
+	rows, err := q.db.Query(ctx, getApplicationsChartData)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetApplicationsChartDataRow
+	for rows.Next() {
+		var i GetApplicationsChartDataRow
+		if err := rows.Scan(
+			&i.Date,
+			&i.New,
+			&i.Approved,
+			&i.Rejected,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getApplicationsConversion = `-- name: GetApplicationsConversion :one
 SELECT
     COUNT(*) AS total,
@@ -594,6 +692,58 @@ func (q *Queries) GetManagerApplicationsCount(ctx context.Context, arg *GetManag
 	var total int64
 	err := row.Scan(&total)
 	return total, err
+}
+
+const getRecentApplications = `-- name: GetRecentApplications :many
+SELECT a.id, a.user_id AS client_id, u.full_name AS client_full_name, p.type AS product_type,
+       a.status, a.calculated_price, a.created_at
+FROM applications a
+         JOIN users u ON a.user_id = u.id
+         JOIN products p ON a.product_id = p.id
+ORDER BY a.created_at DESC
+    LIMIT $1
+`
+
+type GetRecentApplicationsParams struct {
+	Limit int32 `db:"limit" json:"limit"`
+}
+
+type GetRecentApplicationsRow struct {
+	ID              int32            `db:"id" json:"id"`
+	ClientID        *int32           `db:"client_id" json:"client_id"`
+	ClientFullName  string           `db:"client_full_name" json:"client_full_name"`
+	ProductType     string           `db:"product_type" json:"product_type"`
+	Status          string           `db:"status" json:"status"`
+	CalculatedPrice pgtype.Numeric   `db:"calculated_price" json:"calculated_price"`
+	CreatedAt       pgtype.Timestamp `db:"created_at" json:"created_at"`
+}
+
+func (q *Queries) GetRecentApplications(ctx context.Context, arg *GetRecentApplicationsParams) ([]*GetRecentApplicationsRow, error) {
+	rows, err := q.db.Query(ctx, getRecentApplications, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetRecentApplicationsRow
+	for rows.Next() {
+		var i GetRecentApplicationsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.ClientID,
+			&i.ClientFullName,
+			&i.ProductType,
+			&i.Status,
+			&i.CalculatedPrice,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getUserByID = `-- name: GetUserByID :one

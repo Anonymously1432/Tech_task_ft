@@ -170,3 +170,37 @@ SELECT
     COUNT(*) FILTER (WHERE status = 'REJECTED') AS rejected
 FROM applications
 WHERE created_at >= $1;
+
+-- name: CountApplicationsByStatusAndDate :one
+SELECT COUNT(*) AS total
+FROM applications
+WHERE status = $1 AND created_at >= $2 AND created_at <= $3;
+
+-- name: CountApplicationsByStatus :one
+SELECT COUNT(*) AS total
+FROM applications
+WHERE status = $1;
+
+-- name: CountApplicationsByStatusAndDateRange :one
+SELECT COUNT(*) AS total
+FROM applications
+WHERE status = $1 AND created_at BETWEEN $2 AND $3;
+
+-- name: GetApplicationsChartData :many
+SELECT DATE(created_at) AS date,
+    COUNT(*) FILTER (WHERE status = 'NEW') AS new,
+    COUNT(*) FILTER (WHERE status = 'APPROVED') AS approved,
+    COUNT(*) FILTER (WHERE status = 'REJECTED') AS rejected
+FROM applications
+WHERE created_at >= NOW() - INTERVAL '7 days'
+GROUP BY DATE(created_at)
+ORDER BY date ASC;
+
+-- name: GetRecentApplications :many
+SELECT a.id, a.user_id AS client_id, u.full_name AS client_full_name, p.type AS product_type,
+       a.status, a.calculated_price, a.created_at
+FROM applications a
+         JOIN users u ON a.user_id = u.id
+         JOIN products p ON a.product_id = p.id
+ORDER BY a.created_at DESC
+    LIMIT $1;

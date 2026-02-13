@@ -11,6 +11,7 @@ import (
 type IUseCase interface {
 	GetUser(ctx context.Context, ID int32) (*domain.GetUserResponse, error)
 	UpdateUser(ctx context.Context, ID int32, fullName, email, address string) (*domain.GetUserResponse, error)
+	GetDashboard(ctx context.Context, userID int32) (*domain.DashboardResponse, error)
 }
 
 type UseCase struct {

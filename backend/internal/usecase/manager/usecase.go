@@ -34,6 +34,7 @@ type IUseCase interface {
 		comment string,
 	) (*domain.CreateApplicationCommentResponse, error)
 	GetManagerStatistics(ctx context.Context, period string) (*domain.ManagerStatisticsResponse, error)
+	GetManagerDashboard(ctx context.Context) (*domain.ManagerDashboardResponse, error)
 }
 
 type UseCase struct {

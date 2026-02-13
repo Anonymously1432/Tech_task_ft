@@ -9,11 +9,15 @@ import (
 )
 
 type Querier interface {
+	CountUserApplications(ctx context.Context, arg *CountUserApplicationsParams) (int64, error)
+	CountUserPolicies(ctx context.Context, arg *CountUserPoliciesParams) (int64, error)
 	CreateToken(ctx context.Context, arg *CreateTokenParams) error
 	CreateUser(ctx context.Context, arg *CreateUserParams) (*CreateUserRow, error)
 	DeleteToken(ctx context.Context, arg *DeleteTokenParams) error
 	GetByEmail(ctx context.Context, arg *GetByEmailParams) (*GetByEmailRow, error)
 	GetByID(ctx context.Context, arg *GetByIDParams) (*GetByIDRow, error)
+	GetRecentUserActivity(ctx context.Context, arg *GetRecentUserActivityParams) ([]*GetRecentUserActivityRow, error)
+	SumUserPoliciesCoverage(ctx context.Context, arg *SumUserPoliciesCoverageParams) (interface{}, error)
 	UpdateUser(ctx context.Context, arg *UpdateUserParams) (*UpdateUserRow, error)
 }
 

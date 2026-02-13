@@ -467,9 +467,9 @@ type DashboardUser struct {
 }
 
 type DashboardStats struct {
-	ActivePolicies      int32   `json:"activePolicies"`
+	ActivePolicies      int64   `json:"activePolicies"`
 	TotalCoverage       float64 `json:"totalCoverage"`
-	PendingApplications int32   `json:"pendingApplications"`
+	PendingApplications int64   `json:"pendingApplications"`
 }
 
 type ActivityEntry struct {
@@ -478,5 +478,35 @@ type ActivityEntry struct {
 	Status          string    `json:"status"`
 	CreatedAt       time.Time `json:"createdAt"`
 	ProductType     string    `json:"productType"`
-	CalculatedPrice float64   `json:"calculatedPrice,omitempty"`
+	CalculatedPrice int64     `json:"calculatedPrice,omitempty"`
+}
+
+type ManagerDashboardResponse struct {
+	Stats              ManagerDashboardStats    `json:"stats"`
+	ChartData          []ChartDataEntry         `json:"chartData"`
+	RecentApplications []RecentApplicationEntry `json:"recentApplications"`
+}
+
+type ManagerDashboardStats struct {
+	NewToday          int64 `json:"newToday"`
+	UnderReview       int64 `json:"underReview"`
+	ApprovedThisMonth int64 `json:"approvedThisMonth"`
+	RejectedThisMonth int64 `json:"rejectedThisMonth"`
+}
+
+type ChartDataEntry struct {
+	Date     time.Time `json:"date"`
+	New      int64     `json:"new"`
+	Approved int64     `json:"approved"`
+	Rejected int64     `json:"rejected"`
+}
+
+type RecentApplicationEntry struct {
+	ID              int32     `json:"id"`
+	ClientID        int32     `json:"clientId"`
+	ClientFullName  string    `json:"clientFullName"`
+	ProductType     string    `json:"productType"`
+	Status          string    `json:"status"`
+	CalculatedPrice int64     `json:"calculatedPrice"`
+	CreatedAt       time.Time `json:"createdAt"`
 }

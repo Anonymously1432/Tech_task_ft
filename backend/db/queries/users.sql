@@ -27,3 +27,31 @@ UPDATE users
 SET (full_name, email, address) = ($2, $3, $4)
 WHERE id = $1
 RETURNING email, full_name, phone, birth_date, address, role;
+
+-- name: CountUserPolicies :one
+SELECT COUNT(*) AS total
+FROM policies
+WHERE user_id = $1 AND status = $2;
+
+-- name: SumUserPoliciesCoverage :one
+SELECT COALESCE(SUM(coverage_amount),0) AS total
+FROM policies
+WHERE user_id = $1 AND status = $2;
+
+-- name: CountUserApplications :one
+SELECT COUNT(*) AS total
+FROM applications
+WHERE user_id = $1 AND status = $2;
+
+-- name: GetRecentUserActivity :many
+SELECT a.id, 'application' AS type, a.status, a.created_at, p.type AS product_type, a.calculated_price
+FROM applications a
+         JOIN products p ON a.product_id = p.id
+WHERE a.user_id = $1
+UNION ALL
+SELECT p.id, 'policy' AS type, p.status, p.created_at, pr.type AS product_type, NULL AS calculated_price
+FROM policies p
+         JOIN products pr ON p.product_id = pr.id
+WHERE p.user_id = $1
+ORDER BY created_at DESC
+    LIMIT $2;

@@ -11,6 +11,42 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countUserApplications = `-- name: CountUserApplications :one
+SELECT COUNT(*) AS total
+FROM applications
+WHERE user_id = $1 AND status = $2
+`
+
+type CountUserApplicationsParams struct {
+	UserID *int32 `db:"user_id" json:"user_id"`
+	Status string `db:"status" json:"status"`
+}
+
+func (q *Queries) CountUserApplications(ctx context.Context, arg *CountUserApplicationsParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countUserApplications, arg.UserID, arg.Status)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
+const countUserPolicies = `-- name: CountUserPolicies :one
+SELECT COUNT(*) AS total
+FROM policies
+WHERE user_id = $1 AND status = $2
+`
+
+type CountUserPoliciesParams struct {
+	UserID *int32 `db:"user_id" json:"user_id"`
+	Status string `db:"status" json:"status"`
+}
+
+func (q *Queries) CountUserPolicies(ctx context.Context, arg *CountUserPoliciesParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countUserPolicies, arg.UserID, arg.Status)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const createToken = `-- name: CreateToken :exec
 INSERT INTO refresh_tokens (user_id, token, expires_at)
 VALUES ($1, $2, $3)
@@ -135,6 +171,79 @@ func (q *Queries) GetByID(ctx context.Context, arg *GetByIDParams) (*GetByIDRow,
 		&i.Role,
 	)
 	return &i, err
+}
+
+const getRecentUserActivity = `-- name: GetRecentUserActivity :many
+SELECT a.id, 'application' AS type, a.status, a.created_at, p.type AS product_type, a.calculated_price
+FROM applications a
+         JOIN products p ON a.product_id = p.id
+WHERE a.user_id = $1
+UNION ALL
+SELECT p.id, 'policy' AS type, p.status, p.created_at, pr.type AS product_type, NULL AS calculated_price
+FROM policies p
+         JOIN products pr ON p.product_id = pr.id
+WHERE p.user_id = $1
+ORDER BY created_at DESC
+    LIMIT $2
+`
+
+type GetRecentUserActivityParams struct {
+	UserID *int32 `db:"user_id" json:"user_id"`
+	Limit  int32  `db:"limit" json:"limit"`
+}
+
+type GetRecentUserActivityRow struct {
+	ID              int32            `db:"id" json:"id"`
+	Type            string           `db:"type" json:"type"`
+	Status          string           `db:"status" json:"status"`
+	CreatedAt       pgtype.Timestamp `db:"created_at" json:"created_at"`
+	ProductType     string           `db:"product_type" json:"product_type"`
+	CalculatedPrice pgtype.Numeric   `db:"calculated_price" json:"calculated_price"`
+}
+
+func (q *Queries) GetRecentUserActivity(ctx context.Context, arg *GetRecentUserActivityParams) ([]*GetRecentUserActivityRow, error) {
+	rows, err := q.db.Query(ctx, getRecentUserActivity, arg.UserID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetRecentUserActivityRow
+	for rows.Next() {
+		var i GetRecentUserActivityRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.Status,
+			&i.CreatedAt,
+			&i.ProductType,
+			&i.CalculatedPrice,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const sumUserPoliciesCoverage = `-- name: SumUserPoliciesCoverage :one
+SELECT COALESCE(SUM(coverage_amount),0) AS total
+FROM policies
+WHERE user_id = $1 AND status = $2
+`
+
+type SumUserPoliciesCoverageParams struct {
+	UserID *int32 `db:"user_id" json:"user_id"`
+	Status string `db:"status" json:"status"`
+}
+
+func (q *Queries) SumUserPoliciesCoverage(ctx context.Context, arg *SumUserPoliciesCoverageParams) (interface{}, error) {
+	row := q.db.QueryRow(ctx, sumUserPoliciesCoverage, arg.UserID, arg.Status)
+	var total interface{}
+	err := row.Scan(&total)
+	return total, err
 }
 
 const updateUser = `-- name: UpdateUser :one

@@ -9,6 +9,9 @@ import (
 )
 
 type Querier interface {
+	CountApplicationsByStatus(ctx context.Context, arg *CountApplicationsByStatusParams) (int64, error)
+	CountApplicationsByStatusAndDate(ctx context.Context, arg *CountApplicationsByStatusAndDateParams) (int64, error)
+	CountApplicationsByStatusAndDateRange(ctx context.Context, arg *CountApplicationsByStatusAndDateRangeParams) (int64, error)
 	CreateApplication(ctx context.Context, arg *CreateApplicationParams) (*CreateApplicationRow, error)
 	CreateApplicationComment(ctx context.Context, arg *CreateApplicationCommentParams) error
 	CreateApplicationCommentt(ctx context.Context, arg *CreateApplicationCommenttParams) (*CreateApplicationCommenttRow, error)
@@ -16,6 +19,7 @@ type Querier interface {
 	GetApplicationComments(ctx context.Context, arg *GetApplicationCommentsParams) ([]*GetApplicationCommentsRow, error)
 	GetApplicationStatusHistory(ctx context.Context, arg *GetApplicationStatusHistoryParams) ([]*GetApplicationStatusHistoryRow, error)
 	GetApplications(ctx context.Context, arg *GetApplicationsParams) ([]*GetApplicationsRow, error)
+	GetApplicationsChartData(ctx context.Context) ([]*GetApplicationsChartDataRow, error)
 	GetApplicationsConversion(ctx context.Context, arg *GetApplicationsConversionParams) (*GetApplicationsConversionRow, error)
 	GetApplicationsCount(ctx context.Context, arg *GetApplicationsCountParams) (int64, error)
 	GetApplicationsCountByStatus(ctx context.Context, arg *GetApplicationsCountByStatusParams) ([]*GetApplicationsCountByStatusRow, error)
@@ -23,6 +27,7 @@ type Querier interface {
 	GetManagerApplicationByID(ctx context.Context, arg *GetManagerApplicationByIDParams) (*GetManagerApplicationByIDRow, error)
 	GetManagerApplications(ctx context.Context, arg *GetManagerApplicationsParams) ([]*GetManagerApplicationsRow, error)
 	GetManagerApplicationsCount(ctx context.Context, arg *GetManagerApplicationsCountParams) (int64, error)
+	GetRecentApplications(ctx context.Context, arg *GetRecentApplicationsParams) ([]*GetRecentApplicationsRow, error)
 	GetUserByID(ctx context.Context, arg *GetUserByIDParams) (*GetUserByIDRow, error)
 	UpdateApplicationStatus(ctx context.Context, arg *UpdateApplicationStatusParams) (*UpdateApplicationStatusRow, error)
 }
