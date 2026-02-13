@@ -24,6 +24,13 @@ type IUseCase interface {
 		ctx context.Context,
 		applicationID int32,
 	) (*domain.ManagerApplicationDetail, error)
+	UpdateApplicationStatus(
+		ctx context.Context,
+		applicationID int32,
+		status string,
+		comment string,
+		rejectionReason *string,
+	) (*domain.UpdateApplicationStatusResponse, error)
 }
 
 type UseCase struct {
