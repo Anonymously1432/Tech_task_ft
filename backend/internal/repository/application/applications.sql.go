@@ -219,3 +219,118 @@ func (q *Queries) GetApplicationsCount(ctx context.Context, arg *GetApplications
 	err := row.Scan(&total)
 	return total, err
 }
+
+const getManagerApplications = `-- name: GetManagerApplications :many
+SELECT
+    a.id,
+    a.status,
+    a.calculated_price,
+    a.created_at,
+    u.id        AS client_id,
+    u.full_name AS client_full_name,
+    u.email     AS client_email,
+    p.type      AS product_type
+FROM applications a
+    JOIN users u ON a.user_id = u.id
+    JOIN products p ON a.product_id = p.id
+WHERE
+    ($1::text IS NULL OR a.status = $1)
+  AND ($2::text IS NULL OR p.type = $2)
+  AND ($3::timestamp IS NULL OR a.created_at >= $3)
+  AND ($4::timestamp IS NULL OR a.created_at <= $4)
+  AND ($5::int IS NULL OR u.id = $5)
+ORDER BY a.created_at DESC
+    LIMIT $6 OFFSET $7
+`
+
+type GetManagerApplicationsParams struct {
+	Column1 string           `db:"column_1" json:"column_1"`
+	Column2 string           `db:"column_2" json:"column_2"`
+	Column3 pgtype.Timestamp `db:"column_3" json:"column_3"`
+	Column4 pgtype.Timestamp `db:"column_4" json:"column_4"`
+	Column5 int32            `db:"column_5" json:"column_5"`
+	Limit   int32            `db:"limit" json:"limit"`
+	Offset  int32            `db:"offset" json:"offset"`
+}
+
+type GetManagerApplicationsRow struct {
+	ID              int32            `db:"id" json:"id"`
+	Status          string           `db:"status" json:"status"`
+	CalculatedPrice pgtype.Numeric   `db:"calculated_price" json:"calculated_price"`
+	CreatedAt       pgtype.Timestamp `db:"created_at" json:"created_at"`
+	ClientID        int32            `db:"client_id" json:"client_id"`
+	ClientFullName  string           `db:"client_full_name" json:"client_full_name"`
+	ClientEmail     string           `db:"client_email" json:"client_email"`
+	ProductType     string           `db:"product_type" json:"product_type"`
+}
+
+func (q *Queries) GetManagerApplications(ctx context.Context, arg *GetManagerApplicationsParams) ([]*GetManagerApplicationsRow, error) {
+	rows, err := q.db.Query(ctx, getManagerApplications,
+		arg.Column1,
+		arg.Column2,
+		arg.Column3,
+		arg.Column4,
+		arg.Column5,
+		arg.Limit,
+		arg.Offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetManagerApplicationsRow
+	for rows.Next() {
+		var i GetManagerApplicationsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Status,
+			&i.CalculatedPrice,
+			&i.CreatedAt,
+			&i.ClientID,
+			&i.ClientFullName,
+			&i.ClientEmail,
+			&i.ProductType,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getManagerApplicationsCount = `-- name: GetManagerApplicationsCount :one
+SELECT COUNT(*) AS total
+FROM applications a
+    JOIN users u ON a.user_id = u.id
+    JOIN products p ON a.product_id = p.id
+WHERE
+    ($1::text IS NULL OR a.status = $1)
+  AND ($2::text IS NULL OR p.type = $2)
+  AND ($3::timestamp IS NULL OR a.created_at >= $3)
+  AND ($4::timestamp IS NULL OR a.created_at <= $4)
+  AND ($5::int IS NULL OR u.id = $5)
+`
+
+type GetManagerApplicationsCountParams struct {
+	Column1 string           `db:"column_1" json:"column_1"`
+	Column2 string           `db:"column_2" json:"column_2"`
+	Column3 pgtype.Timestamp `db:"column_3" json:"column_3"`
+	Column4 pgtype.Timestamp `db:"column_4" json:"column_4"`
+	Column5 int32            `db:"column_5" json:"column_5"`
+}
+
+func (q *Queries) GetManagerApplicationsCount(ctx context.Context, arg *GetManagerApplicationsCountParams) (int64, error) {
+	row := q.db.QueryRow(ctx, getManagerApplicationsCount,
+		arg.Column1,
+		arg.Column2,
+		arg.Column3,
+		arg.Column4,
+		arg.Column5,
+	)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}

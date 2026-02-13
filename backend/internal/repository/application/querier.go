@@ -14,6 +14,8 @@ type Querier interface {
 	GetApplicationStatusHistory(ctx context.Context, arg *GetApplicationStatusHistoryParams) ([]*GetApplicationStatusHistoryRow, error)
 	GetApplications(ctx context.Context, arg *GetApplicationsParams) ([]*GetApplicationsRow, error)
 	GetApplicationsCount(ctx context.Context, arg *GetApplicationsCountParams) (int64, error)
+	GetManagerApplications(ctx context.Context, arg *GetManagerApplicationsParams) ([]*GetManagerApplicationsRow, error)
+	GetManagerApplicationsCount(ctx context.Context, arg *GetManagerApplicationsCountParams) (int64, error)
 }
 
 var _ Querier = (*Queries)(nil)

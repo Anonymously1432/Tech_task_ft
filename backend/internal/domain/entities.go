@@ -353,3 +353,25 @@ type Policy struct {
 	CoverageAmount int       `json:"coverageAmount"`
 	Premium        int       `json:"premium"`
 }
+
+type GetManagerApplicationsResponse struct {
+	Applications []ManagerApplication `json:"applications"`
+	Pagination   Pagination           `json:"pagination"`
+}
+
+type ManagerApplication struct {
+	ID int32 `json:"id"`
+
+	Client ClientShort `json:"client"`
+
+	ProductType     string    `json:"productType"`
+	Status          string    `json:"status"`
+	CalculatedPrice int       `json:"calculatedPrice"`
+	CreatedAt       time.Time `json:"createdAt"`
+}
+
+type ClientShort struct {
+	ID       int32  `json:"id"`
+	FullName string `json:"fullName"`
+	Email    string `json:"email"`
+}
