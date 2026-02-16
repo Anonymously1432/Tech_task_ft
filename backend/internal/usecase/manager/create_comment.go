@@ -44,7 +44,7 @@ func (u *UseCase) CreateApplicationComment(
 		CreatedAt: dbComment.CreatedAt.Time,
 		Author: domain.CommentAuthor{
 			ID:       author.ID,
-			FullName: author.FullName,
+			FullName: *author.FullName,
 		},
 	}, nil
 }
