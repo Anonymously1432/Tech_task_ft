@@ -12,7 +12,7 @@ import (
 func (u *UseCase) UpdateUser(ctx context.Context, ID int32, fullName, email, address string) (*domain.GetUserResponse, error) {
 	user, err := u.repo.UpdateUser(ctx, &user_repository.UpdateUserParams{
 		ID:       ID,
-		FullName: fullName,
+		FullName: &fullName,
 		Email:    email,
 		Address:  &address,
 	})
@@ -26,7 +26,7 @@ func (u *UseCase) UpdateUser(ctx context.Context, ID int32, fullName, email, add
 	return &domain.GetUserResponse{
 		ID:        ID,
 		Email:     user.Email,
-		FullName:  user.FullName,
+		FullName:  *user.FullName,
 		Phone:     user.Phone,
 		BirthDate: user.BirthDate.Time,
 		Address:   user.Address,

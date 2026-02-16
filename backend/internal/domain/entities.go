@@ -285,7 +285,7 @@ type GetUserResponse struct {
 	BirthDate    time.Time `json:"birthDate"`
 	Address      *string   `json:"address"`
 	Role         string    `json:"role"`
-	HashPassword string    `json:"password_hash"`
+	HashPassword string    `json:"password_hash,omitempty"`
 }
 
 type UpdateUserRequest struct {
