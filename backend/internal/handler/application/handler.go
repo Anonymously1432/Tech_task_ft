@@ -18,8 +18,8 @@ func NewHandler(log *zap.Logger, uc application.IUseCase) *Handler {
 }
 
 func RegisterRoutes(applications fiber.Router, h *Handler) {
+	applications.Get("/", h.Get)
 	applications.Use(middlewares.JWTMiddleware)
 	applications.Post("/", h.Create)
-	applications.Get("/", h.Get)
 	applications.Get("/:id", h.GetByID)
 }

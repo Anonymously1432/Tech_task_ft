@@ -2,6 +2,9 @@ package user
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
+	utils "buggy_insurance/internal/handler"
+	"errors"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -24,12 +27,40 @@ func (h *Handler) Logout(c *fiber.Ctx) error {
 	req := new(domain.LogoutRequest)
 	if err := c.BodyParser(req); err != nil {
 		h.logger.Error("Body parsing error", zap.Error(err))
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return utils.SendError(
+			c,
+			fiber.StatusBadRequest,
+			"BAD_REQUEST",
+			"invalid request body",
+			nil,
+		)
 	}
-	err := h.Uc.Logout(c.Context(), req.RefreshToken)
-	if err != nil {
-		h.logger.Error("Uc.Logout error", zap.Error(err))
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+
+	if err := h.Uc.Logout(c.Context(), req.RefreshToken); err != nil {
+		h.logger.Error("Logout error", zap.Error(err))
+
+		switch {
+		case errors.Is(err, custom_errors.ErrBadRequest):
+			return utils.SendError(
+				c,
+				fiber.StatusBadRequest,
+				"BAD_REQUEST",
+				"refresh token is required",
+				nil,
+			)
+
+		default:
+			return utils.SendError(
+				c,
+				fiber.StatusInternalServerError,
+				"INTERNAL_SERVER_ERROR",
+				"internal server error",
+				nil,
+			)
+		}
 	}
-	return c.Status(fiber.StatusOK).JSON(domain.LogoutResponse{Message: "Logged out successfully"})
+
+	return c.Status(fiber.StatusOK).JSON(domain.LogoutResponse{
+		Message: "Logged out successfully",
+	})
 }

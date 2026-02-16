@@ -2,6 +2,9 @@ package user
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
+	utils "buggy_insurance/internal/handler"
+	"errors"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -23,12 +26,51 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 	req := new(domain.LoginRequest)
 	if err := c.BodyParser(req); err != nil {
 		h.logger.Error("Body parsing error", zap.Error(err))
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return utils.SendError(
+			c,
+			fiber.StatusBadRequest,
+			"BAD_REQUEST",
+			"invalid request body",
+			nil,
+		)
 	}
+
 	user, accessToken, refreshToken, err := h.Uc.Login(c.Context(), req.Email, req.Password)
 	if err != nil {
 		h.logger.Error("Login error", zap.Error(err))
+
+		switch {
+		case errors.Is(err, custom_errors.ErrNotFound):
+			return utils.SendError(
+				c,
+				fiber.StatusNotFound,
+				"NOT_FOUND",
+				"user not found",
+				nil,
+			)
+
+		case errors.Is(err, custom_errors.ErrUnauthorized):
+			return utils.SendError(
+				c,
+				fiber.StatusOK,
+				"StatusOK",
+				"invalid credentials",
+				nil,
+			)
+
+		default:
+			return utils.SendError(
+				c,
+				fiber.StatusInternalServerError,
+				"INTERNAL_SERVER_ERROR",
+				"internal server error",
+				nil,
+			)
+		}
 	}
+
+	h.logger.Info("Login success", zap.Int32("user_id", user.ID))
+
 	return c.Status(fiber.StatusOK).JSON(domain.LoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,

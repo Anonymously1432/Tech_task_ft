@@ -2,6 +2,9 @@ package user
 
 import (
 	"buggy_insurance/internal/domain"
+	custom_errors "buggy_insurance/internal/errors"
+	utils "buggy_insurance/internal/handler"
+	"errors"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -22,12 +25,52 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 	req := new(domain.RegisterRequest)
 	if err := c.BodyParser(req); err != nil {
 		h.logger.Error("Body parsing error", zap.Error(err))
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return utils.SendError(
+			c,
+			fiber.StatusBadRequest,
+			"BAD_REQUEST",
+			"invalid request body",
+			nil,
+		)
 	}
-	user, err := h.Uc.Register(c.Context(), req.Email, req.Password, req.FullName, req.Phone, req.BirthDate)
+
+	user, err := h.Uc.Register(
+		c.Context(),
+		req.Email,
+		req.Password,
+		req.FullName,
+		req.Phone,
+		req.BirthDate,
+	)
 	if err != nil {
 		h.logger.Error("Uc.Register error", zap.Error(err))
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+
+		switch {
+		case errors.Is(err, custom_errors.ErrBadRequest):
+			return utils.SendError(
+				c,
+				fiber.StatusBadRequest,
+				"BAD_REQUEST",
+				err.Error(),
+				nil,
+			)
+		case errors.Is(err, custom_errors.ErrConflict):
+			return utils.SendError(
+				c,
+				fiber.StatusConflict,
+				"CONFLICT",
+				"email already exists",
+				map[string]string{"email": req.Email},
+			)
+		default:
+			return utils.SendError(
+				c,
+				fiber.StatusInternalServerError,
+				"INTERNAL_SERVER_ERROR",
+				"internal server error",
+				nil,
+			)
+		}
 	}
 
 	h.logger.Info("Register success", zap.String("email", user.Email))
