@@ -72,15 +72,15 @@ RETURNING id, email, full_name
 type CreateUserParams struct {
 	Email        string      `db:"email" json:"email"`
 	PasswordHash string      `db:"password_hash" json:"password_hash"`
-	FullName     string      `db:"full_name" json:"full_name"`
+	FullName     *string     `db:"full_name" json:"full_name"`
 	Phone        *string     `db:"phone" json:"phone"`
 	BirthDate    pgtype.Date `db:"birth_date" json:"birth_date"`
 }
 
 type CreateUserRow struct {
-	ID       int32  `db:"id" json:"id"`
-	Email    string `db:"email" json:"email"`
-	FullName string `db:"full_name" json:"full_name"`
+	ID       int32   `db:"id" json:"id"`
+	Email    string  `db:"email" json:"email"`
+	FullName *string `db:"full_name" json:"full_name"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg *CreateUserParams) (*CreateUserRow, error) {
@@ -141,7 +141,7 @@ func (q *Queries) GetByEmail(ctx context.Context, arg *GetByEmailParams) (*GetBy
 }
 
 const getByID = `-- name: GetByID :one
-SELECT email, full_name, phone, birth_date, address, role
+SELECT email, full_name, phone, birth_date, address, role, password_hash
 FROM users
 WHERE id = $1
 `
@@ -151,12 +151,13 @@ type GetByIDParams struct {
 }
 
 type GetByIDRow struct {
-	Email     string      `db:"email" json:"email"`
-	FullName  string      `db:"full_name" json:"full_name"`
-	Phone     *string     `db:"phone" json:"phone"`
-	BirthDate pgtype.Date `db:"birth_date" json:"birth_date"`
-	Address   *string     `db:"address" json:"address"`
-	Role      string      `db:"role" json:"role"`
+	Email        string      `db:"email" json:"email"`
+	FullName     *string     `db:"full_name" json:"full_name"`
+	Phone        *string     `db:"phone" json:"phone"`
+	BirthDate    pgtype.Date `db:"birth_date" json:"birth_date"`
+	Address      *string     `db:"address" json:"address"`
+	Role         string      `db:"role" json:"role"`
+	PasswordHash string      `db:"password_hash" json:"password_hash"`
 }
 
 func (q *Queries) GetByID(ctx context.Context, arg *GetByIDParams) (*GetByIDRow, error) {
@@ -169,6 +170,7 @@ func (q *Queries) GetByID(ctx context.Context, arg *GetByIDParams) (*GetByIDRow,
 		&i.BirthDate,
 		&i.Address,
 		&i.Role,
+		&i.PasswordHash,
 	)
 	return &i, err
 }
@@ -255,14 +257,14 @@ RETURNING email, full_name, phone, birth_date, address, role
 
 type UpdateUserParams struct {
 	ID       int32   `db:"id" json:"id"`
-	FullName string  `db:"full_name" json:"full_name"`
+	FullName *string `db:"full_name" json:"full_name"`
 	Email    string  `db:"email" json:"email"`
 	Address  *string `db:"address" json:"address"`
 }
 
 type UpdateUserRow struct {
 	Email     string      `db:"email" json:"email"`
-	FullName  string      `db:"full_name" json:"full_name"`
+	FullName  *string     `db:"full_name" json:"full_name"`
 	Phone     *string     `db:"phone" json:"phone"`
 	BirthDate pgtype.Date `db:"birth_date" json:"birth_date"`
 	Address   *string     `db:"address" json:"address"`

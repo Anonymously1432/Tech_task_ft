@@ -18,7 +18,7 @@ SET deleted_at = NOW()
 WHERE token = $1;
 
 -- name: GetByID :one
-SELECT email, full_name, phone, birth_date, address, role
+SELECT email, full_name, phone, birth_date, address, role, password_hash
 FROM users
 WHERE id = $1;
 

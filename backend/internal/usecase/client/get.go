@@ -20,12 +20,13 @@ func (u *UseCase) GetUser(ctx context.Context, ID int32) (*domain.GetUserRespons
 	}
 
 	return &domain.GetUserResponse{
-		ID:        ID,
-		Email:     user.Email,
-		FullName:  user.FullName,
-		Phone:     user.Phone,
-		BirthDate: user.BirthDate.Time,
-		Address:   user.Address,
-		Role:      user.Role,
+		ID:           ID,
+		Email:        user.Email,
+		FullName:     *user.FullName,
+		Phone:        user.Phone,
+		BirthDate:    user.BirthDate.Time,
+		Address:      user.Address,
+		Role:         user.Role,
+		HashPassword: user.PasswordHash,
 	}, nil
 }

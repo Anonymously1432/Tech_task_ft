@@ -86,7 +86,7 @@ type User struct {
 	ID           int32            `db:"id" json:"id"`
 	Email        string           `db:"email" json:"email"`
 	PasswordHash string           `db:"password_hash" json:"password_hash"`
-	FullName     string           `db:"full_name" json:"full_name"`
+	FullName     *string          `db:"full_name" json:"full_name"`
 	Phone        *string          `db:"phone" json:"phone"`
 	BirthDate    pgtype.Date      `db:"birth_date" json:"birth_date"`
 	Address      *string          `db:"address" json:"address"`

@@ -225,7 +225,7 @@ type GetApplicationCommentsRow struct {
 	Comment        string           `db:"comment" json:"comment"`
 	CreatedAt      pgtype.Timestamp `db:"created_at" json:"created_at"`
 	AuthorID       int32            `db:"author_id" json:"author_id"`
-	AuthorFullName string           `db:"author_full_name" json:"author_full_name"`
+	AuthorFullName *string          `db:"author_full_name" json:"author_full_name"`
 }
 
 func (q *Queries) GetApplicationComments(ctx context.Context, arg *GetApplicationCommentsParams) ([]*GetApplicationCommentsRow, error) {
@@ -556,7 +556,7 @@ type GetManagerApplicationByIDRow struct {
 	CreatedAt       pgtype.Timestamp `db:"created_at" json:"created_at"`
 	ProductType     string           `db:"product_type" json:"product_type"`
 	ClientID        int32            `db:"client_id" json:"client_id"`
-	ClientFullName  string           `db:"client_full_name" json:"client_full_name"`
+	ClientFullName  *string          `db:"client_full_name" json:"client_full_name"`
 	ClientEmail     string           `db:"client_email" json:"client_email"`
 	ClientPhone     *string          `db:"client_phone" json:"client_phone"`
 }
@@ -618,7 +618,7 @@ type GetManagerApplicationsRow struct {
 	CalculatedPrice pgtype.Numeric   `db:"calculated_price" json:"calculated_price"`
 	CreatedAt       pgtype.Timestamp `db:"created_at" json:"created_at"`
 	ClientID        int32            `db:"client_id" json:"client_id"`
-	ClientFullName  string           `db:"client_full_name" json:"client_full_name"`
+	ClientFullName  *string          `db:"client_full_name" json:"client_full_name"`
 	ClientEmail     string           `db:"client_email" json:"client_email"`
 	ProductType     string           `db:"product_type" json:"product_type"`
 }
@@ -711,7 +711,7 @@ type GetRecentApplicationsParams struct {
 type GetRecentApplicationsRow struct {
 	ID              int32            `db:"id" json:"id"`
 	ClientID        *int32           `db:"client_id" json:"client_id"`
-	ClientFullName  string           `db:"client_full_name" json:"client_full_name"`
+	ClientFullName  *string          `db:"client_full_name" json:"client_full_name"`
 	ProductType     string           `db:"product_type" json:"product_type"`
 	Status          string           `db:"status" json:"status"`
 	CalculatedPrice pgtype.Numeric   `db:"calculated_price" json:"calculated_price"`
@@ -757,8 +757,8 @@ type GetUserByIDParams struct {
 }
 
 type GetUserByIDRow struct {
-	ID       int32  `db:"id" json:"id"`
-	FullName string `db:"full_name" json:"full_name"`
+	ID       int32   `db:"id" json:"id"`
+	FullName *string `db:"full_name" json:"full_name"`
 }
 
 func (q *Queries) GetUserByID(ctx context.Context, arg *GetUserByIDParams) (*GetUserByIDRow, error) {

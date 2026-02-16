@@ -278,13 +278,14 @@ type Product struct {
 }
 
 type GetUserResponse struct {
-	ID        int32     `json:"id"`
-	Email     string    `json:"email"`
-	FullName  string    `json:"fullName"`
-	Phone     *string   `json:"phone"`
-	BirthDate time.Time `json:"birthDate"`
-	Address   *string   `json:"address"`
-	Role      string    `json:"role"`
+	ID           int32     `json:"id"`
+	Email        string    `json:"email"`
+	FullName     string    `json:"fullName"`
+	Phone        *string   `json:"phone"`
+	BirthDate    time.Time `json:"birthDate"`
+	Address      *string   `json:"address"`
+	Role         string    `json:"role"`
+	HashPassword string    `json:"password_hash"`
 }
 
 type UpdateUserRequest struct {
