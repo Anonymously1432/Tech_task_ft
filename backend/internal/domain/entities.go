@@ -14,10 +14,11 @@ var (
 			Options:  []string{"Toyota", "Honda", "BMW", "Mercedes"},
 		},
 		{
-			Name:     "model",
-			Type:     "string",
-			Label:    "Модель",
-			Required: true,
+			Name:      "model",
+			Type:      "select",
+			Label:     "Модель",
+			Required:  true,
+			DependsOn: "brand",
 		},
 		{
 			Name:     "year",
@@ -25,31 +26,34 @@ var (
 			Label:    "Год выпуска",
 			Required: true,
 			Min:      1990,
-			Max:      2026,
+			Max:      uint(time.Now().Year()),
 		},
 		{
-			Name:     "vin",
-			Type:     "string",
-			Label:    "VIN",
-			Required: true,
+			Name:      "vin",
+			Type:      "text",
+			Label:     "VIN",
+			Required:  true,
+			MinLength: 17,
+			MaxLength: 17,
 		},
 		{
 			Name:     "plateNumber",
-			Type:     "string",
+			Type:     "text",
 			Label:    "Госномер",
 			Required: true,
+			Pattern:  "^[A-ZА-Я]{1}[0-9]{3}[A-ZА-Я]{2}[0-9]{2,3}$",
 		},
 		{
 			Name:     "insuranceType",
-			Type:     "select",
+			Type:     "radio",
 			Label:    "Тип страхования",
 			Required: true,
-			Options:  []string{"OSAGO", "KASKO"},
+			Options:  []string{"OSAGO", "KASKO", "BOTH"},
 		},
 		{
 			Name:     "drivingExperience",
 			Type:     "number",
-			Label:    "Стаж вождения (лет)",
+			Label:    "Водительский стаж (лет)",
 			Required: true,
 			Min:      0,
 			Max:      60,
@@ -59,14 +63,14 @@ var (
 	HomeFormFields = []FormField{
 		{
 			Name:     "propertyType",
-			Type:     "select",
-			Label:    "Тип недвижимости",
+			Type:     "radio",
+			Label:    "Тип жилья",
 			Required: true,
 			Options:  []string{"apartment", "house"},
 		},
 		{
 			Name:     "address",
-			Type:     "string",
+			Type:     "text",
 			Label:    "Адрес",
 			Required: true,
 		},
@@ -76,89 +80,71 @@ var (
 			Label:    "Площадь (м²)",
 			Required: true,
 			Min:      10,
+			Max:      1000,
 		},
 		{
-			Name:     "floor",
-			Type:     "number",
-			Label:    "Этаж",
-			Required: true,
+			Name:      "floor",
+			Type:      "number",
+			Label:     "Этаж",
+			Required:  false,
+			VisibleIf: map[string]string{"propertyType": "apartment"},
 		},
 		{
 			Name:     "buildYear",
 			Type:     "number",
 			Label:    "Год постройки",
 			Required: true,
-			Min:      1900,
-			Max:      2026,
+			Min:      1800,
+			Max:      uint(time.Now().Year()),
 		},
 		{
 			Name:     "coverageAmount",
 			Type:     "number",
-			Label:    "Страховая сумма",
-			Required: true,
-		},
-	}
-
-	TravelFormFields = []FormField{
-		{
-			Name:     "country",
-			Type:     "string",
-			Label:    "Страна",
-			Required: true,
-		},
-		{
-			Name:     "startDate",
-			Type:     "date",
-			Label:    "Дата начала поездки",
-			Required: true,
-		},
-		{
-			Name:     "endDate",
-			Type:     "date",
-			Label:    "Дата окончания поездки",
-			Required: true,
-		},
-		{
-			Name:     "travelers",
-			Type:     "number",
-			Label:    "Количество путешественников",
-			Required: true,
-			Min:      1,
-		},
-		{
-			Name:     "activeLeisure",
-			Type:     "boolean",
-			Label:    "Активный отдых",
-			Required: true,
-		},
-		{
-			Name:     "coverageAmount",
-			Type:     "number",
-			Label:    "Страховая сумма",
+			Label:    "Сумма покрытия (₽)",
 			Required: true,
 		},
 	}
 
 	LifeFormFields = []FormField{
 		{
-			Name:     "birthDate",
-			Type:     "date",
-			Label:    "Дата рождения",
+			Name:     "age",
+			Type:     "number",
+			Label:    "Возраст застрахованного",
 			Required: true,
+			Min:      18,
+			Max:      70,
+		},
+		{
+			Name:     "gender",
+			Type:     "radio",
+			Label:    "Пол",
+			Required: true,
+			Options:  []string{"male", "female"},
+		},
+		{
+			Name:     "smoking",
+			Type:     "checkbox",
+			Label:    "Курение",
+			Required: false,
+		},
+		{
+			Name:     "chronicDiseases",
+			Type:     "checkbox",
+			Label:    "Хронические заболевания",
+			Required: false,
 		},
 		{
 			Name:     "coverageAmount",
 			Type:     "number",
-			Label:    "Страховая сумма",
+			Label:    "Сумма покрытия (₽)",
 			Required: true,
 		},
 		{
 			Name:     "termYears",
-			Type:     "number",
-			Label:    "Срок страхования (лет)",
+			Type:     "select",
+			Label:    "Срок страхования",
 			Required: true,
-			Min:      1,
-			Max:      30,
+			Options:  []string{"1", "3", "5", "10"},
 		},
 	}
 
@@ -172,16 +158,73 @@ var (
 			Max:      100,
 		},
 		{
-			Name:     "coverageAmount",
-			Type:     "number",
-			Label:    "Страховая сумма",
+			Name:     "program",
+			Type:     "select",
+			Label:    "Программа",
+			Required: true,
+			Options:  []string{"basic", "extended", "premium"},
+		},
+		{
+			Name:     "dentistry",
+			Type:     "checkbox",
+			Label:    "Стоматология",
+			Required: false,
+		},
+		{
+			Name:     "hospitalization",
+			Type:     "checkbox",
+			Label:    "Госпитализация",
+			Required: false,
+		},
+		{
+			Name:     "chronicDiseases",
+			Type:     "textarea",
+			Label:    "Хронические заболевания",
+			Required: false,
+		},
+	}
+
+	TravelFormFields = []FormField{
+		{
+			Name:     "country",
+			Type:     "select",
+			Label:    "Страна / регион",
 			Required: true,
 		},
 		{
-			Name:     "hasChronicDiseases",
-			Type:     "boolean",
-			Label:    "Хронические заболевания",
+			Name:     "startDate",
+			Type:     "date",
+			Label:    "Дата начала",
 			Required: true,
+			MinDate:  "today",
+		},
+		{
+			Name:     "endDate",
+			Type:     "date",
+			Label:    "Дата окончания",
+			Required: true,
+			After:    "startDate",
+		},
+		{
+			Name:     "travelers",
+			Type:     "number",
+			Label:    "Количество человек",
+			Required: true,
+			Min:      1,
+			Max:      10,
+		},
+		{
+			Name:     "activeLeisure",
+			Type:     "checkbox",
+			Label:    "Активный отдых",
+			Required: false,
+		},
+		{
+			Name:     "coverageAmount",
+			Type:     "select",
+			Label:    "Сумма покрытия (€)",
+			Required: true,
+			Options:  []string{"30000", "50000", "100000"},
 		},
 	}
 
@@ -256,8 +299,22 @@ type FormField struct {
 	Required bool   `json:"required"`
 
 	Options []string `json:"options,omitempty"`
-	Min     int      `json:"min,omitempty"`
-	Max     int      `json:"max,omitempty"`
+
+	Min uint `json:"min,omitempty"`
+	Max uint `json:"max,omitempty"`
+
+	MinLength uint   `json:"minLength,omitempty"`
+	MaxLength uint   `json:"maxLength,omitempty"`
+	Pattern   string `json:"pattern,omitempty"`
+
+	MinDate string `json:"minDate,omitempty"`
+	MaxDate string `json:"maxDate,omitempty"`
+	After   string `json:"after,omitempty"`
+
+	DependsOn string            `json:"dependsOn,omitempty"`
+	VisibleIf map[string]string `json:"visibleIf,omitempty"`
+
+	AffectsPrice bool `json:"affectsPrice,omitempty"`
 }
 
 type Details struct {
