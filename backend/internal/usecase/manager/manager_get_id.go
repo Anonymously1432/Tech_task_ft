@@ -38,7 +38,7 @@ func (u *UseCase) GetManagerApplicationByID(
 		ID: app.ID,
 		Client: domain.ClientFull{
 			ID:       app.ClientID,
-			FullName: app.ClientFullName,
+			FullName: *app.ClientFullName,
 			Email:    app.ClientEmail,
 			Phone:    "",
 		},
@@ -70,7 +70,7 @@ func (u *UseCase) GetManagerApplicationByID(
 		res.Comments[i] = domain.ApplicationComment{
 			ID:        c.ID,
 			AuthorID:  safeInt32(&c.AuthorID),
-			Author:    safeString(&c.AuthorFullName),
+			Author:    safeString(c.AuthorFullName),
 			Comment:   c.Comment,
 			CreatedAt: c.CreatedAt.Time,
 		}

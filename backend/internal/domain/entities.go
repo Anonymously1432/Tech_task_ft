@@ -238,17 +238,17 @@ var (
 )
 
 type RegisterRequest struct {
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	FullName  string    `json:"fullName"`
-	Phone     string    `json:"phone"`
-	BirthDate time.Time `json:"birthDate"`
+	Email     string    `json:"email" example:"1@mail.ru" validate:"required"`
+	Password  string    `json:"password" example:"passwd" validate:"required"`
+	FullName  string    `json:"fullName" example:"Ivanov Ivan Ivanovich" validate:"required"`
+	Phone     string    `json:"phone" example:"777777777777" validate:"required"`
+	BirthDate time.Time `json:"birthDate" example:"1990-01-01" validate:"required"`
 }
 
 type RegisterResponse struct {
-	Id       int    `json:"id"`
-	Email    string `json:"email"`
-	FullName string `json:"fullName"`
+	Id       int    `json:"id" example:"1"`
+	Email    string `json:"email" example:"1@mail.ru"`
+	FullName string `json:"fullName" example:"Ivanov Ivan Ivanovich"`
 }
 
 type LoginRequest struct {

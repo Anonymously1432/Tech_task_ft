@@ -70,7 +70,7 @@ func (u *UseCase) GetDashboard(ctx context.Context, userID int32) (*domain.Dashb
 
 	return &domain.DashboardResponse{
 		User: domain.DashboardUser{
-			FullName: user.FullName,
+			FullName: *user.FullName,
 		},
 		Stats: domain.DashboardStats{
 			ActivePolicies:      activePoliciesCount,

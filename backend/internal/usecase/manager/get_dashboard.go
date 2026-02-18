@@ -75,7 +75,7 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 		recent[i] = domain.RecentApplicationEntry{
 			ID:              r.ID,
 			ClientID:        *r.ClientID,
-			ClientFullName:  r.ClientFullName,
+			ClientFullName:  *r.ClientFullName,
 			ProductType:     r.ProductType,
 			Status:          r.Status,
 			CalculatedPrice: r.CalculatedPrice.Int.Int64(),

@@ -79,7 +79,7 @@ func (u *UseCase) GetManagerApplications(
 			ID: a.ID,
 			Client: domain.ClientShort{
 				ID:       a.ClientID,
-				FullName: a.ClientFullName,
+				FullName: *a.ClientFullName,
 				Email:    a.ClientEmail,
 			},
 			ProductType:     a.ProductType,

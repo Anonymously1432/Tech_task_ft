@@ -32,7 +32,7 @@ func (u *UseCase) Register(
 	user, err := u.repo.CreateUser(ctx, &user_repository.CreateUserParams{
 		Email:        email,
 		PasswordHash: hashPassword,
-		FullName:     fullName,
+		FullName:     &fullName,
 		Phone:        &phone,
 		BirthDate: pgtype.Date{
 			Time:  birthDate,
