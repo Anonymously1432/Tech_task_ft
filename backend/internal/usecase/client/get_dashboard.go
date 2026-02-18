@@ -8,6 +8,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (u *UseCase) GetDashboard(ctx context.Context, userID int32) (*domain.DashboardResponse, error) {
@@ -36,8 +38,24 @@ func (u *UseCase) GetDashboard(ctx context.Context, userID int32) (*domain.Dashb
 	}
 
 	totalCoverage := float64(0)
+
 	if totalCoverageRaw != nil {
-		totalCoverage = totalCoverageRaw.(float64)
+		numeric, ok := totalCoverageRaw.(pgtype.Numeric)
+		if !ok {
+			return nil, fmt.Errorf("unexpected totalCoverage type: %T", totalCoverageRaw)
+		}
+
+		if numeric.Valid {
+			if numeric.Int != nil {
+				totalCoverage = float64(numeric.Int.Int64())
+			} else {
+				f, err := numeric.Float64Value()
+				if err != nil {
+					return nil, fmt.Errorf("convert numeric to float64: %w", err)
+				}
+				totalCoverage = f.Float64
+			}
+		}
 	}
 
 	pendingApplications, err := u.repo.CountUserApplications(ctx, &user_repository.CountUserApplicationsParams{

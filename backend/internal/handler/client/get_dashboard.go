@@ -4,6 +4,8 @@ import (
 	custom_errors "buggy_insurance/internal/errors"
 	utils "buggy_insurance/internal/handler"
 	"errors"
+	"fmt"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -22,8 +24,8 @@ import (
 // @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
 // @Router       /api/v1/users/dashboard [get]
 func (h *Handler) GetDashboard(c *fiber.Ctx) error {
-	userIDVal := c.Locals("user_id")
-	if userIDVal == nil {
+	userID := c.Locals("user_id")
+	if userID == nil {
 		return utils.SendError(
 			c,
 			fiber.StatusUnauthorized,
@@ -32,10 +34,9 @@ func (h *Handler) GetDashboard(c *fiber.Ctx) error {
 			nil,
 		)
 	}
-	h.logger.Info("userID: ", zap.String("userID", userIDVal.(string)))
-	userID, ok := userIDVal.(int32)
-	h.logger.Info("sign", zap.Any("ok: ", ok))
-	if !ok || userID < 1 {
+
+	id, err := strconv.Atoi(fmt.Sprintf("%v", userID))
+	if err != nil || id < 1 {
 		return utils.SendError(
 			c,
 			fiber.StatusUnauthorized,
@@ -45,7 +46,7 @@ func (h *Handler) GetDashboard(c *fiber.Ctx) error {
 		)
 	}
 
-	resp, err := h.Uc.GetDashboard(c.Context(), userID)
+	resp, err := h.Uc.GetDashboard(c.Context(), int32(id))
 	if err != nil {
 		h.logger.Error("GetDashboard error", zap.Error(err))
 
@@ -69,6 +70,6 @@ func (h *Handler) GetDashboard(c *fiber.Ctx) error {
 		}
 	}
 
-	h.logger.Info("GetDashboard success", zap.Int32("user_id", userID))
+	h.logger.Info("GetDashboard success", zap.Int32("user_id", int32(id)))
 	return c.Status(fiber.StatusOK).JSON(resp)
 }
