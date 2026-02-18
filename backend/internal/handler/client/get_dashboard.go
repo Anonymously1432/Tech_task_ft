@@ -32,8 +32,9 @@ func (h *Handler) GetDashboard(c *fiber.Ctx) error {
 			nil,
 		)
 	}
-
+	h.logger.Info("userID: ", zap.String("userID", userIDVal.(string)))
 	userID, ok := userIDVal.(int32)
+	h.logger.Info("sign", zap.Any("ok: ", ok))
 	if !ok || userID < 1 {
 		return utils.SendError(
 			c,

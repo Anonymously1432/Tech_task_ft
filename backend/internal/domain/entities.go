@@ -355,7 +355,7 @@ type CreateApplicationRequest struct {
 	ProductType string `json:"productType"`
 	ProductID   int32  `json:"productId"`
 	ManagerID   int32  `json:"managerId"`
-	Data        []byte `json:"data"`
+	Data        string `json:"data"`
 }
 
 type Application struct {

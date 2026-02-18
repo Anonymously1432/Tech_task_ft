@@ -95,5 +95,9 @@ export interface FormField {
   maxLength?: number
   pattern?: string
   minDate?: string
+  maxDate?: string
   after?: string
+  dependsOn?: string
+  visibleIf?: Record<string, string>
+  affectsPrice?: boolean
 }

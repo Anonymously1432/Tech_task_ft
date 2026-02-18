@@ -1,4 +1,5 @@
 import { api } from './client'
+import type { FormField, Product } from '../types'
 
 export const authApi = {
   login: (email: string, password: string) =>
@@ -23,13 +24,11 @@ export const authApi = {
 
 export const productsApi = {
   getAll: () =>
-    api<{ products: { id: number; type: string; name: string; description: string; basePrice: number }[] }>(
-      '/products'
-    ),
+    api<{ products: Product[] }>('/products'),
   getByType: (type: string) =>
     api<{
-      products: { id: number; type: string; name: string; description: string; basePrice: number }[]
-      formFields: { name: string; type: string; label: string; required: boolean; options?: string[]; min?: number; max?: number }[]
+      products: Product[]
+      formFields: FormField[]
     }>(`/products/${type}`),
 }
 
