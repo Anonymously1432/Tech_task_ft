@@ -238,11 +238,11 @@ var (
 )
 
 type RegisterRequest struct {
-	Email     string    `json:"email" example:"1@mail.ru" validate:"required"`
-	Password  string    `json:"password" example:"passwd" validate:"required"`
-	FullName  string    `json:"fullName" example:"Ivanov Ivan Ivanovich" validate:"required"`
-	Phone     string    `json:"phone" example:"777777777777" validate:"required"`
-	BirthDate time.Time `json:"birthDate" example:"1990-01-01" validate:"required"`
+	Email     string `json:"email" example:"1@mail.ru" validate:"required"`
+	Password  string `json:"password" example:"passwd" validate:"required"`
+	FullName  string `json:"fullName" example:"Ivanov Ivan Ivanovich" validate:"required"`
+	Phone     string `json:"phone" example:"777777777777" validate:"required"`
+	BirthDate string `json:"birthDate" example:"1990-01-01" validate:"required"`
 }
 
 type RegisterResponse struct {

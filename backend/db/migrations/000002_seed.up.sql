@@ -28,18 +28,18 @@ INSERT INTO products (id, type, name, base_price) VALUES
     (4, 'HEALTH', 'Здоровье (ДМС)', 15000),
     (5, 'TRAVEL', 'Путешествия', 1500);
 
-INSERT INTO users (id, email, password_hash, role, full_name, is_active) VALUES
-    (1,   'client1@test.com',    '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Иванов Иван Иванович', true),
-    (2,   'client2@test.com',    '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Петрова Мария Сергеевна', true),
-    (3,   'client3@test.com',    '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Сидоров Алексей Павлович', true),
-    (4,   'blocked@test.com',    '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Козлов Дмитрий', false),
-    (10,  'manager1@test.com',   '$2a$15$SezWJOiCJZthHr4ppMXil.c5A2BHerQPgRDsrOZFgkIszqmhZuY6i',     'manager', 'Менеджер Мария Ивановна', true),
-    (11,  'manager2@test.com',   '$2a$15$SezWJOiCJZthHr4ppMXil.c5A2BHerQPgRDsrOZFgkIszqmhZuY6i',     'manager', 'Менеджер Пётр Николаевич', true),
+INSERT INTO users (email, password_hash, role, full_name, is_active) VALUES
+    ( 'client1@test.com',    '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Иванов Иван Иванович', true),
+    (  'client2@test.com',    '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Петрова Мария Сергеевна', true),
+    ( 'client3@test.com',    '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Сидоров Алексей Павлович', true),
+    (  'blocked@test.com',    '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Козлов Дмитрий', false),
+    ( 'manager1@test.com',   '$2a$15$SezWJOiCJZthHr4ppMXil.c5A2BHerQPgRDsrOZFgkIszqmhZuY6i',     'manager', 'Менеджер Мария Ивановна', true),
+    ( 'manager2@test.com',   '$2a$15$SezWJOiCJZthHr4ppMXil.c5A2BHerQPgRDsrOZFgkIszqmhZuY6i',     'manager', 'Менеджер Пётр Николаевич', true),
 -- Баг #16: NULL в обязательном поле
-    (99,  'broken@test.com',     '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  NULL, true),
+    (  'broken@test.com',     '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  NULL, true),
 -- Баг #15: дубликаты email
-    (100, 'duplicate@test.com',  '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Дубликат Первый', true),
-    (101, 'duplicate@test.com',  '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Дубликат Второй', true);
+    ( 'duplicate@test.com',  '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Дубликат Первый', true),
+    ( 'duplicate@test.com',  '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.',     'client',  'Дубликат Второй', true);
 
 INSERT INTO applications (id, user_id, product_id, status, calculated_price) VALUES
     (1, 1, 1, 'APPROVED', 45000),
