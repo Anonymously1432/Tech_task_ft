@@ -72,13 +72,17 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 
 	recent := make([]domain.RecentApplicationEntry, len(recentApps))
 	for i, r := range recentApps {
+		price, err := NumericToInt64(r.CalculatedPrice)
+		if err != nil {
+			return nil, fmt.Errorf("convert calculated price: %w", err)
+		}
 		recent[i] = domain.RecentApplicationEntry{
 			ID:              r.ID,
 			ClientID:        *r.ClientID,
 			ClientFullName:  *r.ClientFullName,
 			ProductType:     r.ProductType,
 			Status:          r.Status,
-			CalculatedPrice: r.CalculatedPrice.Int.Int64(),
+			CalculatedPrice: price,
 			CreatedAt:       r.CreatedAt.Time,
 		}
 	}
@@ -93,4 +97,21 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 		ChartData:          chartData,
 		RecentApplications: recent,
 	}, nil
+}
+
+func NumericToInt64(n pgtype.Numeric) (int64, error) {
+	if !n.Valid {
+		return 0, nil
+	}
+
+	if n.Int != nil {
+		return n.Int.Int64(), nil
+	}
+
+	f, err := n.Int64Value()
+	if err != nil {
+		return 0, err
+	}
+
+	return f.Int64, nil
 }

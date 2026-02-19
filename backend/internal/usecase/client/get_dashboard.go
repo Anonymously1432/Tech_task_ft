@@ -76,13 +76,18 @@ func (u *UseCase) GetDashboard(ctx context.Context, userID int32) (*domain.Dashb
 
 	activityEntries := make([]domain.ActivityEntry, len(recentActivities))
 	for i, a := range recentActivities {
+		price, err := NumericToInt64(a.CalculatedPrice)
+		if err != nil {
+			return nil, fmt.Errorf("convert calculated price: %w", err)
+		}
+
 		activityEntries[i] = domain.ActivityEntry{
 			ID:              a.ID,
 			Type:            a.Type,
 			Status:          a.Status,
 			CreatedAt:       a.CreatedAt.Time,
 			ProductType:     a.ProductType,
-			CalculatedPrice: a.CalculatedPrice.Int.Int64(),
+			CalculatedPrice: price,
 		}
 	}
 
@@ -97,4 +102,21 @@ func (u *UseCase) GetDashboard(ctx context.Context, userID int32) (*domain.Dashb
 		},
 		RecentActivity: activityEntries,
 	}, nil
+}
+
+func NumericToInt64(n pgtype.Numeric) (int64, error) {
+	if !n.Valid {
+		return 0, nil
+	}
+
+	if n.Int != nil {
+		return n.Int.Int64(), nil
+	}
+
+	f, err := n.Int64Value()
+	if err != nil {
+		return 0, err
+	}
+
+	return f.Int64, nil
 }
