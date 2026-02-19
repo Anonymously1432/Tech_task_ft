@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-func (u *UseCase) GetManagerStatistics(ctx context.Context, period string) (*domain.ManagerStatisticsResponse, error) {
+func (u *UseCase) GetManagerStatistics(ctx context.Context, period string, userID int32) (*domain.ManagerStatisticsResponse, error) {
 	now := time.Now()
 	var periodStart time.Time
 
@@ -30,6 +30,7 @@ func (u *UseCase) GetManagerStatistics(ctx context.Context, period string) (*dom
 
 	byTypeRows, err := u.repo.GetApplicationsCountByType(ctx, &application_repository.GetApplicationsCountByTypeParams{
 		CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true},
+		ManagerID: &userID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get applications by type: %w", custom_errors.ErrInternal)
@@ -37,6 +38,7 @@ func (u *UseCase) GetManagerStatistics(ctx context.Context, period string) (*dom
 
 	byStatusRows, err := u.repo.GetApplicationsCountByStatus(ctx, &application_repository.GetApplicationsCountByStatusParams{
 		CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true},
+		ManagerID: &userID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get applications by status: %w", custom_errors.ErrInternal)
@@ -44,6 +46,7 @@ func (u *UseCase) GetManagerStatistics(ctx context.Context, period string) (*dom
 
 	conv, err := u.repo.GetApplicationsConversion(ctx, &application_repository.GetApplicationsConversionParams{
 		CreatedAt: pgtype.Timestamp{Time: periodStart, Valid: true},
+		ManagerID: &userID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("get applications conversion: %w", custom_errors.ErrInternal)

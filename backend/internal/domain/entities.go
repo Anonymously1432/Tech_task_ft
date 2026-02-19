@@ -439,11 +439,11 @@ type ManagerApplicationDetail struct {
 
 	Client ClientFull `json:"client"`
 
-	ProductType     string    `json:"productType"`
-	Status          string    `json:"status"`
-	Data            []byte    `json:"data"`
-	CalculatedPrice int       `json:"calculatedPrice"`
-	CreatedAt       time.Time `json:"createdAt"`
+	ProductType     string          `json:"productType"`
+	Status          string          `json:"status"`
+	Data            json.RawMessage `json:"data"`
+	CalculatedPrice int             `json:"calculatedPrice"`
+	CreatedAt       time.Time       `json:"createdAt"`
 
 	StatusHistory []ApplicationStatusHistory `json:"statusHistory"`
 	Comments      []ApplicationComment       `json:"comments"`

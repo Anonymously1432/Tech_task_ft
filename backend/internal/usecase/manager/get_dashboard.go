@@ -18,8 +18,8 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 
 	newToday, err := u.repo.CountApplicationsByStatusAndDate(ctx, &application_repository.CountApplicationsByStatusAndDateParams{
 		Status:      "NEW",
-		CreatedAt:   pgtype.Timestamp{Time: today, Valid: true},
-		CreatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
+		UpdatedAt:   pgtype.Timestamp{Time: today, Valid: true},
+		UpdatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("count new applications today: %w", custom_errors.ErrInternal)
@@ -34,8 +34,8 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 
 	approvedThisMonth, err := u.repo.CountApplicationsByStatusAndDateRange(ctx, &application_repository.CountApplicationsByStatusAndDateRangeParams{
 		Status:      "APPROVED",
-		CreatedAt:   pgtype.Timestamp{Time: monthStart, Valid: true},
-		CreatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
+		UpdatedAt:   pgtype.Timestamp{Time: monthStart, Valid: true},
+		UpdatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("count approved applications: %w", custom_errors.ErrInternal)
@@ -43,8 +43,8 @@ func (u *UseCase) GetManagerDashboard(ctx context.Context) (*domain.ManagerDashb
 
 	rejectedThisMonth, err := u.repo.CountApplicationsByStatusAndDateRange(ctx, &application_repository.CountApplicationsByStatusAndDateRangeParams{
 		Status:      "REJECTED",
-		CreatedAt:   pgtype.Timestamp{Time: monthStart, Valid: true},
-		CreatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
+		UpdatedAt:   pgtype.Timestamp{Time: monthStart, Valid: true},
+		UpdatedAt_2: pgtype.Timestamp{Time: now, Valid: true},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("count rejected applications: %w", custom_errors.ErrInternal)

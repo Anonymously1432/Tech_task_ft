@@ -6,21 +6,22 @@ import (
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
 	"fmt"
+
+	"go.uber.org/zap"
 )
 
-func (u *UseCase) Get(ctx context.Context, userID, page, limit, offset int32, status string) (*domain.GetApplicationsResponse, error) {
+func (u *UseCase) Get(ctx context.Context, userID, page, limit, offset int32, status *string) (*domain.GetApplicationsResponse, error) {
 	res := new(domain.GetApplicationsResponse)
 
 	applications, err := u.repo.GetApplications(ctx, &application_repository.GetApplicationsParams{
-		UserID:  &userID,
-		Column2: status,
+		Column1: status,
 		Limit:   limit,
 		Offset:  offset,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to get applications: %w", custom_errors.ErrInternal)
 	}
-
+	u.logger.Info("apps", zap.Any("applications", applications))
 	count, err := u.repo.GetApplicationsCount(ctx, &application_repository.GetApplicationsCountParams{
 		UserID:  &userID,
 		Column2: status,
@@ -46,5 +47,6 @@ func (u *UseCase) Get(ctx context.Context, userID, page, limit, offset int32, st
 		Total: int32(count),
 	}
 
+	u.logger.Info("Applications", zap.Any("applications", res.Applications))
 	return res, nil
 }

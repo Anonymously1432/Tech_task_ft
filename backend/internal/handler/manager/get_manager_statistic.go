@@ -4,6 +4,8 @@ import (
 	custom_errors "buggy_insurance/internal/errors"
 	utils "buggy_insurance/internal/handler"
 	"errors"
+	"fmt"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -25,7 +27,29 @@ import (
 func (h *Handler) GetStatistics(c *fiber.Ctx) error {
 	period := c.Query("period", "month")
 
-	stats, err := h.Uc.GetManagerStatistics(c.Context(), period)
+	userID := c.Locals("user_id")
+	if userID == nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnauthorized,
+			"UNAUTHORIZED",
+			"authentication required",
+			nil,
+		)
+	}
+
+	id, err := strconv.Atoi(fmt.Sprintf("%v", userID))
+	if err != nil || id < 1 {
+		return utils.SendError(
+			c,
+			fiber.StatusUnauthorized,
+			"UNAUTHORIZED",
+			"invalid user id",
+			nil,
+		)
+	}
+
+	stats, err := h.Uc.GetManagerStatistics(c.Context(), period, int32(id))
 	if err != nil {
 		h.logger.Error("GetManagerStatistics error", zap.Error(err))
 

@@ -34,7 +34,7 @@ type IUseCase interface {
 		applicationID, managerID int32,
 		comment string,
 	) (*domain.CreateApplicationCommentResponse, error)
-	GetManagerStatistics(ctx context.Context, period string) (*domain.ManagerStatisticsResponse, error)
+	GetManagerStatistics(ctx context.Context, period string, userID int32) (*domain.ManagerStatisticsResponse, error)
 	GetManagerDashboard(ctx context.Context) (*domain.ManagerDashboardResponse, error)
 }
 

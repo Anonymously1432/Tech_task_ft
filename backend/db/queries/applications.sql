@@ -12,16 +12,20 @@ SELECT
     p.type AS product_type
 FROM applications a
          JOIN products p ON a.product_id = p.id
-WHERE a.user_id = $1
-  AND ($2::text IS NULL OR a.status = $2)
+WHERE (
+    $1 IS NULL
+        OR a.status = $1
+    )
 ORDER BY a.created_at DESC
-    LIMIT $3 OFFSET $4;
+    LIMIT $2 OFFSET $3;
 
 -- name: GetApplicationsCount :one
 SELECT COUNT(*) AS total
-FROM applications
+FROM applications a
 WHERE user_id = $1
-  AND ($2::text IS NULL OR status = $2);
+AND (
+    $2 IS NULL OR a.status = $2
+);
 
 -- name: GetApplicationByID :one
 SELECT
@@ -52,19 +56,19 @@ SELECT
     a.status,
     a.calculated_price,
     a.created_at,
-    u.id        AS client_id,
+    u.id AS client_id,
     u.full_name AS client_full_name,
-    u.email     AS client_email,
-    p.type      AS product_type
+    u.email AS client_email,
+    p.type AS product_type
 FROM applications a
-    JOIN users u ON a.user_id = u.id
-    JOIN products p ON a.product_id = p.id
+         JOIN users u ON a.user_id = u.id
+         JOIN products p ON a.product_id = p.id
 WHERE
-    ($1::text IS NULL OR a.status = $1)
-  AND ($2::text IS NULL OR p.type = $2)
-  AND ($3::timestamp IS NULL OR a.created_at >= $3)
-  AND ($4::timestamp IS NULL OR a.created_at <= $4)
-  AND ($5::int IS NULL OR u.id = $5)
+    ($1 = '' OR a.status = $1)
+  AND ($2 = '' OR p.type = $2)
+  AND ($3 IS NULL OR a.created_at >= $3)
+  AND ($4 IS NULL OR a.created_at <= $4)
+  AND ($5 = 0 OR u.id = $5)
 ORDER BY a.created_at DESC
     LIMIT $6 OFFSET $7;
 
@@ -74,8 +78,8 @@ FROM applications a
     JOIN users u ON a.user_id = u.id
     JOIN products p ON a.product_id = p.id
 WHERE
-    ($1::text IS NULL OR a.status = $1)
-  AND ($2::text IS NULL OR p.type = $2)
+    ($1::text = '' OR a.status = $1)
+  AND ($2::text = '' OR p.type = $2)
   AND ($3::timestamp IS NULL OR a.created_at >= $3)
   AND ($4::timestamp IS NULL OR a.created_at <= $4)
   AND ($5::int IS NULL OR u.id = $5);
@@ -154,13 +158,13 @@ INSERT INTO application_comments (
 SELECT p.type AS product_type, COUNT(*) AS total
 FROM applications a
          JOIN products p ON a.product_id = p.id
-WHERE a.created_at >= $1
+WHERE a.created_at >= $1 and manager_id = $2
 GROUP BY p.type;
 
 -- name: GetApplicationsCountByStatus :many
 SELECT status, COUNT(*) AS total
 FROM applications
-WHERE created_at >= $1
+WHERE created_at >= $1 and manager_id = $2
 GROUP BY status;
 
 -- name: GetApplicationsConversion :one
@@ -169,12 +173,12 @@ SELECT
     COUNT(*) FILTER (WHERE status = 'APPROVED') AS approved,
     COUNT(*) FILTER (WHERE status = 'REJECTED') AS rejected
 FROM applications
-WHERE created_at >= $1;
+WHERE created_at >= $1 and manager_id = $2;
 
 -- name: CountApplicationsByStatusAndDate :one
 SELECT COUNT(*) AS total
 FROM applications
-WHERE status = $1 AND created_at >= $2 AND created_at <= $3;
+WHERE status = $1 AND updated_at >= $2 AND updated_at <= $3;
 
 -- name: CountApplicationsByStatus :one
 SELECT COUNT(*) AS total
@@ -184,7 +188,7 @@ WHERE status = $1;
 -- name: CountApplicationsByStatusAndDateRange :one
 SELECT COUNT(*) AS total
 FROM applications
-WHERE status = $1 AND created_at BETWEEN $2 AND $3;
+WHERE status = $1 AND updated_at BETWEEN $2 AND $3;
 
 -- name: GetApplicationsChartData :many
 SELECT DATE(created_at) AS date,

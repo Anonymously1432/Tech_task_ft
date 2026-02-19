@@ -4,6 +4,7 @@ import (
 	"buggy_insurance/internal/errors"
 	"buggy_insurance/internal/handler"
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -28,18 +29,37 @@ import (
 // @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
 // @Router       /api/v1/applications [get]
 func (h *Handler) Get(c *fiber.Ctx) error {
-	userIDVal := c.Locals("user_id")
-	if userIDVal == nil {
-		h.logger.Error("User ID isn't in context.")
-		return utils.SendError(c, fiber.StatusUnauthorized, "UNAUTHORIZED", "User ID isn't in context", nil)
-	}
-	ID, err := strconv.Atoi(userIDVal.(string))
-	if err != nil {
-		h.logger.Error("Invalid user ID", zap.Error(err))
-		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "Invalid user ID", nil)
+	userID := c.Locals("user_id")
+	if userID == nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnauthorized,
+			"UNAUTHORIZED",
+			"authentication required",
+			nil,
+		)
 	}
 
-	status := c.Query("status", "")
+	id, err := strconv.Atoi(fmt.Sprintf("%v", userID))
+	if err != nil || id < 1 {
+		return utils.SendError(
+			c,
+			fiber.StatusUnauthorized,
+			"UNAUTHORIZED",
+			"invalid user id",
+			nil,
+		)
+	}
+
+	statusStr := c.Query("status", "")
+	var status *string // создаём указатель на строку
+
+	if statusStr != "" {
+		status = &statusStr // передаём указатель, если есть значение
+	} else {
+		status = nil // nil если статус не пришёл
+	}
+
 	pageStr := c.Query("page", "1")
 	limitStr := c.Query("limit", "10")
 
@@ -55,7 +75,7 @@ func (h *Handler) Get(c *fiber.Ctx) error {
 
 	offset := (page - 1) * limit
 
-	applications, err := h.Uc.Get(c.Context(), int32(ID), int32(page), int32(limit), int32(offset), status)
+	applications, err := h.Uc.Get(c.Context(), int32(id), int32(page), int32(limit), int32(offset), status)
 	if err != nil {
 		h.logger.Error("GetApplications error", zap.Error(err))
 

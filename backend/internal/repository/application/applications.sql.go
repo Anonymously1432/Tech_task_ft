@@ -31,17 +31,17 @@ func (q *Queries) CountApplicationsByStatus(ctx context.Context, arg *CountAppli
 const countApplicationsByStatusAndDate = `-- name: CountApplicationsByStatusAndDate :one
 SELECT COUNT(*) AS total
 FROM applications
-WHERE status = $1 AND created_at >= $2 AND created_at <= $3
+WHERE status = $1 AND updated_at >= $2 AND updated_at <= $3
 `
 
 type CountApplicationsByStatusAndDateParams struct {
 	Status      string           `db:"status" json:"status"`
-	CreatedAt   pgtype.Timestamp `db:"created_at" json:"created_at"`
-	CreatedAt_2 pgtype.Timestamp `db:"created_at_2" json:"created_at_2"`
+	UpdatedAt   pgtype.Timestamp `db:"updated_at" json:"updated_at"`
+	UpdatedAt_2 pgtype.Timestamp `db:"updated_at_2" json:"updated_at_2"`
 }
 
 func (q *Queries) CountApplicationsByStatusAndDate(ctx context.Context, arg *CountApplicationsByStatusAndDateParams) (int64, error) {
-	row := q.db.QueryRow(ctx, countApplicationsByStatusAndDate, arg.Status, arg.CreatedAt, arg.CreatedAt_2)
+	row := q.db.QueryRow(ctx, countApplicationsByStatusAndDate, arg.Status, arg.UpdatedAt, arg.UpdatedAt_2)
 	var total int64
 	err := row.Scan(&total)
 	return total, err
@@ -50,17 +50,17 @@ func (q *Queries) CountApplicationsByStatusAndDate(ctx context.Context, arg *Cou
 const countApplicationsByStatusAndDateRange = `-- name: CountApplicationsByStatusAndDateRange :one
 SELECT COUNT(*) AS total
 FROM applications
-WHERE status = $1 AND created_at BETWEEN $2 AND $3
+WHERE status = $1 AND updated_at BETWEEN $2 AND $3
 `
 
 type CountApplicationsByStatusAndDateRangeParams struct {
 	Status      string           `db:"status" json:"status"`
-	CreatedAt   pgtype.Timestamp `db:"created_at" json:"created_at"`
-	CreatedAt_2 pgtype.Timestamp `db:"created_at_2" json:"created_at_2"`
+	UpdatedAt   pgtype.Timestamp `db:"updated_at" json:"updated_at"`
+	UpdatedAt_2 pgtype.Timestamp `db:"updated_at_2" json:"updated_at_2"`
 }
 
 func (q *Queries) CountApplicationsByStatusAndDateRange(ctx context.Context, arg *CountApplicationsByStatusAndDateRangeParams) (int64, error) {
-	row := q.db.QueryRow(ctx, countApplicationsByStatusAndDateRange, arg.Status, arg.CreatedAt, arg.CreatedAt_2)
+	row := q.db.QueryRow(ctx, countApplicationsByStatusAndDateRange, arg.Status, arg.UpdatedAt, arg.UpdatedAt_2)
 	var total int64
 	err := row.Scan(&total)
 	return total, err
@@ -314,17 +314,18 @@ SELECT
     p.type AS product_type
 FROM applications a
          JOIN products p ON a.product_id = p.id
-WHERE a.user_id = $1
-  AND ($2::text IS NULL OR a.status = $2)
+WHERE (
+    $1 IS NULL
+        OR a.status = $1
+    )
 ORDER BY a.created_at DESC
-    LIMIT $3 OFFSET $4
+    LIMIT $2 OFFSET $3
 `
 
 type GetApplicationsParams struct {
-	UserID  *int32 `db:"user_id" json:"user_id"`
-	Column2 string `db:"column_2" json:"column_2"`
-	Limit   int32  `db:"limit" json:"limit"`
-	Offset  int32  `db:"offset" json:"offset"`
+	Column1 interface{} `db:"column_1" json:"column_1"`
+	Limit   int32       `db:"limit" json:"limit"`
+	Offset  int32       `db:"offset" json:"offset"`
 }
 
 type GetApplicationsRow struct {
@@ -336,12 +337,7 @@ type GetApplicationsRow struct {
 }
 
 func (q *Queries) GetApplications(ctx context.Context, arg *GetApplicationsParams) ([]*GetApplicationsRow, error) {
-	rows, err := q.db.Query(ctx, getApplications,
-		arg.UserID,
-		arg.Column2,
-		arg.Limit,
-		arg.Offset,
-	)
+	rows, err := q.db.Query(ctx, getApplications, arg.Column1, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -415,11 +411,12 @@ SELECT
     COUNT(*) FILTER (WHERE status = 'APPROVED') AS approved,
     COUNT(*) FILTER (WHERE status = 'REJECTED') AS rejected
 FROM applications
-WHERE created_at >= $1
+WHERE created_at >= $1 and manager_id = $2
 `
 
 type GetApplicationsConversionParams struct {
 	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
+	ManagerID *int32           `db:"manager_id" json:"manager_id"`
 }
 
 type GetApplicationsConversionRow struct {
@@ -429,7 +426,7 @@ type GetApplicationsConversionRow struct {
 }
 
 func (q *Queries) GetApplicationsConversion(ctx context.Context, arg *GetApplicationsConversionParams) (*GetApplicationsConversionRow, error) {
-	row := q.db.QueryRow(ctx, getApplicationsConversion, arg.CreatedAt)
+	row := q.db.QueryRow(ctx, getApplicationsConversion, arg.CreatedAt, arg.ManagerID)
 	var i GetApplicationsConversionRow
 	err := row.Scan(&i.Total, &i.Approved, &i.Rejected)
 	return &i, err
@@ -437,14 +434,16 @@ func (q *Queries) GetApplicationsConversion(ctx context.Context, arg *GetApplica
 
 const getApplicationsCount = `-- name: GetApplicationsCount :one
 SELECT COUNT(*) AS total
-FROM applications
+FROM applications a
 WHERE user_id = $1
-  AND ($2::text IS NULL OR status = $2)
+AND (
+    $2 IS NULL OR a.status = $2
+)
 `
 
 type GetApplicationsCountParams struct {
-	UserID  *int32 `db:"user_id" json:"user_id"`
-	Column2 string `db:"column_2" json:"column_2"`
+	UserID  *int32      `db:"user_id" json:"user_id"`
+	Column2 interface{} `db:"column_2" json:"column_2"`
 }
 
 func (q *Queries) GetApplicationsCount(ctx context.Context, arg *GetApplicationsCountParams) (int64, error) {
@@ -457,12 +456,13 @@ func (q *Queries) GetApplicationsCount(ctx context.Context, arg *GetApplications
 const getApplicationsCountByStatus = `-- name: GetApplicationsCountByStatus :many
 SELECT status, COUNT(*) AS total
 FROM applications
-WHERE created_at >= $1
+WHERE created_at >= $1 and manager_id = $2
 GROUP BY status
 `
 
 type GetApplicationsCountByStatusParams struct {
 	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
+	ManagerID *int32           `db:"manager_id" json:"manager_id"`
 }
 
 type GetApplicationsCountByStatusRow struct {
@@ -471,7 +471,7 @@ type GetApplicationsCountByStatusRow struct {
 }
 
 func (q *Queries) GetApplicationsCountByStatus(ctx context.Context, arg *GetApplicationsCountByStatusParams) ([]*GetApplicationsCountByStatusRow, error) {
-	rows, err := q.db.Query(ctx, getApplicationsCountByStatus, arg.CreatedAt)
+	rows, err := q.db.Query(ctx, getApplicationsCountByStatus, arg.CreatedAt, arg.ManagerID)
 	if err != nil {
 		return nil, err
 	}
@@ -494,12 +494,13 @@ const getApplicationsCountByType = `-- name: GetApplicationsCountByType :many
 SELECT p.type AS product_type, COUNT(*) AS total
 FROM applications a
          JOIN products p ON a.product_id = p.id
-WHERE a.created_at >= $1
+WHERE a.created_at >= $1 and manager_id = $2
 GROUP BY p.type
 `
 
 type GetApplicationsCountByTypeParams struct {
 	CreatedAt pgtype.Timestamp `db:"created_at" json:"created_at"`
+	ManagerID *int32           `db:"manager_id" json:"manager_id"`
 }
 
 type GetApplicationsCountByTypeRow struct {
@@ -508,7 +509,7 @@ type GetApplicationsCountByTypeRow struct {
 }
 
 func (q *Queries) GetApplicationsCountByType(ctx context.Context, arg *GetApplicationsCountByTypeParams) ([]*GetApplicationsCountByTypeRow, error) {
-	rows, err := q.db.Query(ctx, getApplicationsCountByType, arg.CreatedAt)
+	rows, err := q.db.Query(ctx, getApplicationsCountByType, arg.CreatedAt, arg.ManagerID)
 	if err != nil {
 		return nil, err
 	}
@@ -586,31 +587,31 @@ SELECT
     a.status,
     a.calculated_price,
     a.created_at,
-    u.id        AS client_id,
+    u.id AS client_id,
     u.full_name AS client_full_name,
-    u.email     AS client_email,
-    p.type      AS product_type
+    u.email AS client_email,
+    p.type AS product_type
 FROM applications a
-    JOIN users u ON a.user_id = u.id
-    JOIN products p ON a.product_id = p.id
+         JOIN users u ON a.user_id = u.id
+         JOIN products p ON a.product_id = p.id
 WHERE
-    ($1::text IS NULL OR a.status = $1)
-  AND ($2::text IS NULL OR p.type = $2)
-  AND ($3::timestamp IS NULL OR a.created_at >= $3)
-  AND ($4::timestamp IS NULL OR a.created_at <= $4)
-  AND ($5::int IS NULL OR u.id = $5)
+    ($1 = '' OR a.status = $1)
+  AND ($2 = '' OR p.type = $2)
+  AND ($3 IS NULL OR a.created_at >= $3)
+  AND ($4 IS NULL OR a.created_at <= $4)
+  AND ($5 = 0 OR u.id = $5)
 ORDER BY a.created_at DESC
     LIMIT $6 OFFSET $7
 `
 
 type GetManagerApplicationsParams struct {
-	Column1 string           `db:"column_1" json:"column_1"`
-	Column2 string           `db:"column_2" json:"column_2"`
-	Column3 pgtype.Timestamp `db:"column_3" json:"column_3"`
-	Column4 pgtype.Timestamp `db:"column_4" json:"column_4"`
-	Column5 int32            `db:"column_5" json:"column_5"`
-	Limit   int32            `db:"limit" json:"limit"`
-	Offset  int32            `db:"offset" json:"offset"`
+	Column1 interface{} `db:"column_1" json:"column_1"`
+	Column2 interface{} `db:"column_2" json:"column_2"`
+	Column3 interface{} `db:"column_3" json:"column_3"`
+	Column4 interface{} `db:"column_4" json:"column_4"`
+	Column5 interface{} `db:"column_5" json:"column_5"`
+	Limit   int32       `db:"limit" json:"limit"`
+	Offset  int32       `db:"offset" json:"offset"`
 }
 
 type GetManagerApplicationsRow struct {
@@ -667,8 +668,8 @@ FROM applications a
     JOIN users u ON a.user_id = u.id
     JOIN products p ON a.product_id = p.id
 WHERE
-    ($1::text IS NULL OR a.status = $1)
-  AND ($2::text IS NULL OR p.type = $2)
+    ($1::text = '' OR a.status = $1)
+  AND ($2::text = '' OR p.type = $2)
   AND ($3::timestamp IS NULL OR a.created_at >= $3)
   AND ($4::timestamp IS NULL OR a.created_at <= $4)
   AND ($5::int IS NULL OR u.id = $5)

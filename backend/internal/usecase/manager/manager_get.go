@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgtype"
+	"go.uber.org/zap"
 )
 
 func (u *UseCase) GetManagerApplications(
@@ -40,6 +41,16 @@ func (u *UseCase) GetManagerApplications(
 	if dateTo != nil {
 		to = *dateTo
 	}
+
+	u.logger.Info("Params", zap.Any("asdfa", application_repository.GetManagerApplicationsParams{
+		Column1: s,
+		Column2: pt,
+		Column3: pgtype.Timestamp{Time: from, Valid: !from.IsZero()},
+		Column4: pgtype.Timestamp{Time: to, Valid: !to.IsZero()},
+		Column5: cid,
+		Limit:   limit,
+		Offset:  offset,
+	}))
 
 	apps, err := u.repo.GetManagerApplications(ctx, &application_repository.GetManagerApplicationsParams{
 		Column1: s,
