@@ -38,7 +38,7 @@ func (u *UseCase) GetByID(ctx context.Context, applicationID int32) (*domain.App
 		StatusHistory:   make([]domain.ApplicationStatus, len(historyRows)),
 	}
 
-	if app.CalculatedPrice.Valid {
+	if app.CalculatedPrice.Valid && app.CalculatedPrice.Int != nil {
 		res.CalculatedPrice = int(app.CalculatedPrice.Int.Int64())
 	}
 

@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -381,7 +382,7 @@ type ApplicationDetail struct {
 	ID              int32               `json:"id"`
 	ProductType     string              `json:"productType"`
 	Status          string              `json:"status"`
-	Data            []byte              `json:"data"`
+	Data            json.RawMessage     `json:"data"`
 	CalculatedPrice int                 `json:"calculatedPrice"`
 	CreatedAt       time.Time           `json:"createdAt"`
 	StatusHistory   []ApplicationStatus `json:"statusHistory"`

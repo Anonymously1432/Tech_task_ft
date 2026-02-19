@@ -3,6 +3,7 @@ package manager
 import (
 	"buggy_insurance/internal/domain"
 	utils "buggy_insurance/internal/handler"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -28,9 +29,25 @@ import (
 func (h *Handler) UpdateApplicationStatus(c *fiber.Ctx) error {
 	userID := c.Locals("user_id")
 	if userID == nil {
-		return utils.SendError(c, fiber.StatusUnauthorized, "UNAUTHORIZED", "user not authorized", nil)
+		return utils.SendError(
+			c,
+			fiber.StatusUnauthorized,
+			"UNAUTHORIZED",
+			"authentication required",
+			nil,
+		)
 	}
 
+	id, err := strconv.Atoi(fmt.Sprintf("%v", userID))
+	if err != nil || id < 1 {
+		return utils.SendError(
+			c,
+			fiber.StatusUnauthorized,
+			"UNAUTHORIZED",
+			"invalid user id",
+			nil,
+		)
+	}
 	applicationID, err := strconv.Atoi(c.Params("id"))
 	if err != nil || applicationID < 1 {
 		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid application id", map[string]string{"id": "must be a positive integer"})
@@ -47,6 +64,7 @@ func (h *Handler) UpdateApplicationStatus(c *fiber.Ctx) error {
 
 	resp, err := h.Uc.UpdateApplicationStatus(
 		c.Context(),
+		int32(id),
 		int32(applicationID),
 		req.Status,
 		req.Comment,

@@ -121,12 +121,12 @@ WHERE id = $1
 -- name: CreateApplicationComment :exec
 INSERT INTO application_comments (
     application_id,
-    author_role,
+    user_id,
     comment,
     created_at
 ) VALUES (
     $1,
-    'MANAGER',
+    $3,
     $2,
     NOW()
 );

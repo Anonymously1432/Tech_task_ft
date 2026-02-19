@@ -11,6 +11,7 @@ import (
 
 func (u *UseCase) UpdateApplicationStatus(
 	ctx context.Context,
+	userID,
 	applicationID int32,
 	status string,
 	comment string,
@@ -32,6 +33,7 @@ func (u *UseCase) UpdateApplicationStatus(
 
 	if strings.TrimSpace(comment) != "" {
 		if err = u.repo.CreateApplicationComment(ctx, &application_repository.CreateApplicationCommentParams{
+			UserID:        &userID,
 			ApplicationID: &applicationID,
 			Comment:       comment,
 		}); err != nil {

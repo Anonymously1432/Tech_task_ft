@@ -108,12 +108,12 @@ func (q *Queries) CreateApplication(ctx context.Context, arg *CreateApplicationP
 const createApplicationComment = `-- name: CreateApplicationComment :exec
 INSERT INTO application_comments (
     application_id,
-    author_role,
+    user_id,
     comment,
     created_at
 ) VALUES (
     $1,
-    'MANAGER',
+    $3,
     $2,
     NOW()
 )
@@ -122,10 +122,11 @@ INSERT INTO application_comments (
 type CreateApplicationCommentParams struct {
 	ApplicationID *int32 `db:"application_id" json:"application_id"`
 	Comment       string `db:"comment" json:"comment"`
+	UserID        *int32 `db:"user_id" json:"user_id"`
 }
 
 func (q *Queries) CreateApplicationComment(ctx context.Context, arg *CreateApplicationCommentParams) error {
-	_, err := q.db.Exec(ctx, createApplicationComment, arg.ApplicationID, arg.Comment)
+	_, err := q.db.Exec(ctx, createApplicationComment, arg.ApplicationID, arg.Comment, arg.UserID)
 	return err
 }
 

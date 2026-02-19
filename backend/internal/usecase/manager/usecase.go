@@ -23,6 +23,7 @@ type IUseCase interface {
 	) (*domain.ManagerApplicationDetail, error)
 	UpdateApplicationStatus(
 		ctx context.Context,
+		userID,
 		applicationID int32,
 		status string,
 		comment string,
