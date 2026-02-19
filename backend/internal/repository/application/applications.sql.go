@@ -594,24 +594,13 @@ SELECT
 FROM applications a
          JOIN users u ON a.user_id = u.id
          JOIN products p ON a.product_id = p.id
-WHERE
-    ($1 = '' OR a.status = $1)
-  AND ($2 = '' OR p.type = $2)
-  AND ($3 IS NULL OR a.created_at >= $3)
-  AND ($4 IS NULL OR a.created_at <= $4)
-  AND ($5 = 0 OR u.id = $5)
 ORDER BY a.created_at DESC
-    LIMIT $6 OFFSET $7
+    LIMIT $1 OFFSET $2
 `
 
 type GetManagerApplicationsParams struct {
-	Column1 interface{} `db:"column_1" json:"column_1"`
-	Column2 interface{} `db:"column_2" json:"column_2"`
-	Column3 interface{} `db:"column_3" json:"column_3"`
-	Column4 interface{} `db:"column_4" json:"column_4"`
-	Column5 interface{} `db:"column_5" json:"column_5"`
-	Limit   int32       `db:"limit" json:"limit"`
-	Offset  int32       `db:"offset" json:"offset"`
+	Limit  int32 `db:"limit" json:"limit"`
+	Offset int32 `db:"offset" json:"offset"`
 }
 
 type GetManagerApplicationsRow struct {
@@ -626,15 +615,7 @@ type GetManagerApplicationsRow struct {
 }
 
 func (q *Queries) GetManagerApplications(ctx context.Context, arg *GetManagerApplicationsParams) ([]*GetManagerApplicationsRow, error) {
-	rows, err := q.db.Query(ctx, getManagerApplications,
-		arg.Column1,
-		arg.Column2,
-		arg.Column3,
-		arg.Column4,
-		arg.Column5,
-		arg.Limit,
-		arg.Offset,
-	)
+	rows, err := q.db.Query(ctx, getManagerApplications, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -665,32 +646,12 @@ func (q *Queries) GetManagerApplications(ctx context.Context, arg *GetManagerApp
 const getManagerApplicationsCount = `-- name: GetManagerApplicationsCount :one
 SELECT COUNT(*) AS total
 FROM applications a
-    JOIN users u ON a.user_id = u.id
-    JOIN products p ON a.product_id = p.id
-WHERE
-    ($1::text = '' OR a.status = $1)
-  AND ($2::text = '' OR p.type = $2)
-  AND ($3::timestamp IS NULL OR a.created_at >= $3)
-  AND ($4::timestamp IS NULL OR a.created_at <= $4)
-  AND ($5::int IS NULL OR u.id = $5)
+JOIN users u ON a.user_id = u.id
+JOIN products p ON a.product_id = p.id
 `
 
-type GetManagerApplicationsCountParams struct {
-	Column1 string           `db:"column_1" json:"column_1"`
-	Column2 string           `db:"column_2" json:"column_2"`
-	Column3 pgtype.Timestamp `db:"column_3" json:"column_3"`
-	Column4 pgtype.Timestamp `db:"column_4" json:"column_4"`
-	Column5 int32            `db:"column_5" json:"column_5"`
-}
-
-func (q *Queries) GetManagerApplicationsCount(ctx context.Context, arg *GetManagerApplicationsCountParams) (int64, error) {
-	row := q.db.QueryRow(ctx, getManagerApplicationsCount,
-		arg.Column1,
-		arg.Column2,
-		arg.Column3,
-		arg.Column4,
-		arg.Column5,
-	)
+func (q *Queries) GetManagerApplicationsCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, getManagerApplicationsCount)
 	var total int64
 	err := row.Scan(&total)
 	return total, err

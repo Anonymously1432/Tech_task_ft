@@ -34,6 +34,7 @@ func (u *UseCase) Create(ctx context.Context, data string, userID, productID, ma
 		if strings.Contains(err.Error(), "duplicate key") {
 			return nil, fmt.Errorf("application already exists: %w", custom_errors.ErrConflict)
 		}
+		u.logger.Error("failed to create application", zap.Error(err))
 		return nil, fmt.Errorf("failed to create application: %w", custom_errors.ErrInternal)
 	}
 

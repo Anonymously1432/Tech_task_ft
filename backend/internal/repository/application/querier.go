@@ -26,7 +26,7 @@ type Querier interface {
 	GetApplicationsCountByType(ctx context.Context, arg *GetApplicationsCountByTypeParams) ([]*GetApplicationsCountByTypeRow, error)
 	GetManagerApplicationByID(ctx context.Context, arg *GetManagerApplicationByIDParams) (*GetManagerApplicationByIDRow, error)
 	GetManagerApplications(ctx context.Context, arg *GetManagerApplicationsParams) ([]*GetManagerApplicationsRow, error)
-	GetManagerApplicationsCount(ctx context.Context, arg *GetManagerApplicationsCountParams) (int64, error)
+	GetManagerApplicationsCount(ctx context.Context) (int64, error)
 	GetRecentApplications(ctx context.Context, arg *GetRecentApplicationsParams) ([]*GetRecentApplicationsRow, error)
 	GetUserByID(ctx context.Context, arg *GetUserByIDParams) (*GetUserByIDRow, error)
 	UpdateApplicationStatus(ctx context.Context, arg *UpdateApplicationStatusParams) (*UpdateApplicationStatusRow, error)

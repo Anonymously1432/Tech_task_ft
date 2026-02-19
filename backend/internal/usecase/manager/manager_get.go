@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgtype"
 	"go.uber.org/zap"
 )
 
@@ -20,58 +19,20 @@ func (u *UseCase) GetManagerApplications(
 	clientID *int32,
 ) (*domain.GetManagerApplicationsResponse, error) {
 
-	s := ""
-	pt := ""
-	cid := int32(0)
-	from := time.Time{}
-	to := time.Time{}
-
-	if status != nil {
-		s = *status
-	}
-	if productType != nil {
-		pt = *productType
-	}
-	if clientID != nil {
-		cid = *clientID
-	}
-	if dateFrom != nil {
-		from = *dateFrom
-	}
-	if dateTo != nil {
-		to = *dateTo
-	}
-
-	u.logger.Info("Params", zap.Any("asdfa", application_repository.GetManagerApplicationsParams{
-		Column1: s,
-		Column2: pt,
-		Column3: pgtype.Timestamp{Time: from, Valid: !from.IsZero()},
-		Column4: pgtype.Timestamp{Time: to, Valid: !to.IsZero()},
-		Column5: cid,
-		Limit:   limit,
-		Offset:  offset,
+	u.logger.Info("Params", zap.Any("", application_repository.GetManagerApplicationsParams{
+		Limit:  limit,
+		Offset: offset,
 	}))
 
 	apps, err := u.repo.GetManagerApplications(ctx, &application_repository.GetManagerApplicationsParams{
-		Column1: s,
-		Column2: pt,
-		Column3: pgtype.Timestamp{Time: from, Valid: !from.IsZero()},
-		Column4: pgtype.Timestamp{Time: to, Valid: !to.IsZero()},
-		Column5: cid,
-		Limit:   limit,
-		Offset:  offset,
+		Limit:  limit,
+		Offset: offset,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("fetch applications: %w", custom_errors.ErrInternal)
 	}
 
-	total, err := u.repo.GetManagerApplicationsCount(ctx, &application_repository.GetManagerApplicationsCountParams{
-		Column1: s,
-		Column2: pt,
-		Column3: pgtype.Timestamp{Time: from, Valid: !from.IsZero()},
-		Column4: pgtype.Timestamp{Time: to, Valid: !to.IsZero()},
-		Column5: cid,
-	})
+	total, err := u.repo.GetManagerApplicationsCount(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("fetch applications count: %w", custom_errors.ErrInternal)
 	}

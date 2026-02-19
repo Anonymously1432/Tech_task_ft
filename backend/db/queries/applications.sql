@@ -63,26 +63,14 @@ SELECT
 FROM applications a
          JOIN users u ON a.user_id = u.id
          JOIN products p ON a.product_id = p.id
-WHERE
-    ($1 = '' OR a.status = $1)
-  AND ($2 = '' OR p.type = $2)
-  AND ($3 IS NULL OR a.created_at >= $3)
-  AND ($4 IS NULL OR a.created_at <= $4)
-  AND ($5 = 0 OR u.id = $5)
 ORDER BY a.created_at DESC
-    LIMIT $6 OFFSET $7;
+    LIMIT $1 OFFSET $2;
 
 -- name: GetManagerApplicationsCount :one
 SELECT COUNT(*) AS total
 FROM applications a
-    JOIN users u ON a.user_id = u.id
-    JOIN products p ON a.product_id = p.id
-WHERE
-    ($1::text = '' OR a.status = $1)
-  AND ($2::text = '' OR p.type = $2)
-  AND ($3::timestamp IS NULL OR a.created_at >= $3)
-  AND ($4::timestamp IS NULL OR a.created_at <= $4)
-  AND ($5::int IS NULL OR u.id = $5);
+JOIN users u ON a.user_id = u.id
+JOIN products p ON a.product_id = p.id;
 
 -- name: GetManagerApplicationByID :one
 SELECT

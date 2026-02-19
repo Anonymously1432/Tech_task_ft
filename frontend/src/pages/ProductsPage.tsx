@@ -9,6 +9,7 @@ const ICON_BY_TYPE: Record<string, { icon: string }> = {
   HOME: { icon: 'home' },
   LIFE: { icon: 'heart' },
   HEALTH: { icon: 'medical' },
+  TRAVEL: { icon: 'plane' },
 }
 
 export default function ProductsPage() {

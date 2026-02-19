@@ -169,7 +169,7 @@ export default function ProductFormPage() {
       setError('Продукт не найден')
       return
     }
-    const managerId = 10
+    const managerId = 5
     const data: Record<string, unknown> = {}
     Object.entries(formData).forEach(([k, v]) => {
       data[k] = v
