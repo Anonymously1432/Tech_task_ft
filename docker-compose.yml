@@ -18,7 +18,7 @@ services:
       interval: 5s
       retries: 5
     networks:
-      - my-network
+      - api-network
     env_file:
       - .env
 
@@ -28,22 +28,22 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ../../db/migrations:/migrations
+      - ./backend/db/migrations:/migrations
     command: [
       "-path", "/migrations",
-      "-database", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable",
+      "-database", "postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable",
       "up"
     ]
     networks:
-      - my-network
+      - api-network
     env_file:
       - .env
 
   api:
     build:
-      context: ../../
+      context: ./backend
       dockerfile: build/service/Dockerfile
-    container_name: MyApp
+    container_name: myapp_api
     depends_on:
       db:
         condition: service_healthy
@@ -52,17 +52,31 @@ services:
     ports:
       - "${API_PORT}:${API_PORT}"
     networks:
-      - my-network
+      - api-network
     environment:
-      DB_SOURCE: "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"
+      DB_SOURCE: "postgresql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable"
       API_PORT: "${API_PORT}"
     env_file:
       - .env
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: myapp_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: "http://api:${API_PORT}"
+    depends_on:
+      - api
+    networks:
+      - api-network
+    env_file:
+      - .env
 
 networks:
-  my-network:
-    name: api-network
+  api-network:
 
 volumes:
   pgdata:
