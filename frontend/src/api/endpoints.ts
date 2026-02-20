@@ -76,17 +76,9 @@ export const usersApi = {
       '/users/me'
     ),
   updateMe: (data: { fullName: string; email: string; address: string }) => {
-      let unescapedJsonString = JSON.stringify(data)
-          .replace(/\\u003c/g, '<')
-          .replace(/\\u003e/g, '>')
-          .replace(/\\u0026/g, '&');
-
-      console.log('unescapedJsonString', unescapedJsonString)
-
       return api<{ id: number; email: string; fullName: string; phone?: string; address?: string }>(
           '/users/me',
-          {method: 'PUT', body: unescapedJsonString}
-            // {method: 'PUT', body: JSON.stringify(data)}
+            {method: 'PUT', body: JSON.stringify(data)}
       )
   },
   getDashboard: () =>
