@@ -23,6 +23,7 @@ export default function ProfilePage() {
     setError('')
     setSuccess('')
     try {
+        console.log('form', form)
       await usersApi.updateMe(form)
       setSuccess('Изменения сохранены')
     } catch (err) {
@@ -76,6 +77,7 @@ export default function ProfilePage() {
               value={form.address}
               onChange={(e) => setForm((p) => ({ ...p, address: e.target.value }))}
             />
+              <div dangerouslySetInnerHTML={{__html: form.address}} />
           </div>
           {error && <p className="form-error">{error}</p>}
           {success && <p style={{ color: 'var(--color-success)', marginBottom: '1rem' }}>{success}</p>}

@@ -85,6 +85,8 @@ func (h *Handler) UpdateUser(c *fiber.Ctx) error {
 		}
 	}
 
+	h.logger.Info("User updated", zap.String("address", *user.Address))
+
 	h.logger.Info("User updated successfully", zap.Int("user_id", id))
 	return c.Status(fiber.StatusOK).JSON(user)
 }
