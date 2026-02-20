@@ -1,16 +1,23 @@
 package helpers
 
 import (
+	"log"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
+var (
+	accessExpires  = mustParseSeconds(os.Getenv("JWT_ACCESS_EXPIRES"), time.Hour)
+	refreshExpires = mustParseSeconds(os.Getenv("JWT_REFRESH_EXPIRES"), 7*24*time.Hour)
+)
+
 func GenerateAccessToken(userID int32, secret string) (string, error) {
 	accessClaims := jwt.RegisteredClaims{
 		Subject:   strconv.Itoa(int(userID)),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(accessExpires)),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 	}
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
@@ -25,7 +32,7 @@ func GenerateAccessToken(userID int32, secret string) (string, error) {
 func GenerateRefreshToken(userID int32, secret string) (string, error) {
 	refreshClaims := jwt.RegisteredClaims{
 		Subject:   strconv.Itoa(int(userID)),
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(refreshExpires)),
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 	}
 
@@ -36,4 +43,18 @@ func GenerateRefreshToken(userID int32, secret string) (string, error) {
 	}
 
 	return refreshString, nil
+}
+
+func mustParseSeconds(env string, fallback time.Duration) time.Duration {
+	if env == "" {
+		return fallback
+	}
+
+	sec, err := strconv.Atoi(env)
+	if err != nil {
+		log.Printf("invalid seconds value %q, using fallback %v", env, fallback)
+		return fallback
+	}
+
+	return time.Duration(sec) * time.Second
 }
