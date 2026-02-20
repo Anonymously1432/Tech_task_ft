@@ -15,13 +15,6 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<LoginResponse>
-  register: (data: {
-    email: string
-    password: string
-    fullName: string
-    phone: string
-    birthDate: string
-  }) => Promise<{ id: number; email: string; fullName: string }>
   logout: () => void
 }
 
@@ -55,26 +48,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return res
   }
 
-  const register = async (data: {
-    email: string
-    password: string
-    fullName: string
-    phone: string
-    birthDate: string
-  }) => {
-    const res = await api<{ id: number; email: string; fullName: string }>(
-      '/auth/register',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          ...data,
-          birthDate: data.birthDate,
-        }),
-      }
-    )
-    return res
-  }
-
   const logout = () => {
     clearAuthData()
     setState({
@@ -84,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout }}>
+    <AuthContext.Provider value={{ ...state, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

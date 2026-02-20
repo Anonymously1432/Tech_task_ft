@@ -31,6 +31,7 @@ import (
 // @Failure      500  {object}  domain.ErrorResponse  "Internal server error"
 // @Router       /api/v1/manager/applications [get]
 func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
+	time.Sleep(7 * time.Second)
 	status := c.Query("status")
 	productType := c.Query("productType")
 	search := c.Query("search")

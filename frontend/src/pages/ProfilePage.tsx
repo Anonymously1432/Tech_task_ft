@@ -30,7 +30,6 @@ export default function ProfilePage() {
     }
   }
 
-  // Bug #4: Скрытая кнопка "Удалить профиль" через CSS (opacity: 0) — элемент в DOM, функционален при клике
   const handleDeleteProfile = () => {
     alert('Функция удаления профиля не реализована. Это намеренный баг для тестирования DevTools Elements.')
   }
@@ -83,7 +82,6 @@ export default function ProfilePage() {
           <button type="submit" className="btn btn-primary" style={{ marginRight: '0.5rem' }}>
             Сохранить изменения
           </button>
-          {/* Bug #4: Скрытая кнопка через CSS — opacity: 0, элемент в DOM, работает при клике */}
           <button
             type="button"
             className="btn btn-secondary"

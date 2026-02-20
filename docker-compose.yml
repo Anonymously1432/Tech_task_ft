@@ -59,13 +59,29 @@ services:
     env_file:
       - .env
 
-  frontend:
+  client:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: myapp_frontend
+    container_name: myapp_client
     ports:
       - "3000:3000"
+    environment:
+      REACT_APP_API_URL: "http://api:${API_PORT}"
+    depends_on:
+      - api
+    networks:
+      - api-network
+    env_file:
+      - .env
+
+  manager:
+    build:
+      context: ./frontend-manager
+      dockerfile: Dockerfile
+    container_name: myapp_manager
+    ports:
+      - "3001:3001"
     environment:
       REACT_APP_API_URL: "http://api:${API_PORT}"
     depends_on:

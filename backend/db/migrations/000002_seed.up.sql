@@ -23,22 +23,22 @@ INSERT INTO products (type, name, base_price, description, is_active) VALUES
 -- 2. Пользователи (как в ТЗ раздел 7.1)
 -- =====================================================
 INSERT INTO users (email, password_hash, full_name, phone, birth_date, address, role, is_active, created_at, updated_at) VALUES
-                                                                                                                             -- Обычные клиенты
+
                                                                                                                              ('client1@test.com', '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.', 'Иванов Иван Иванович', '+79001234567', '1990-05-15', 'г. Москва, ул. Ленина, д. 1, кв. 50', 'client', true, NOW(), NOW()),
                                                                                                                              ('client2@test.com', '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.', 'Петрова Мария Сергеевна', '+79009876543', '1985-08-22', 'г. Москва, ул. Пушкина, д. 10, кв. 100', 'client', true, NOW(), NOW()),
                                                                                                                              ('client3@test.com', '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.', 'Сидоров Алексей Павлович', '+79005554433', '1995-03-10', 'г. Москва, ул. Тверская, д. 5, кв. 25', 'client', true, NOW(), NOW()),
 
-                                                                                                                             -- Заблокированный клиент
+
                                                                                                                              ('blocked@test.com', '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.', 'Козлов Дмитрий', '+79001112233', '1980-12-01', 'г. Москва, ул. Арбат, д. 15, кв. 7', 'client', false, NOW(), NOW()),
 
-                                                                                                                             -- Менеджеры
+
                                                                                                                              ('manager1@test.com', '$2a$15$VFT6K5lSePQ94VaiwioQG.J8ecG.RL6QTfW0D5BsnWcrtU5B0FYey', 'Менеджер Мария Ивановна', '+79007778899', '1988-07-18', NULL, 'manager', true, NOW(), NOW()),
                                                                                                                              ('manager2@test.com', '$2a$15$VFT6K5lSePQ94VaiwioQG.J8ecG.RL6QTfW0D5BsnWcrtU5B0FYey', 'Менеджер Пётр Николаевич', '+79006665544', '1992-11-25', NULL, 'manager', true, NOW(), NOW()),
 
-                                                                                                                             -- Баг #16: NULL в обязательном поле full_name
+
                                                                                                                              ('broken@test.com', '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.', NULL, '+79003332211', '1991-09-09', 'г. Москва, ул. Ошибок, д. 99', 'client', true, NOW(), NOW()),
 
-                                                                                                                             -- Баг #15: дубликаты email
+
                                                                                                                              ('duplicate@test.com', '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.', 'Дубликат Первый', '+79004445566', '1987-04-04', 'г. Москва, ул. Повторов, д. 1', 'client', true, NOW(), NOW()),
                                                                                                                              ('duplicate@test.com', '$2a$15$cqi2kc3qAvdl7FkIajhIDOvEa8Q1cmBXNPAFvy/IMS7eeXqo4NhB.', 'Дубликат Второй', '+79004445567', '1987-04-04', 'г. Москва, ул. Повторов, д. 2', 'client', true, NOW(), NOW());
 
@@ -144,11 +144,8 @@ INSERT INTO policies (policy_number, application_id, user_id, product_id, status
                                                                                                                                                   ('INS-2026-00014', NULL, 2, 5, 'ACTIVE', '2026-03-01', '2026-03-15', 50000, 7500, '2026-03-01 10:00:00'),
                                                                                                                                                   ('INS-2026-00015', NULL, 3, 1, 'ACTIVE', '2026-02-15', '2027-02-15', 2000000, 23000, '2026-02-15 10:00:00');
 
--- =====================================================
--- 5. Платежи (как в ТЗ раздел 7.5) - Баг #13
--- =====================================================
 INSERT INTO payments (policy_id, user_id, amount, status, payment_method, transaction_id, created_at) VALUES
-                                                                                                          -- Для полиса INS-2026-00005 (премия 45000): COMPLETED 20000 + 20000 = 40000 (не хватает 5000)
+
                                                                                                           ((SELECT id FROM policies WHERE policy_number = 'INS-2026-00005'), 2, 20000, 'COMPLETED', 'BANK_CARD', 'txn_1001', '2026-01-12 12:00:00'),
                                                                                                           ((SELECT id FROM policies WHERE policy_number = 'INS-2026-00005'), 2, 20000, 'COMPLETED', 'BANK_CARD', 'txn_1002', '2026-01-12 12:05:00'),
                                                                                                           ((SELECT id FROM policies WHERE policy_number = 'INS-2026-00005'), 2, 5000, 'PENDING', 'BANK_CARD', 'txn_1003', '2026-01-20 10:00:00'),
@@ -163,9 +160,6 @@ INSERT INTO payments (policy_id, user_id, amount, status, payment_method, transa
                                                                                                           ((SELECT id FROM policies WHERE policy_number = 'INS-2026-00008'), 2, 42000, 'COMPLETED', 'BANK_CARD', 'txn_0007', '2026-02-01 11:00:00'),
                                                                                                           ((SELECT id FROM policies WHERE policy_number = 'INS-2026-00009'), 3, 8000, 'COMPLETED', 'BANK_CARD', 'txn_0008', '2026-02-01 11:00:00');
 
--- =====================================================
--- 6. История статусов (как в ТЗ раздел 7.6) - Баг #14
--- =====================================================
 INSERT INTO application_status_history (application_id, old_status, new_status, changed_by, comment, created_at) VALUES
                                                                                                                      -- Для заявки 1 (APPROVED)
                                                                                                                      (1, NULL, 'NEW', 1, 'Создание заявки', '2026-01-15 10:30:00'),
@@ -195,11 +189,6 @@ INSERT INTO application_status_history (application_id, old_status, new_status, 
                                                                                                                      (8, 'NEW', 'APPROVED', 5, 'Одобрено', '2026-01-23 09:00:00'),
                                                                                                                      (9, NULL, 'NEW', 2, 'Создание заявки', '2026-01-12 15:00:00'),
                                                                                                                      (9, 'NEW', 'APPROVED', 6, 'Одобрено', '2026-01-14 10:00:00'),
-
--- =====================================================
--- БАГ #14: Orphan-записи (application_id не существует)
--- Вставляем с заведомо несуществующим ID
--- =====================================================
                                                                                                                      (999999, 'NEW', 'UNDER_REVIEW', 5, 'Тестовый orphan', '2026-01-01 10:00:00'),
                                                                                                                      (999999, 'UNDER_REVIEW', 'REJECTED', 5, 'Ещё один orphan', '2026-01-02 11:00:00');
 
@@ -226,34 +215,3 @@ INSERT INTO refresh_tokens (user_id, token, expires_at, created_at) VALUES
                                                                         (5, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1IiwibmFtZSI6Ik1hbmFnZXIgTWFyaWEiLCJpYXQiOjE3Mzc4NDAwMDAsImV4cCI6MTczODQ0NDgwMH0', NOW() + INTERVAL '7 days', NOW());
 
 COMMIT;
-
--- =====================================================
--- Проверочные запросы (раскомментировать при необходимости)
--- =====================================================
-/*
--- Баг #15: Дубликаты email
-SELECT email, COUNT(*), array_agg(id) as user_ids
-FROM users
-GROUP BY email
-HAVING COUNT(*) > 1;
-
--- Баг #16: NULL в обязательных полях
-SELECT id, email, full_name, role
-FROM users
-WHERE full_name IS NULL OR full_name = '';
-
--- Баг #13: Несоответствие платежей
-SELECT p.id, p.policy_number, p.premium,
-       COALESCE(SUM(pay.amount) FILTER (WHERE pay.status = 'COMPLETED'), 0) as paid,
-       p.premium - COALESCE(SUM(pay.amount) FILTER (WHERE pay.status = 'COMPLETED'), 0) as diff
-FROM policies p
-LEFT JOIN payments pay ON p.id = pay.policy_id
-GROUP BY p.id
-HAVING p.premium != COALESCE(SUM(pay.amount) FILTER (WHERE pay.status = 'COMPLETED'), 0);
-
--- Баг #14: Orphan-записи
-SELECT ash.*
-FROM application_status_history ash
-LEFT JOIN applications a ON ash.application_id = a.id
-WHERE a.id IS NULL;
-*/

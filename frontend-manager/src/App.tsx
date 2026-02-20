@@ -1,20 +1,17 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './contexts/AuthContext'
 import Layout from './components/Layout'
-import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import ProductsPage from './pages/ProductsPage'
-import ProductFormPage from './pages/ProductFormPage'
 import DashboardPage from './pages/DashboardPage'
-import PoliciesPage from './pages/PoliciesPage'
-import ProfilePage from './pages/ProfilePage'
+import ApplicationsPage from './pages/ApplicationsPage'
+import ApplicationDetailPage from './pages/ApplicationDetailPage'
+import StatisticsPage from './pages/StatisticsPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   if (loading) return <div className="container" style={{ padding: '2rem', textAlign: 'center' }}>Загрузка...</div>
   if (!user) return <Navigate to="/login" replace />
-  if (user.role !== 'client') return <Navigate to="/login" replace />
+  if (user.role !== 'manager') return <Navigate to="/login" replace />
   return <>{children}</>
 }
 
@@ -22,11 +19,7 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="products" element={<ProductsPage />} />
-        <Route path="products/:type" element={<ProductFormPage />} />
         <Route
           path="dashboard"
           element={
@@ -36,23 +29,31 @@ export default function App() {
           }
         />
         <Route
-          path="policies"
+          path="applications"
           element={
             <ProtectedRoute>
-              <PoliciesPage />
+              <ApplicationsPage />
             </ProtectedRoute>
           }
         />
         <Route
-          path="profile"
+          path="applications/:id"
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              <ApplicationDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="statistics"
+          element={
+            <ProtectedRoute>
+              <StatisticsPage />
             </ProtectedRoute>
           }
         />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )
 }

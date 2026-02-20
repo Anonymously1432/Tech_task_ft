@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { productsApi } from '../api/endpoints'
 import type { Product } from '../types'
 
-// Bug #1: lookup для иконок. TRAVEL намеренно отсутствует — API не возвращает icon для TRAVEL, при обращении meta.icon для TRAVEL meta=undefined → TypeError
 const ICON_BY_TYPE: Record<string, { icon: string }> = {
   AUTO: { icon: 'car' },
   HOME: { icon: 'home' },
@@ -34,7 +33,6 @@ export default function ProductsPage() {
         {products.map((product) => (
           <div key={product.id} className="card">
             <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
-              {/* Bug #1: ICON_BY_TYPE[product.type] для TRAVEL = undefined, .icon вызовет TypeError */}
               {ICON_BY_TYPE[product.type].icon}
             </div>
             <h3 style={{ margin: '0 0 0.5rem 0' }}>{product.name}</h3>

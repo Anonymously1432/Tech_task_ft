@@ -16,7 +16,7 @@ export default function Nav() {
       }}
     >
       <Link
-        to="/"
+        to="/dashboard"
         style={{
           fontWeight: 700,
           fontSize: '1.25rem',
@@ -24,21 +24,16 @@ export default function Nav() {
           textDecoration: 'none',
         }}
       >
-        Buggy Insurance
+        Buggy Insurance — Manager
       </Link>
       <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
         {!user ? (
-          <>
-            <Link to="/products">Продукты</Link>
-            <Link to="/login">Вход</Link>
-            <Link to="/register">Регистрация</Link>
-          </>
+          <Link to="/login">Вход</Link>
         ) : (
           <>
-            <Link to="/products">Продукты</Link>
             <Link to="/dashboard">Dashboard</Link>
-            <Link to="/policies">Мои полисы</Link>
-            <Link to="/profile">Профиль</Link>
+            <Link to="/applications">Заявки</Link>
+            <Link to="/statistics">Статистика</Link>
             <button
               className="btn btn-outline"
               onClick={logout}
