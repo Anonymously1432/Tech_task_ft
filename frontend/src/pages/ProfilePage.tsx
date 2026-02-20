@@ -31,7 +31,7 @@ export default function ProfilePage() {
   }
 
   const handleDeleteProfile = () => {
-    alert('Функция удаления профиля не реализована. Это намеренный баг для тестирования DevTools Elements.')
+    alert('Функция удаления профиля не реализована')
   }
 
   if (loading) return <div className="container">Загрузка...</div>
