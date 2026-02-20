@@ -23,7 +23,7 @@ func (u *UseCase) Register(
 		return nil, fmt.Errorf("missing required fields: %w", custom_errors.ErrBadRequest)
 	}
 
-	hashPassword, err := helpers.HashPassword(password, u.salt)
+	hashPassword, err := helpers.HashPassword(password)
 	if err != nil {
 		u.logger.Error("Failed to hash password", zap.Error(err))
 		return nil, fmt.Errorf("hash password: %w", custom_errors.ErrInternal)

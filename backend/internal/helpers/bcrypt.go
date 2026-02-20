@@ -2,8 +2,8 @@ package helpers
 
 import "golang.org/x/crypto/bcrypt"
 
-func HashPassword(password string, salt int) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), salt)
+func HashPassword(password string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), 15)
 	if err != nil {
 		return "", err
 	}
