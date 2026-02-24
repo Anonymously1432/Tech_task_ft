@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { usersApi } from '../api/endpoints'
 
 export default function ProfilePage() {
@@ -7,7 +7,7 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
-    const addressPreviewRef = useRef<HTMLDivElement>(null)
+    // const addressPreviewRef = useRef<HTMLDivElement>(null)
 
     // useEffect(() => {
     //     if (!addressPreviewRef.current) return
