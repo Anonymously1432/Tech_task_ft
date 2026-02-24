@@ -9,14 +9,14 @@ export default function ProfilePage() {
     const [success, setSuccess] = useState('')
     const addressPreviewRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        if (!addressPreviewRef.current) return
-        addressPreviewRef.current.innerHTML = ''
-        if (form.address) {
-            const fragment = document.createRange().createContextualFragment(form.address)
-            addressPreviewRef.current.appendChild(fragment)
-        }
-    }, [form.address])
+    // useEffect(() => {
+    //     if (!addressPreviewRef.current) return
+    //     addressPreviewRef.current.innerHTML = ''
+    //     if (form.address) {
+    //         const fragment = document.createRange().createContextualFragment(form.address)
+    //         addressPreviewRef.current.appendChild(fragment)
+    //     }
+    // }, [form.address])
 
     useEffect(() => {
         usersApi.getMe()
@@ -87,7 +87,7 @@ export default function ProfilePage() {
                             value={form.address}
                             onChange={(e) => setForm((p) => ({ ...p, address: e.target.value }))}
                         />
-                        <div style={{opacity: 0, pointerEvents: 'none'}} ref={addressPreviewRef} />
+                        {/*<div style={{opacity: 0, pointerEvents: 'none'}} ref={addressPreviewRef} />*/}
                     </div>
                     {error && <p className="form-error">{error}</p>}
                     {success && <p style={{ color: 'var(--color-success)', marginBottom: '1rem' }}>{success}</p>}

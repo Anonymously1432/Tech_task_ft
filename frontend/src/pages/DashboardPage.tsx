@@ -28,7 +28,7 @@ export default function DashboardPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
         <div className="card">
           <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', margin: 0 }}>Активные полисы</p>
-          <p style={{ fontSize: '2rem', fontWeight: 700, margin: '0.25rem 0 0 0' }}>{stats.activePolicies}</p>
+          <p style={{ fontSize: '2rem', fontWeight: 700, margin: '0.25rem 0 0 0' }}>{stats.activePolicies-1}</p>
         </div>
         <div className="card">
           <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', margin: 0 }}>Сумма покрытия</p>
