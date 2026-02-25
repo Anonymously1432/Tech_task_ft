@@ -24,7 +24,7 @@ export default function DashboardPage() {
   return (
     <div className="container">
       <h1 style={{ marginBottom: '0.5rem' }}>Добро пожаловать, {user.fullName}!</h1>
-      <p style={{ color: 'var(--color-text-muted)', marginBottom: '2rem' }}>Dashboard</p>
+      <p style={{ color: 'var(--color-text-muted)', marginBottom: '2rem' }}>Дашборд</p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
         <div className="card">
           <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', margin: 0 }}>Активные полисы</p>

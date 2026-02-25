@@ -36,7 +36,7 @@ export default function Nav() {
         ) : (
           <>
             <Link to="/products">Продукты</Link>
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/dashboard">Дашборд</Link>
             <Link to="/policies">Мои полисы</Link>
             <Link to="/profile">Профиль</Link>
             <button

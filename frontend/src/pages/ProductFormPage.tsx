@@ -65,7 +65,6 @@ function calculatePrice(
     const age = Number(v('age')) || 30
     if (age > 50) p *= 1.5
     else if (age > 35) p *= 1.2
-    if (v('smoking') === true) p *= 1.25
     if (v('chronicDiseases') === true) p *= 1.2
     const term = v('termYears') as string
     if (term === '3') p *= 2.5

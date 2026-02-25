@@ -11,6 +11,14 @@ const ICON_BY_TYPE: Record<string, { icon: string }> = {
   TRAVEL: { icon: 'plane' },
 }
 
+const PRODUCT_TITLE_BY_TYPE: Record<string, string> = {
+    AUTO: 'Автострахование',
+    HOME: 'Страхование жилья',
+    LIFE: 'Страхование жизни',
+    HEALTH: 'Медицинское страхование',
+    TRAVEL: 'Страхование путешествий',
+}
+
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -35,7 +43,9 @@ export default function ProductsPage() {
             <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
               {ICON_BY_TYPE[product.type].icon}
             </div>
-            <h3 style={{ margin: '0 0 0.5rem 0' }}>{product.name}</h3>
+              <h3 style={{ margin: '0 0 0.5rem 0' }}>
+                  {PRODUCT_TITLE_BY_TYPE[product.type] ?? product.name}
+              </h3>
             <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
               {product.description}
             </p>

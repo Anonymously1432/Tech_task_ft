@@ -8,6 +8,21 @@ interface ManagerDashboard {
   recentApplications: { id: number; clientFullName: string; productType: string; status: string; createdAt: string }[]
 }
 
+const PRODUCT_TYPE_RU: Record<string, string> = {
+    AUTO: 'Автострахование',
+    HOME: 'Страхование жилья',
+    LIFE: 'Страхование жизни',
+    HEALTH: 'Медицинское страхование',
+    TRAVEL: 'Страхование путешествий',
+}
+
+const STATUS_RU: Record<string, string> = {
+    NEW: 'Новая',
+    UNDER_REVIEW: 'На рассмотрении',
+    APPROVED: 'Одобрена',
+    REJECTED: 'Отклонена',
+}
+
 export default function DashboardPage() {
   const [data, setData] = useState<ManagerDashboard | null>(null)
   const [loading, setLoading] = useState(true)
@@ -28,7 +43,7 @@ export default function DashboardPage() {
 
   return (
     <div className="container">
-      <h1 style={{ marginBottom: '1rem' }}>Dashboard менеджера</h1>
+      <h1 style={{ marginBottom: '1rem' }}>Дашборд менеджера</h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
         <div className="card">
           <p style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', margin: 0 }}>Новых сегодня</p>
@@ -86,7 +101,9 @@ export default function DashboardPage() {
                 style={{ textDecoration: 'none', color: 'inherit', padding: '0.75rem 1rem' }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>#{a.id} — {a.clientFullName || 'Клиент'} — {a.productType} ({a.status})</span>
+                 <span> #{a.id} — {a.clientFullName || 'Клиент'} —{' '}
+                     {PRODUCT_TYPE_RU[a.productType] ?? a.productType}{' '}
+                     ({STATUS_RU[a.status] ?? a.status})</span>
                   <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
                     {new Date(a.createdAt).toLocaleDateString('ru-RU')}
                   </span>
