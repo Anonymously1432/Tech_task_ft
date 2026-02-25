@@ -20,7 +20,7 @@ services:
     networks:
       - api-network
     env_file:
-      - .env
+      - .env.example
 
   migrate:
     image: migrate/migrate:v4.15.2
@@ -37,7 +37,7 @@ services:
     networks:
       - api-network
     env_file:
-      - .env
+      - .env.example
 
   api:
     build:
@@ -57,7 +57,7 @@ services:
       DB_SOURCE: "postgresql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?sslmode=disable"
       API_PORT: "${API_PORT}"
     env_file:
-      - .env
+      - .env.example
 
   client:
     build:
@@ -73,7 +73,7 @@ services:
     networks:
       - api-network
     env_file:
-      - .env
+      - .env.example
 
   manager:
     build:
@@ -89,7 +89,7 @@ services:
     networks:
       - api-network
     env_file:
-      - .env
+      - .env.example
 
   pgadmin:
     image: dpage/pgadmin4:8
@@ -104,6 +104,8 @@ services:
       - db
     networks:
       - api-network
+    env_file:
+      - .env.example
 
 networks:
   api-network:
