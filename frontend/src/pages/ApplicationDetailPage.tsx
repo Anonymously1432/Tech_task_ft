@@ -16,7 +16,6 @@ interface AppDetail {
         comment?: string
         createdAt: string
     }[]
-    comments: { id: number; author: string; comment: string; createdAt: string }[]
 }
 
 const DETAIL_LABELS: Record<string, string> = {
@@ -143,14 +142,16 @@ export default function ClientApplicationDetailPage() {
 
     return (
         <div className="container" style={{ maxWidth: 800 }}>
+            {/* Хлебные крошки */}
             <div style={{ marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
-                <a href="/client/applications" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    Мои заявки
+                <a href="/dashboard" style={{ color: 'inherit', textDecoration: 'none' }}>
+                    Дашборд
                 </a>
                 <span style={{ margin: '0 0.5rem' }}>→</span>
                 <span>Заявка #{app.id}</span>
             </div>
 
+            {/* Заголовок со статусом */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -170,15 +171,7 @@ export default function ClientApplicationDetailPage() {
                 </span>
             </div>
 
-            <div className="card" style={{ marginBottom: '1rem' }}>
-                <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>Информация о клиенте</h2>
-                <div style={{ display: 'grid', gap: '0.5rem' }}>
-                    <p style={{ margin: 0 }}><strong>ФИО:</strong> {app.client?.fullName}</p>
-                    <p style={{ margin: 0 }}><strong>Email:</strong> {app.client?.email}</p>
-                    <p style={{ margin: 0 }}><strong>Телефон:</strong> {app.client?.phone || '—'}</p>
-                </div>
-            </div>
-
+            {/* Данные заявки */}
             <div className="card" style={{ marginBottom: '1rem' }}>
                 <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>Данные заявки</h2>
 
@@ -202,80 +195,26 @@ export default function ClientApplicationDetailPage() {
                 )}
             </div>
 
+            {/* История статусов - теперь как в менеджерской версии */}
             <div className="card" style={{ marginBottom: '1rem' }}>
                 <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>История статусов</h2>
-
                 {app.statusHistory.length === 0 ? (
-                    <p style={{ color: 'var(--color-text-muted)', margin: 0 }}>
-                        Нет истории изменений
-                    </p>
+                    <p style={{ color: 'var(--color-text-muted)' }}>Нет истории</p>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <ul style={{ paddingLeft: '1.25rem', margin: 0 }}>
                         {app.statusHistory.map((h, i) => (
-                            <div key={i} style={{
-                                display: 'flex',
-                                gap: '0.75rem',
-                                padding: '0.75rem',
-                                background: '#f8fafc',
-                                borderRadius: 'var(--radius)',
-                            }}>
-                                <div style={{
-                                    width: '8px',
-                                    height: '8px',
-                                    borderRadius: '50%',
-                                    backgroundColor: STATUS_COLORS[h.newStatus] || '#64748b',
-                                    marginTop: '0.5rem',
-                                }} />
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: 500 }}>
-                                        {h.oldStatus ? STATUS_RU[h.oldStatus] || h.oldStatus : '—'} → {STATUS_RU[h.newStatus] || h.newStatus}
-                                    </div>
-                                    {h.comment && (
-                                        <div style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>
-                                            Комментарий: {h.comment}
-                                        </div>
-                                    )}
-                                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>
-                                        {new Date(h.createdAt).toLocaleString('ru-RU')}
-                                    </div>
-                                </div>
-                            </div>
+                            <li key={i}>
+                                {h.oldStatus ? STATUS_RU[h.oldStatus] || h.oldStatus : '—'} → {STATUS_RU[h.newStatus] || h.newStatus}
+                                <span style={{ marginLeft: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+                  {new Date(h.createdAt).toLocaleString('ru-RU')}
+                </span>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 )}
             </div>
 
-            <div className="card">
-                <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>Комментарии менеджера</h2>
-
-                {app.comments.length === 0 ? (
-                    <p style={{ color: 'var(--color-text-muted)', margin: 0 }}>
-                        Нет комментариев
-                    </p>
-                ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        {app.comments.map((c) => (
-                            <div
-                                key={c.id}
-                                style={{
-                                    padding: '0.75rem',
-                                    background: '#f8fafc',
-                                    borderRadius: 'var(--radius)',
-                                }}
-                            >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <strong>{c.author}</strong>
-                                    <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                                        {new Date(c.createdAt).toLocaleString('ru-RU')}
-                                    </span>
-                                </div>
-                                <p style={{ marginTop: '0.5rem', marginBottom: 0 }}>{c.comment}</p>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
+            {/* Кнопка "Назад" */}
             <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                 <button
                     className="btn btn-secondary"
