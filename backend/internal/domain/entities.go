@@ -390,7 +390,7 @@ type ApplicationStatus struct {
 	NewStatus string    `json:"newStatus"`
 	ChangedBy int64     `json:"changedBy,omitempty"`
 	Comment   string    `json:"comment,omitempty"`
-	ChangedAt time.Time `json:"changedAt"`
+	ChangedAt time.Time `json:"createdAt"`
 }
 
 type GetPoliciesResponse struct {

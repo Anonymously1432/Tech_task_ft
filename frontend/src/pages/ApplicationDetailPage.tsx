@@ -142,7 +142,6 @@ export default function ClientApplicationDetailPage() {
 
     return (
         <div className="container" style={{ maxWidth: 800 }}>
-            {/* Хлебные крошки */}
             <div style={{ marginBottom: '1.5rem', color: 'var(--color-text-muted)' }}>
                 <a href="/dashboard" style={{ color: 'inherit', textDecoration: 'none' }}>
                     Дашборд
@@ -151,7 +150,6 @@ export default function ClientApplicationDetailPage() {
                 <span>Заявка #{app.id}</span>
             </div>
 
-            {/* Заголовок со статусом */}
             <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -171,7 +169,6 @@ export default function ClientApplicationDetailPage() {
                 </span>
             </div>
 
-            {/* Данные заявки */}
             <div className="card" style={{ marginBottom: '1rem' }}>
                 <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>Данные заявки</h2>
 
@@ -195,7 +192,6 @@ export default function ClientApplicationDetailPage() {
                 )}
             </div>
 
-            {/* История статусов - теперь как в менеджерской версии */}
             <div className="card" style={{ marginBottom: '1rem' }}>
                 <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>История статусов</h2>
                 {app.statusHistory.length === 0 ? (
@@ -214,7 +210,6 @@ export default function ClientApplicationDetailPage() {
                 )}
             </div>
 
-            {/* Кнопка "Назад" */}
             <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                 <button
                     className="btn btn-secondary"
