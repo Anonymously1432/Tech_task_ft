@@ -15,10 +15,10 @@ const CAR_MODELS: Record<string, string[]> = {
   Toyota: ['Camry', 'Corolla', 'RAV4', 'Land Cruiser'],
   Honda: ['Accord', 'Civic', 'CR-V', 'Pilot'],
   BMW: ['3 Series', '5 Series', 'X3', 'X5'],
-  Mercedes: ['C-Class', 'E-Class', 'GLC', 'GLE'],
+  Mercedes: ['C-Класс', 'E-Класс', 'GLC', 'GLE'],
 }
 
-const COUNTRIES = ['Thailand', 'Turkey', 'Egypt', 'Spain', 'Italy', 'France', 'USA', 'UAE']
+const COUNTRIES = ['Тайланд', 'Турция', 'Египет', 'Испания', 'Италия', 'Франция', 'США', 'ОАЭ']
 
 const BASE_PRICES: Record<string, number> = {
   AUTO: 5000,
@@ -341,7 +341,7 @@ export default function ProductFormPage() {
                     {p.description}
                   </div>
                 )}
-                <div style={{ fontSize: '0.95rem' }}>от {p.basePrice} ₽/мес</div>
+                <div style={{ fontSize: '0.95rem' }}>от {new Intl.NumberFormat('ru-RU').format(p.basePrice)} ₽/мес</div>
               </div>
             ))}
           </div>

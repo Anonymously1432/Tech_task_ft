@@ -26,7 +26,6 @@ var (
 			Type:     "number",
 			Label:    "Год выпуска",
 			Required: true,
-			Min:      1990,
 			Max:      uint(time.Now().Year()),
 		},
 		{
@@ -163,7 +162,7 @@ var (
 			Type:     "select",
 			Label:    "Программа",
 			Required: true,
-			Options:  []string{"basic", "extended", "premium"},
+			Options:  []string{"Базовая", "Расширенная", "Премиум"},
 		},
 		{
 			Name:     "dentistry",
@@ -197,14 +196,12 @@ var (
 			Type:     "date",
 			Label:    "Дата начала",
 			Required: true,
-			MinDate:  "today",
 		},
 		{
 			Name:     "endDate",
 			Type:     "date",
 			Label:    "Дата окончания",
 			Required: true,
-			After:    "startDate",
 		},
 		{
 			Name:     "travelers",
@@ -225,7 +222,7 @@ var (
 			Type:     "select",
 			Label:    "Сумма покрытия (€)",
 			Required: true,
-			Options:  []string{"30000", "50000", "100000"},
+			Options:  []string{"30 000", "50 000", "100 000"},
 		},
 	}
 

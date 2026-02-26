@@ -26,6 +26,42 @@ const DETAIL_LABELS: Record<string, string> = {
     buildYear: 'Год постройки',
     propertyType: 'Тип недвижимости',
     coverageAmount: 'Сумма покрытия',
+    age: "Возраст",
+    gender: "Пол",
+    smoking: "Курение",
+    termYears: "Срок страхования",
+    chronicDiseases: "Хронические заболевания",
+    program: "Программа",
+    dentistry: "Стоматология",
+    hospitalization: "Госпитализация",
+    vin: "ВИН",
+    year: "Год выпуска",
+    brand: "Марка автомобиля",
+    model: "Модель",
+    plateNumber: "Госномер",
+    insuranceType: "Тип страховки",
+    drivingExperience: "Водительский стаж",
+    country: "Страна/регион",
+    endDate: "Дата окончания",
+    startDate: "Дата начала",
+    travelers: "Количество человек",
+    activeLeisure: "Активный отдых",
+
+}
+
+const STATUS_RU: Record<string, string> = {
+    NEW: 'Новая',
+    UNDER_REVIEW: 'На рассмотрении',
+    APPROVED: 'Одобрена',
+    REJECTED: 'Отклонена',
+}
+
+const PRODUCT_TYPE_RU: Record<string, string> = {
+    AUTO: 'Автострахование',
+    HOME: 'Страхование жилья',
+    LIFE: 'Страхование жизни',
+    HEALTH: 'Медицинское страхование',
+    TRAVEL: 'Страхование путешествий',
 }
 
 function ApplicationDetails({ data }: { data: Record<string, unknown> }) {
@@ -44,16 +80,21 @@ function ApplicationDetails({ data }: { data: Record<string, unknown> }) {
                     borderRadius: 'var(--radius)',
                 }}
             >
-                {Object.entries(data).map(([key, value]) => (
-                    <div key={key} style={{ display: 'contents' }}>
-                        <div style={{ color: 'var(--color-text-muted)' }}>
-                            {DETAIL_LABELS[key] ?? key}
-                        </div>
-                        <div style={{ wordBreak: 'break-word' }} dangerouslySetInnerHTML={{ __html: value === null || value === undefined ? '—' : String(value) }}>
+                {Object.entries(data).map(([key, value]) => {
+                    let displayValue: string
+                    if (value === true) displayValue = 'Да'
+                    else if (value === false) displayValue = 'Нет'
+                    else displayValue = value === null || value === undefined ? '—' : String(value)
 
+                    return (
+                        <div key={key} style={{ display: 'contents' }}>
+                            <div style={{ color: 'var(--color-text-muted)' }}>
+                                {DETAIL_LABELS[key] ?? key}
+                            </div>
+                            <div style={{ wordBreak: 'break-word' }} dangerouslySetInnerHTML={{ __html: displayValue }} />
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
         </div>
     )
@@ -139,8 +180,8 @@ export default function ApplicationDetailPage() {
 
             <div className="card" style={{ marginBottom: '1rem' }}>
                 <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>Данные заявки</h2>
-                <p><strong>Тип:</strong> {app.productType}</p>
-                <p><strong>Статус:</strong> {app.status}</p>
+                <p><strong>Тип:</strong> {PRODUCT_TYPE_RU[app.productType] || app.productType}</p>
+                <p><strong>Статус:</strong> {STATUS_RU[app.status] || app.status}</p>
                 <p><strong>Стоимость:</strong> {app.calculatedPrice?.toLocaleString('ru-RU')} ₽</p>
                 <p><strong>Дата:</strong> {new Date(app.createdAt).toLocaleString('ru-RU')}</p>
 
@@ -208,8 +249,7 @@ export default function ApplicationDetailPage() {
                     <ul style={{ paddingLeft: '1.25rem', margin: 0 }}>
                         {app.statusHistory.map((h, i) => (
                             <li key={i}>
-                                {h.oldStatus || '—'} → {h.newStatus}
-                                {h.comment && ` (${h.comment})`}
+                                {h.oldStatus ? STATUS_RU[h.oldStatus] || h.oldStatus : '—'} → {STATUS_RU[h.newStatus] || h.newStatus}
                                 <span style={{ marginLeft: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
                   {new Date(h.createdAt).toLocaleString('ru-RU')}
                 </span>

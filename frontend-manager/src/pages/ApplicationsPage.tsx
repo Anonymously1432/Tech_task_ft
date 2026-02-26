@@ -16,6 +16,14 @@ const STATUS_LABELS: Record<string, string> = {
   REJECTED: 'Отклонена',
 }
 
+const PRODUCT_TYPE_RU: Record<string, string> = {
+    AUTO: 'Автострахование',
+    HOME: 'Страхование жилья',
+    LIFE: 'Страхование жизни',
+    HEALTH: 'Медицинское страхование',
+    TRAVEL: 'Страхование путешествий',
+}
+
 interface ManagerApp {
   id: number
   client: { fullName: string; email: string }
@@ -121,7 +129,9 @@ export default function ApplicationsPage() {
                       <div>{a.client?.fullName || '-'}</div>
                       <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{a.client?.email || '-'}</div>
                     </td>
-                    <td style={{ padding: '0.75rem 1rem' }}>{a.productType}</td>
+                      <td style={{ padding: '0.75rem 1rem' }}>
+                          {PRODUCT_TYPE_RU[a.productType] || a.productType}
+                      </td>
                     <td style={{ padding: '0.75rem 1rem' }}>{new Date(a.createdAt).toLocaleDateString('ru-RU')}</td>
                     <td style={{ padding: '0.75rem 1rem' }}>
                       <span

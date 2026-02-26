@@ -9,6 +9,14 @@ const STATUS_LABELS: Record<string, string> = {
   CANCELLED: 'Отменён',
 }
 
+const PRODUCT_TYPE_RU: Record<string, string> = {
+    AUTO: 'Автострахование',
+    HOME: 'Страхование жилья',
+    LIFE: 'Страхование жизни',
+    HEALTH: 'Медицинское страхование',
+    TRAVEL: 'Страхование путешествий',
+}
+
 export default function PoliciesPage() {
   const [policies, setPolicies] = useState<Policy[]>([])
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 })
@@ -69,7 +77,7 @@ export default function PoliciesPage() {
               {policies.map((p) => (
                 <tr key={p.id} style={{ borderTop: '1px solid #e2e8f0' }}>
                   <td style={{ padding: '0.75rem 1rem' }}>{p.policyNumber}</td>
-                  <td style={{ padding: '0.75rem 1rem' }}>{p.productType}</td>
+                  <td style={{ padding: '0.75rem 1rem' }}>{PRODUCT_TYPE_RU[p.productType] || p.productType}</td>
                   <td style={{ padding: '0.75rem 1rem' }}>{STATUS_LABELS[p.status] || p.status}</td>
                   <td style={{ padding: '0.75rem 1rem' }}>
                     {new Date(p.startDate).toLocaleDateString('ru-RU')} — {new Date(p.endDate).toLocaleDateString('ru-RU')}

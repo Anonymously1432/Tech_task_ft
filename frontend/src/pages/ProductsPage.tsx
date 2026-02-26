@@ -8,7 +8,6 @@ const ICON_BY_TYPE: Record<string, { icon: string }> = {
   HOME: { icon:'🏠' },
   LIFE: { icon: '❤️' },
   HEALTH: { icon: '🏥' },
-  TRAVEL: { icon: '🏥' },
 }
 
 const PRODUCT_TITLE_BY_TYPE: Record<string, string> = {
