@@ -66,18 +66,24 @@ export default function DashboardPage() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             {recentActivity.slice(0, 5).map((a) => (
+                <Link
+                    key={a.id}
+                    to={`/applications/${a.id}`}
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                >
               <div key={a.id} className="card" style={{ padding: '0.75rem 1rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                 <span>
-  {a.type === 'application' ? 'Заявка' : 'Полис'} #{a.id} —{' '}
-                     {PRODUCT_TYPE_RU[a.productType] ?? a.productType}{' '}
-                     ({STATUS_RU[a.status] ?? a.status})
-</span>
+                  <span>
+                    {a.type === 'application' ? 'Заявка' : 'Полис'} #{a.id} —{' '}
+                    {PRODUCT_TYPE_RU[a.productType] ?? a.productType}{' '}
+                    ({STATUS_RU[a.status] ?? a.status})
+                  </span>
                   <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
                     {new Date(a.createdAt).toLocaleDateString('ru-RU')}
                   </span>
                 </div>
               </div>
+                    </Link>
             ))}
           </div>
         )}

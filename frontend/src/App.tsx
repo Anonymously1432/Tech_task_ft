@@ -9,6 +9,7 @@ import ProductFormPage from './pages/ProductFormPage'
 import DashboardPage from './pages/DashboardPage'
 import PoliciesPage from './pages/PoliciesPage'
 import ProfilePage from './pages/ProfilePage'
+import ClientApplicationDetailPage from './pages/ApplicationDetailPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -32,6 +33,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="applications/:id"
+          element={
+            <ProtectedRoute>
+              <ClientApplicationDetailPage />
             </ProtectedRoute>
           }
         />
