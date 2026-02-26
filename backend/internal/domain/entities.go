@@ -49,7 +49,7 @@ var (
 			Type:     "radio",
 			Label:    "Тип страхования",
 			Required: true,
-			Options:  []string{"OSAGO", "KASKO", "BOTH"},
+			Options:  []string{"ОСАГО", "КАСКО", "Обе"},
 		},
 		{
 			Name:     "drivingExperience",
@@ -67,7 +67,7 @@ var (
 			Type:     "radio",
 			Label:    "Тип жилья",
 			Required: true,
-			Options:  []string{"apartment", "house"},
+			Options:  []string{"Квартира", "Дом"},
 		},
 		{
 			Name:     "address",
@@ -120,7 +120,7 @@ var (
 			Type:     "radio",
 			Label:    "Пол",
 			Required: true,
-			Options:  []string{"male", "female"},
+			Options:  []string{"Мужской", "Женский"},
 		},
 		{
 			Name:     "smoking",

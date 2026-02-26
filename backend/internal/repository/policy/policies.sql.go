@@ -11,6 +11,69 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const getAllPolicies = `-- name: GetAllPolicies :many
+SELECT
+    p.id,
+    p.policy_number,
+    pr.type AS product_type,
+    p.status,
+    p.start_date,
+    p.end_date,
+    p.coverage_amount,
+    p.premium
+FROM policies p
+         JOIN products pr ON p.product_id = pr.id
+WHERE p.user_id = $1
+ORDER BY p.created_at DESC
+    LIMIT $2 OFFSET $3
+`
+
+type GetAllPoliciesParams struct {
+	UserID *int32 `db:"user_id" json:"user_id"`
+	Limit  int32  `db:"limit" json:"limit"`
+	Offset int32  `db:"offset" json:"offset"`
+}
+
+type GetAllPoliciesRow struct {
+	ID             int32          `db:"id" json:"id"`
+	PolicyNumber   string         `db:"policy_number" json:"policy_number"`
+	ProductType    string         `db:"product_type" json:"product_type"`
+	Status         string         `db:"status" json:"status"`
+	StartDate      pgtype.Date    `db:"start_date" json:"start_date"`
+	EndDate        pgtype.Date    `db:"end_date" json:"end_date"`
+	CoverageAmount pgtype.Numeric `db:"coverage_amount" json:"coverage_amount"`
+	Premium        pgtype.Numeric `db:"premium" json:"premium"`
+}
+
+func (q *Queries) GetAllPolicies(ctx context.Context, arg *GetAllPoliciesParams) ([]*GetAllPoliciesRow, error) {
+	rows, err := q.db.Query(ctx, getAllPolicies, arg.UserID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []*GetAllPoliciesRow
+	for rows.Next() {
+		var i GetAllPoliciesRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.PolicyNumber,
+			&i.ProductType,
+			&i.Status,
+			&i.StartDate,
+			&i.EndDate,
+			&i.CoverageAmount,
+			&i.Premium,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, &i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getPolicies = `-- name: GetPolicies :many
 SELECT
     p.id,

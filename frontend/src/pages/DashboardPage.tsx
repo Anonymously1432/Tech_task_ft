@@ -20,6 +20,20 @@ export default function DashboardPage() {
   if (!data) return null
 
   const { user, stats, recentActivity } = data
+   const PRODUCT_TYPE_RU: Record<string, string> = {
+        AUTO: 'Автострахование',
+        HOME: 'Страхование жилья',
+        LIFE: 'Страхование жизни',
+        HEALTH: 'Медицинское страхование',
+        TRAVEL: 'Страхование путешествий',
+    }
+
+    const STATUS_RU: Record<string, string> = {
+        NEW: 'Новая',
+        UNDER_REVIEW: 'На рассмотрении',
+        APPROVED: 'Одобрена',
+        REJECTED: 'Отклонена',
+    }
 
   return (
     <div className="container">
@@ -54,7 +68,11 @@ export default function DashboardPage() {
             {recentActivity.slice(0, 5).map((a) => (
               <div key={a.id} className="card" style={{ padding: '0.75rem 1rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>{a.type === 'application' ? 'Заявка' : 'Полис'} #{a.id} — {a.productType} ({a.status})</span>
+                 <span>
+  {a.type === 'application' ? 'Заявка' : 'Полис'} #{a.id} —{' '}
+                     {PRODUCT_TYPE_RU[a.productType] ?? a.productType}{' '}
+                     ({STATUS_RU[a.status] ?? a.status})
+</span>
                   <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
                     {new Date(a.createdAt).toLocaleDateString('ru-RU')}
                   </span>

@@ -196,3 +196,18 @@ FROM applications a
          JOIN products p ON a.product_id = p.id
 ORDER BY a.created_at DESC
     LIMIT $1;
+
+-- name: CreateApplicationStatusHistory :exec
+INSERT INTO application_status_history (
+    application_id,
+    old_status,
+    new_status,
+    changed_by,
+    comment
+)
+VALUES ($1, $2, $3, $4, $5);
+
+-- name: GetApplicationStatus :one
+SELECT status
+FROM applications
+WHERE id = $1;

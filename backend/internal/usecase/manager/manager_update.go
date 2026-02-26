@@ -22,6 +22,19 @@ func (u *UseCase) UpdateApplicationStatus(
 		return nil, fmt.Errorf("rejectionReason is required for REJECTED status")
 	}
 
+	oldStatus, err := u.repo.GetApplicationStatus(ctx, &application_repository.GetApplicationStatusParams{ID: applicationID})
+	if err != nil {
+		return nil, err
+	}
+
+	err = u.repo.CreateApplicationStatusHistory(ctx, &application_repository.CreateApplicationStatusHistoryParams{
+		ApplicationID: &applicationID,
+		OldStatus:     &oldStatus,
+		NewStatus:     status,
+		ChangedBy:     &userID,
+		Comment:       &comment,
+	})
+
 	app, err := u.repo.UpdateApplicationStatus(ctx, &application_repository.UpdateApplicationStatusParams{
 		ID:              applicationID,
 		Status:          status,

@@ -15,8 +15,10 @@ type Querier interface {
 	CreateApplication(ctx context.Context, arg *CreateApplicationParams) (*CreateApplicationRow, error)
 	CreateApplicationComment(ctx context.Context, arg *CreateApplicationCommentParams) error
 	CreateApplicationCommentt(ctx context.Context, arg *CreateApplicationCommenttParams) (*CreateApplicationCommenttRow, error)
+	CreateApplicationStatusHistory(ctx context.Context, arg *CreateApplicationStatusHistoryParams) error
 	GetApplicationByID(ctx context.Context, arg *GetApplicationByIDParams) (*GetApplicationByIDRow, error)
 	GetApplicationComments(ctx context.Context, arg *GetApplicationCommentsParams) ([]*GetApplicationCommentsRow, error)
+	GetApplicationStatus(ctx context.Context, arg *GetApplicationStatusParams) (string, error)
 	GetApplicationStatusHistory(ctx context.Context, arg *GetApplicationStatusHistoryParams) ([]*GetApplicationStatusHistoryRow, error)
 	GetApplications(ctx context.Context, arg *GetApplicationsParams) ([]*GetApplicationsRow, error)
 	GetApplicationsChartData(ctx context.Context) ([]*GetApplicationsChartDataRow, error)

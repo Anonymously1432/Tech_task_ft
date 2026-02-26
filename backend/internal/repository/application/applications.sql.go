@@ -164,6 +164,36 @@ func (q *Queries) CreateApplicationCommentt(ctx context.Context, arg *CreateAppl
 	return &i, err
 }
 
+const createApplicationStatusHistory = `-- name: CreateApplicationStatusHistory :exec
+INSERT INTO application_status_history (
+    application_id,
+    old_status,
+    new_status,
+    changed_by,
+    comment
+)
+VALUES ($1, $2, $3, $4, $5)
+`
+
+type CreateApplicationStatusHistoryParams struct {
+	ApplicationID *int32  `db:"application_id" json:"application_id"`
+	OldStatus     *string `db:"old_status" json:"old_status"`
+	NewStatus     string  `db:"new_status" json:"new_status"`
+	ChangedBy     *int32  `db:"changed_by" json:"changed_by"`
+	Comment       *string `db:"comment" json:"comment"`
+}
+
+func (q *Queries) CreateApplicationStatusHistory(ctx context.Context, arg *CreateApplicationStatusHistoryParams) error {
+	_, err := q.db.Exec(ctx, createApplicationStatusHistory,
+		arg.ApplicationID,
+		arg.OldStatus,
+		arg.NewStatus,
+		arg.ChangedBy,
+		arg.Comment,
+	)
+	return err
+}
+
 const getApplicationByID = `-- name: GetApplicationByID :one
 SELECT
     a.id,
@@ -253,6 +283,23 @@ func (q *Queries) GetApplicationComments(ctx context.Context, arg *GetApplicatio
 		return nil, err
 	}
 	return items, nil
+}
+
+const getApplicationStatus = `-- name: GetApplicationStatus :one
+SELECT status
+FROM applications
+WHERE id = $1
+`
+
+type GetApplicationStatusParams struct {
+	ID int32 `db:"id" json:"id"`
+}
+
+func (q *Queries) GetApplicationStatus(ctx context.Context, arg *GetApplicationStatusParams) (string, error) {
+	row := q.db.QueryRow(ctx, getApplicationStatus, arg.ID)
+	var status string
+	err := row.Scan(&status)
+	return status, err
 }
 
 const getApplicationStatusHistory = `-- name: GetApplicationStatusHistory :many

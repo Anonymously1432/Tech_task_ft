@@ -8,7 +8,7 @@ export default defineConfig({
     port: 3001,
     proxy: {
       '/api': {
-        target: process.env.REACT_APP_API_URL || 'http://localhost:8080',
+        target: process.env.REACT_APP_API_URL || 'http://api:8080',
         changeOrigin: true,
       },
     },

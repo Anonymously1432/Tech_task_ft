@@ -9,6 +9,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
+	"go.uber.org/zap"
 )
 
 func (u *UseCase) GetManagerApplicationByID(
@@ -56,7 +57,9 @@ func (u *UseCase) GetManagerApplicationByID(
 		res.Client.Phone = *app.ClientPhone
 	}
 
+	u.logger.Info("Statuses", zap.Any("Rows", historyRows))
 	for i, h := range historyRows {
+		u.logger.Info("Row", zap.Any("historyRow", h))
 		res.StatusHistory[i] = domain.ApplicationStatusHistory{
 			OldStatus: safeString(h.OldStatus),
 			NewStatus: h.NewStatus,

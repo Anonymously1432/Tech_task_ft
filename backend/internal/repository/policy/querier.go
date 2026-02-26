@@ -9,6 +9,7 @@ import (
 )
 
 type Querier interface {
+	GetAllPolicies(ctx context.Context, arg *GetAllPoliciesParams) ([]*GetAllPoliciesRow, error)
 	GetPolicies(ctx context.Context, arg *GetPoliciesParams) ([]*GetPoliciesRow, error)
 	GetPoliciesCount(ctx context.Context, arg *GetPoliciesCountParams) (int64, error)
 }
