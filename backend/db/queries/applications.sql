@@ -211,3 +211,39 @@ VALUES ($1, $2, $3, $4, $5);
 SELECT status
 FROM applications
 WHERE id = $1;
+
+-- name: GetManagerApplicationsNew :many
+SELECT
+    a.id,
+    a.status,
+    a.calculated_price,
+    a.created_at,
+    u.id AS client_id,
+    u.full_name AS client_full_name,
+    u.email AS client_email,
+    p.type AS product_type
+FROM applications a
+         JOIN users u ON a.user_id = u.id
+         JOIN products p ON a.product_id = p.id
+WHERE
+    (array_length(@statuses::text[], 1) IS NULL OR a.status = ANY(@statuses))
+  AND
+    (array_length(@product_types::text[], 1) IS NULL OR p.type = ANY(@product_types))
+ORDER BY a.created_at DESC
+    LIMIT $1 OFFSET $2;
+
+-- name: GetManagerApplicationsCountNew :one
+SELECT COUNT(*)
+FROM applications a
+         JOIN users u ON a.user_id = u.id
+         JOIN products p ON a.product_id = p.id
+WHERE
+    (array_length(@statuses::text[], 1) IS NULL OR a.status = ANY(@statuses))
+  AND
+    (array_length(@product_types::text[], 1) IS NULL OR p.type = ANY(@product_types))
+  AND
+    (sqlc.narg('date_from')::timestamp IS NULL OR a.created_at >= sqlc.narg('date_from')::timestamp)
+  AND
+    (sqlc.narg('date_to')::timestamp IS NULL OR a.created_at <= sqlc.narg('date_to')::timestamp)
+  AND
+    (sqlc.narg('client_id')::int IS NULL OR u.id = sqlc.narg('client_id')::int);

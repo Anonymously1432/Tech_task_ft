@@ -4,7 +4,6 @@ import (
 	"buggy_insurance/internal/domain"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
-	"time"
 
 	"go.uber.org/zap"
 )
@@ -14,7 +13,6 @@ type IUseCase interface {
 		ctx context.Context,
 		page, limit, offset int32,
 		status, productType *string,
-		dateFrom, dateTo *time.Time,
 		clientID *int32,
 	) (*domain.GetManagerApplicationsResponse, error)
 	GetManagerApplicationByID(

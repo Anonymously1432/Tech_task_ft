@@ -54,22 +54,6 @@ func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 		clientID = &tmp
 	}
 
-	var dateFromPtr, dateToPtr *time.Time
-	if v := c.Query("dateFrom"); v != "" {
-		t, err := time.Parse(time.RFC3339, v)
-		if err != nil {
-			return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid dateFrom format", map[string]string{"dateFrom": "must be RFC3339"})
-		}
-		dateFromPtr = &t
-	}
-	if v := c.Query("dateTo"); v != "" {
-		t, err := time.Parse(time.RFC3339, v)
-		if err != nil {
-			return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid dateTo format", map[string]string{"dateTo": "must be RFC3339"})
-		}
-		dateToPtr = &t
-	}
-
 	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page < 1 {
 		page = 1
@@ -87,8 +71,6 @@ func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 		int32(offset),
 		statusPtr,
 		productTypePtr,
-		dateFromPtr,
-		dateToPtr,
 		clientID,
 	)
 	if err != nil {
