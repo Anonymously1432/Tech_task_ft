@@ -4,11 +4,11 @@ import { productsApi } from '../api/endpoints'
 import type { Product } from '../types'
 
 const ICON_BY_TYPE: Record<string, { icon: string }> = {
-  AUTO: { icon: 'car' },
-  HOME: { icon: 'home' },
-  LIFE: { icon: 'heart' },
-  HEALTH: { icon: 'medical' },
-  TRAVEL: { icon: 'plane' },
+  AUTO: { icon: '🚗' },
+  HOME: { icon:'🏠' },
+  LIFE: { icon: '❤️' },
+  HEALTH: { icon: '🏥' },
+  TRAVEL: { icon: '✈️' },
 }
 
 const PRODUCT_TITLE_BY_TYPE: Record<string, string> = {
