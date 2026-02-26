@@ -93,11 +93,11 @@ export default function ApplicationsPage() {
           style={{ padding: '0.5rem', borderRadius: 'var(--radius)' }}
         >
           <option value="">Все типы</option>
-          <option value="AUTO">AUTO</option>
-          <option value="HOME">HOME</option>
-          <option value="LIFE">LIFE</option>
-          <option value="HEALTH">HEALTH</option>
-          <option value="TRAVEL">TRAVEL</option>
+          <option value="AUTO">Автострахование</option>
+          <option value="HOME">Страхование жилья</option>
+          <option value="LIFE">Страхование жизни</option>
+          <option value="HEALTH">Медицинское страхование</option>
+          <option value="TRAVEL">Страхование путешествий</option>
         </select>
       </div>
       {loading && apps.length === 0 ? (
