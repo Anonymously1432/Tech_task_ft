@@ -44,15 +44,7 @@ func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 		productTypePtr = &productType
 	}
 
-	var clientID *int32
-	if search != "" {
-		id, err := strconv.Atoi(search)
-		if err != nil {
-			return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid client id in search", map[string]string{"search": "must be a number"})
-		}
-		tmp := int32(id)
-		clientID = &tmp
-	}
+	clientFIO := &search
 
 	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page < 1 {
@@ -71,7 +63,7 @@ func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 		int32(offset),
 		statusPtr,
 		productTypePtr,
-		clientID,
+		clientFIO,
 	)
 	if err != nil {
 		h.logger.Error("GetManagerApplications error", zap.Error(err))

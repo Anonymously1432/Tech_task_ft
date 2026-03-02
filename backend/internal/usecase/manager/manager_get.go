@@ -13,8 +13,8 @@ import (
 func (u *UseCase) GetManagerApplications(
 	ctx context.Context,
 	page, limit, offset int32,
-	status, productType *string,
-	clientID *int32,
+	status, productType,
+	clientFIO *string,
 ) (*domain.GetManagerApplicationsResponse, error) {
 
 	// Преобразуем строковые фильтры в массивы для репозитория
@@ -30,10 +30,11 @@ func (u *UseCase) GetManagerApplications(
 
 	// Подготавливаем параметры для запроса
 	params := &application_repository.GetManagerApplicationsNewParams{
-		Limit:        limit,
-		Offset:       offset,
-		Statuses:     statuses,
-		ProductTypes: productTypes,
+		Limit:          limit,
+		Offset:         offset,
+		Statuses:       statuses,
+		ProductTypes:   productTypes,
+		ClientFullName: *clientFIO,
 	}
 
 	u.logger.Info("GetManagerApplications called",
@@ -42,7 +43,7 @@ func (u *UseCase) GetManagerApplications(
 		zap.Int32("offset", offset),
 		zap.Any("statuses", statuses),
 		zap.Any("productTypes", productTypes),
-		zap.Any("clientID", clientID),
+		zap.Any("clientID", clientFIO),
 	)
 
 	// Получаем заявки с фильтрацией
@@ -54,9 +55,9 @@ func (u *UseCase) GetManagerApplications(
 
 	// Получаем общее количество с учетом фильтров
 	totalParams := &application_repository.GetManagerApplicationsCountNewParams{
-		Statuses:     statuses,
-		ProductTypes: productTypes,
-		ClientID:     clientID,
+		Statuses:       statuses,
+		ProductTypes:   productTypes,
+		ClientFullName: clientFIO,
 	}
 
 	total, err := u.repo.GetManagerApplicationsCountNew(ctx, totalParams)

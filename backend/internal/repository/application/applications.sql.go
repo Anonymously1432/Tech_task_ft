@@ -714,28 +714,28 @@ WHERE
   AND
     (array_length($2::text[], 1) IS NULL OR p.type = ANY($2))
   AND
-    ($3::timestamp IS NULL OR a.created_at >= $3::timestamp)
+    ($3::text IS NULL OR u.full_name ILIKE '%' || $3::text || '%')
   AND
-    ($4::timestamp IS NULL OR a.created_at <= $4::timestamp)
+    ($4::timestamp IS NULL OR a.created_at >= $4::timestamp)
   AND
-    ($5::int IS NULL OR u.id = $5::int)
+    ($5::timestamp IS NULL OR a.created_at <= $5::timestamp)
 `
 
 type GetManagerApplicationsCountNewParams struct {
-	Statuses     []string         `db:"statuses" json:"statuses"`
-	ProductTypes []string         `db:"product_types" json:"product_types"`
-	DateFrom     pgtype.Timestamp `db:"date_from" json:"date_from"`
-	DateTo       pgtype.Timestamp `db:"date_to" json:"date_to"`
-	ClientID     *int32           `db:"client_id" json:"client_id"`
+	Statuses       []string         `db:"statuses" json:"statuses"`
+	ProductTypes   []string         `db:"product_types" json:"product_types"`
+	ClientFullName *string          `db:"client_full_name" json:"client_full_name"`
+	DateFrom       pgtype.Timestamp `db:"date_from" json:"date_from"`
+	DateTo         pgtype.Timestamp `db:"date_to" json:"date_to"`
 }
 
 func (q *Queries) GetManagerApplicationsCountNew(ctx context.Context, arg *GetManagerApplicationsCountNewParams) (int64, error) {
 	row := q.db.QueryRow(ctx, getManagerApplicationsCountNew,
 		arg.Statuses,
 		arg.ProductTypes,
+		arg.ClientFullName,
 		arg.DateFrom,
 		arg.DateTo,
-		arg.ClientID,
 	)
 	var count int64
 	err := row.Scan(&count)
@@ -759,15 +759,18 @@ WHERE
     (array_length($3::text[], 1) IS NULL OR a.status = ANY($3))
   AND
     (array_length($4::text[], 1) IS NULL OR p.type = ANY($4))
+  AND
+    ($5::text IS NULL OR u.full_name ILIKE '%' || $5 || '%')
 ORDER BY a.created_at DESC
     LIMIT $1 OFFSET $2
 `
 
 type GetManagerApplicationsNewParams struct {
-	Limit        int32    `db:"limit" json:"limit"`
-	Offset       int32    `db:"offset" json:"offset"`
-	Statuses     []string `db:"statuses" json:"statuses"`
-	ProductTypes []string `db:"product_types" json:"product_types"`
+	Limit          int32    `db:"limit" json:"limit"`
+	Offset         int32    `db:"offset" json:"offset"`
+	Statuses       []string `db:"statuses" json:"statuses"`
+	ProductTypes   []string `db:"product_types" json:"product_types"`
+	ClientFullName string   `db:"client_full_name" json:"client_full_name"`
 }
 
 type GetManagerApplicationsNewRow struct {
@@ -787,6 +790,7 @@ func (q *Queries) GetManagerApplicationsNew(ctx context.Context, arg *GetManager
 		arg.Offset,
 		arg.Statuses,
 		arg.ProductTypes,
+		arg.ClientFullName,
 	)
 	if err != nil {
 		return nil, err

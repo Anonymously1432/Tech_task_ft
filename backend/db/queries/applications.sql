@@ -229,6 +229,8 @@ WHERE
     (array_length(@statuses::text[], 1) IS NULL OR a.status = ANY(@statuses))
   AND
     (array_length(@product_types::text[], 1) IS NULL OR p.type = ANY(@product_types))
+  AND
+    (@client_full_name::text IS NULL OR u.full_name ILIKE '%' || @client_full_name || '%')
 ORDER BY a.created_at DESC
     LIMIT $1 OFFSET $2;
 
@@ -242,8 +244,8 @@ WHERE
   AND
     (array_length(@product_types::text[], 1) IS NULL OR p.type = ANY(@product_types))
   AND
+    (sqlc.narg('client_full_name')::text IS NULL OR u.full_name ILIKE '%' || sqlc.narg('client_full_name')::text || '%')
+  AND
     (sqlc.narg('date_from')::timestamp IS NULL OR a.created_at >= sqlc.narg('date_from')::timestamp)
   AND
-    (sqlc.narg('date_to')::timestamp IS NULL OR a.created_at <= sqlc.narg('date_to')::timestamp)
-  AND
-    (sqlc.narg('client_id')::int IS NULL OR u.id = sqlc.narg('client_id')::int);
+    (sqlc.narg('date_to')::timestamp IS NULL OR a.created_at <= sqlc.narg('date_to')::timestamp);

@@ -12,8 +12,8 @@ type IUseCase interface {
 	GetManagerApplications(
 		ctx context.Context,
 		page, limit, offset int32,
-		status, productType *string,
-		clientID *int32,
+		status, productType,
+		clientFIO *string,
 	) (*domain.GetManagerApplicationsResponse, error)
 	GetManagerApplicationByID(
 		ctx context.Context,
