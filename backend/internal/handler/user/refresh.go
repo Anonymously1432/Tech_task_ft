@@ -34,6 +34,16 @@ func (h *Handler) Refresh(c *fiber.Ctx) error {
 		)
 	}
 
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			utils.ValidationErrors(err),
+		)
+	}
+
 	accessToken, err := h.Uc.Refresh(c.Context(), req.RefreshToken)
 	if err != nil {
 		h.logger.Error("Refresh token error", zap.Error(err))

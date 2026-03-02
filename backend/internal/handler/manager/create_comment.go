@@ -36,6 +36,16 @@ func (h *Handler) CreateApplicationComment(c *fiber.Ctx) error {
 		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid request body", nil)
 	}
 
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			nil,
+		)
+	}
+
 	if strings.TrimSpace(req.Comment) == "" {
 		return utils.SendError(c, fiber.StatusUnprocessableEntity, "UNPROCESSABLE_ENTITY", "comment is required", map[string]string{
 			"comment": "cannot be empty",
@@ -60,7 +70,7 @@ func (h *Handler) CreateApplicationComment(c *fiber.Ctx) error {
 			fiber.StatusUnauthorized,
 			"UNAUTHORIZED",
 			"invalid user id",
-			nil,
+			utils.ValidationErrors(err),
 		)
 	}
 

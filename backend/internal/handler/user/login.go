@@ -35,6 +35,16 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 		)
 	}
 
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			utils.ValidationErrors(err),
+		)
+	}
+
 	user, accessToken, refreshToken, err := h.Uc.Login(c.Context(), req.Email, req.Password)
 	if err != nil {
 		h.logger.Error("Login error", zap.Error(err))

@@ -29,6 +29,7 @@ import (
 
 	_ "buggy_insurance/docs"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
@@ -87,29 +88,31 @@ func main() {
 		log.Fatalf("failed to connect to db: %v", err)
 	}
 
+	validate := validator.New()
+
 	userRepo := user_repository.New(database)
 	userUseCase := user_usecase.NewUseCase(logger, userRepo)
-	userHandler := user_handler.NewHandler(logger, userUseCase)
+	userHandler := user_handler.NewHandler(logger, userUseCase, validate)
 
 	productRepo := product_repository.New(database)
 	productUseCase := product_usecase.NewUseCase(logger, productRepo)
-	productHandler := product_handler.NewHandler(logger, productUseCase)
+	productHandler := product_handler.NewHandler(logger, productUseCase, validate)
 
 	clientRepo := user_repository.New(database)
 	clientUseCase := client_usecase.NewUseCase(logger, clientRepo)
-	clientHandler := client_handler.NewHandler(logger, clientUseCase)
+	clientHandler := client_handler.NewHandler(logger, clientUseCase, validate)
 
 	applicationRepo := application_repository.New(database)
 	applicationUseCase := application_usecase.NewUseCase(logger, applicationRepo)
-	applicationHandler := application_handler.NewHandler(logger, applicationUseCase)
+	applicationHandler := application_handler.NewHandler(logger, applicationUseCase, validate)
 
 	policyRepo := policy_repository.New(database)
 	policyUseCase := policy_usecase.NewUseCase(logger, policyRepo)
-	policyHandler := policy_handler.NewHandler(logger, policyUseCase)
+	policyHandler := policy_handler.NewHandler(logger, policyUseCase, validate)
 
 	managerRepo := application_repository.New(database)
 	managerUseCase := manager_usecase.NewUseCase(logger, managerRepo)
-	managerHandler := manager_handler.NewHandler(logger, managerUseCase)
+	managerHandler := manager_handler.NewHandler(logger, managerUseCase, validate)
 
 	manager := api.Group("/manager")
 	manager_handler.RegisterRoutes(manager, managerHandler)

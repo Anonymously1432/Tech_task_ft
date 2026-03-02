@@ -58,6 +58,16 @@ func (h *Handler) UpdateApplicationStatus(c *fiber.Ctx) error {
 		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "invalid request body", nil)
 	}
 
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			utils.ValidationErrors(err),
+		)
+	}
+
 	if req.Status == "REJECTED" && (req.RejectionReason == nil || strings.TrimSpace(*req.RejectionReason) == "") {
 		return utils.SendError(c, fiber.StatusUnprocessableEntity, "UNPROCESSABLE_ENTITY", "rejectionReason is required for REJECTED status", map[string]string{"rejectionReason": "required when status is REJECTED"})
 	}

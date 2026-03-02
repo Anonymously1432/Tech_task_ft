@@ -120,12 +120,43 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Application data",
-                        "name": "request",
+                        "description": "AUTO product",
+                        "name": "autoRequest",
                         "in": "body",
-                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.CreateApplicationRequest"
+                            "$ref": "#/definitions/domain.CreateApplicationRequestSwaggerAuto"
+                        }
+                    },
+                    {
+                        "description": "HOME product",
+                        "name": "homeRequest",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateApplicationRequestSwaggerHome"
+                        }
+                    },
+                    {
+                        "description": "LIFE product",
+                        "name": "lifeRequest",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateApplicationRequestSwaggerLife"
+                        }
+                    },
+                    {
+                        "description": "HEALTH product",
+                        "name": "healthRequest",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateApplicationRequestSwaggerHealth"
+                        }
+                    },
+                    {
+                        "description": "TRAVEL product",
+                        "name": "travelRequest",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/domain.CreateApplicationRequestSwaggerTravel"
                         }
                     }
                 ],
@@ -167,7 +198,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Internal Server Error\"м",
                         "schema": {
                             "$ref": "#/definitions/domain.ErrorResponse"
                         }
@@ -208,7 +239,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.ApplicationDetail"
+                            "$ref": "#/definitions/domain.ApplicationDetailForSwagger"
                         }
                     },
                     "400": {
@@ -574,7 +605,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.ManagerApplicationDetail"
+                            "$ref": "#/definitions/domain.ManagerApplicationDetailForSwagger"
                         }
                     },
                     "400": {
@@ -1236,7 +1267,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ApplicationDetail": {
+        "domain.ApplicationDetailForSwagger": {
             "type": "object",
             "properties": {
                 "calculatedPrice": {
@@ -1246,10 +1277,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "object",
+                    "additionalProperties": true
                 },
                 "id": {
                     "type": "integer"
@@ -1271,13 +1300,13 @@ const docTemplate = `{
         "domain.ApplicationStatus": {
             "type": "object",
             "properties": {
-                "changedAt": {
-                    "type": "string"
-                },
                 "changedBy": {
                     "type": "integer"
                 },
                 "comment": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "newStatus": {
@@ -1386,9 +1415,13 @@ const docTemplate = `{
         },
         "domain.CreateApplicationCommentRequest": {
             "type": "object",
+            "required": [
+                "comment"
+            ],
             "properties": {
                 "comment": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Пожалуйста, загрузите дополнительные документы"
                 }
             }
         },
@@ -1409,23 +1442,248 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.CreateApplicationRequest": {
+        "domain.CreateApplicationRequestSwaggerAuto": {
             "type": "object",
             "properties": {
                 "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
+                    "type": "object",
+                    "required": [
+                        "coverageAmount"
+                    ],
+                    "properties": {
+                        "brand": {
+                            "type": "string",
+                            "example": "Toyota"
+                        },
+                        "coverageAmount": {
+                            "type": "string",
+                            "example": "1000000"
+                        },
+                        "drivingExperience": {
+                            "type": "string",
+                            "example": "5"
+                        },
+                        "insuranceType": {
+                            "type": "string",
+                            "example": "КАСКО"
+                        },
+                        "model": {
+                            "type": "string",
+                            "example": "Camry"
+                        },
+                        "plateNumber": {
+                            "type": "string",
+                            "example": "A123BC77"
+                        },
+                        "vin": {
+                            "type": "string",
+                            "example": "X123ABC"
+                        },
+                        "year": {
+                            "type": "string",
+                            "example": "2020"
+                        }
                     }
                 },
                 "managerId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 10
                 },
                 "productId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "productType": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "AUTO"
+                }
+            }
+        },
+        "domain.CreateApplicationRequestSwaggerHealth": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "required": [
+                        "coverageAmount"
+                    ],
+                    "properties": {
+                        "coverageAmount": {
+                            "type": "string",
+                            "example": "1000000"
+                        },
+                        "dentistry": {
+                            "type": "string",
+                            "example": "Yes"
+                        },
+                        "hospitalization": {
+                            "type": "string",
+                            "example": "Yes"
+                        },
+                        "program": {
+                            "type": "string",
+                            "example": "Standard"
+                        }
+                    }
+                },
+                "managerId": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "productId": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "productType": {
+                    "type": "string",
+                    "example": "HEALTH"
+                }
+            }
+        },
+        "domain.CreateApplicationRequestSwaggerHome": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "required": [
+                        "coverageAmount"
+                    ],
+                    "properties": {
+                        "address": {
+                            "type": "string",
+                            "example": "ул. Ленина, 1"
+                        },
+                        "area": {
+                            "type": "string",
+                            "example": "120"
+                        },
+                        "buildYear": {
+                            "type": "string",
+                            "example": "2000"
+                        },
+                        "coverageAmount": {
+                            "type": "string",
+                            "example": "5000000"
+                        },
+                        "floor": {
+                            "type": "string",
+                            "example": "5"
+                        },
+                        "propertyType": {
+                            "type": "string",
+                            "example": "Квартира"
+                        }
+                    }
+                },
+                "managerId": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "productId": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "productType": {
+                    "type": "string",
+                    "example": "HOME"
+                }
+            }
+        },
+        "domain.CreateApplicationRequestSwaggerLife": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "required": [
+                        "coverageAmount"
+                    ],
+                    "properties": {
+                        "age": {
+                            "type": "string",
+                            "example": "35"
+                        },
+                        "chronicDiseases": {
+                            "type": "string",
+                            "example": "No"
+                        },
+                        "coverageAmount": {
+                            "type": "string",
+                            "example": "2000000"
+                        },
+                        "gender": {
+                            "type": "string",
+                            "example": "M"
+                        },
+                        "smoking": {
+                            "type": "string",
+                            "example": "No"
+                        },
+                        "termYears": {
+                            "type": "string",
+                            "example": "10"
+                        }
+                    }
+                },
+                "managerId": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "productId": {
+                    "type": "integer",
+                    "example": 3
+                },
+                "productType": {
+                    "type": "string",
+                    "example": "LIFE"
+                }
+            }
+        },
+        "domain.CreateApplicationRequestSwaggerTravel": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "required": [
+                        "coverageAmount"
+                    ],
+                    "properties": {
+                        "activeLeisure": {
+                            "type": "string",
+                            "example": "Yes"
+                        },
+                        "country": {
+                            "type": "string",
+                            "example": "Italy"
+                        },
+                        "coverageAmount": {
+                            "type": "string",
+                            "example": "1000000"
+                        },
+                        "endDate": {
+                            "type": "string",
+                            "example": "2026-06-15"
+                        },
+                        "startDate": {
+                            "type": "string",
+                            "example": "2026-06-01"
+                        },
+                        "travelers": {
+                            "type": "string",
+                            "example": "2"
+                        }
+                    }
+                },
+                "managerId": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "productId": {
+                    "type": "integer",
+                    "example": 5
+                },
+                "productType": {
+                    "type": "string",
+                    "example": "TRAVEL"
                 }
             }
         },
@@ -1510,13 +1768,34 @@ const docTemplate = `{
         "domain.FormField": {
             "type": "object",
             "properties": {
+                "affectsPrice": {
+                    "type": "boolean"
+                },
+                "after": {
+                    "type": "string"
+                },
+                "dependsOn": {
+                    "type": "string"
+                },
                 "label": {
                     "type": "string"
                 },
                 "max": {
                     "type": "integer"
                 },
+                "maxDate": {
+                    "type": "string"
+                },
+                "maxLength": {
+                    "type": "integer"
+                },
                 "min": {
+                    "type": "integer"
+                },
+                "minDate": {
+                    "type": "string"
+                },
+                "minLength": {
                     "type": "integer"
                 },
                 "name": {
@@ -1528,11 +1807,20 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "pattern": {
+                    "type": "string"
+                },
                 "required": {
                     "type": "boolean"
                 },
                 "type": {
                     "type": "string"
+                },
+                "visibleIf": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -1607,6 +1895,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "password_hash": {
+                    "type": "string"
+                },
                 "phone": {
                     "type": "string"
                 },
@@ -1617,12 +1908,18 @@ const docTemplate = `{
         },
         "domain.LoginRequest": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@mail.ru"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "StrongPass123"
                 }
             }
         },
@@ -1645,9 +1942,13 @@ const docTemplate = `{
         },
         "domain.LogoutRequest": {
             "type": "object",
+            "required": [
+                "refreshToken"
+            ],
             "properties": {
                 "refreshToken": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
             }
         },
@@ -1682,7 +1983,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ManagerApplicationDetail": {
+        "domain.ManagerApplicationDetailForSwagger": {
             "type": "object",
             "properties": {
                 "calculatedPrice": {
@@ -1701,10 +2002,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "object",
+                    "additionalProperties": true
                 },
                 "id": {
                     "type": "integer"
@@ -1893,9 +2192,13 @@ const docTemplate = `{
         },
         "domain.RefreshRequest": {
             "type": "object",
+            "required": [
+                "refreshToken"
+            ],
             "properties": {
                 "refreshToken": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
             }
         },
@@ -1912,21 +2215,34 @@ const docTemplate = `{
         },
         "domain.RegisterRequest": {
             "type": "object",
+            "required": [
+                "birthDate",
+                "email",
+                "fullName",
+                "password",
+                "phone"
+            ],
             "properties": {
                 "birthDate": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "1990-01-01"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@mail.ru"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Иванов Иван Иванович"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "StrongPass123"
                 },
                 "phone": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "+79991234567"
                 }
             }
         },
@@ -1934,30 +2250,44 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "1@mail.ru"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivanov Ivan Ivanovich"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
         "domain.UpdateApplicationStatusRequest": {
             "type": "object",
             "required": [
+                "comment",
+                "rejectionReason",
                 "status"
             ],
             "properties": {
                 "comment": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Документы проверены"
                 },
                 "rejectionReason": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Недостаточно документов"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "NEW",
+                        "UNDER_REVIEW",
+                        "APPROVED",
+                        "REJECTED"
+                    ],
+                    "example": "APPROVED"
                 }
             }
         },
@@ -1977,15 +2307,23 @@ const docTemplate = `{
         },
         "domain.UpdateUserRequest": {
             "type": "object",
+            "required": [
+                "address",
+                "email",
+                "fullName"
+            ],
             "properties": {
                 "address": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "г. Москва, ул. Ленина, д. 1"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "new@mail.ru"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Иванов Иван Иванович"
                 }
             }
         }

@@ -18,20 +18,34 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        Authorization  header    string  true  "Bearer {accessToken}"
-// @Param        request        body      domain.CreateApplicationRequest  true  "Application data"
+// @Param        autoRequest        body      domain.CreateApplicationRequestSwaggerAuto  false  "AUTO product"
+// @Param        homeRequest        body      domain.CreateApplicationRequestSwaggerHome  false  "HOME product"
+// @Param        lifeRequest        body      domain.CreateApplicationRequestSwaggerLife  false  "LIFE product"
+// @Param        healthRequest        body      domain.CreateApplicationRequestSwaggerHealth false  "HEALTH product"
+// @Param        travelRequest        body      domain.CreateApplicationRequestSwaggerTravel false "TRAVEL product"
 // @Success      201  {object}  domain.Application
 // @Failure      400  {object}  domain.ErrorResponse  "Bad Request — invalid request body"
 // @Failure      401  {object}  domain.ErrorResponse  "Unauthorized — user not logged in"
 // @Failure      404  {object}  domain.ErrorResponse  "Not Found — resource not found"
 // @Failure      409  {object}  domain.ErrorResponse  "Conflict — resource conflict (e.g. duplicate)"
 // @Failure      422  {object}  domain.ErrorResponse  "Unprocessable Entity — validation error"
-// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
+// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"м
 // @Router       /api/v1/applications [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
 	req := new(domain.CreateApplicationRequest)
 	if err := c.BodyParser(req); err != nil {
 		h.logger.Error("Parse error", zap.Error(err))
 		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "Invalid request body", nil)
+	}
+
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			utils.ValidationErrors(err),
+		)
 	}
 
 	userIDVal := c.Locals("user_id")

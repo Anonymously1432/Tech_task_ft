@@ -31,7 +31,17 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 			fiber.StatusBadRequest,
 			"BAD_REQUEST",
 			"invalid request body",
-			nil,
+			utils.ValidationErrors(err),
+		)
+	}
+
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			utils.ValidationErrors(err),
 		)
 	}
 
