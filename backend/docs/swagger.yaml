@@ -155,11 +155,37 @@ definitions:
       id:
         type: integer
     type: object
-  domain.CreateApplicationRequest:
+  domain.CreateApplicationRequestSwaggerAuto:
     properties:
       data:
-        example: '{"carModel":"Toyota Camry","year":2020}'
-        type: string
+        properties:
+          brand:
+            example: Toyota
+            type: string
+          coverageAmount:
+            example: "1000000"
+            type: string
+          drivingExperience:
+            example: "5"
+            type: string
+          insuranceType:
+            example: КАСКО
+            type: string
+          model:
+            example: Camry
+            type: string
+          plateNumber:
+            example: A123BC77
+            type: string
+          vin:
+            example: X123ABC
+            type: string
+          year:
+            example: "2020"
+            type: string
+        required:
+        - coverageAmount
+        type: object
       managerId:
         example: 10
         type: integer
@@ -167,19 +193,142 @@ definitions:
         example: 1
         type: integer
       productType:
-        enum:
-        - AUTO
-        - HOME
-        - LIFE
-        - HEALTH
-        - TRAVEL
         example: AUTO
         type: string
-    required:
-    - data
-    - managerId
-    - productId
-    - productType
+    type: object
+  domain.CreateApplicationRequestSwaggerHealth:
+    properties:
+      data:
+        properties:
+          coverageAmount:
+            example: "1000000"
+            type: string
+          dentistry:
+            example: "Yes"
+            type: string
+          hospitalization:
+            example: "Yes"
+            type: string
+          program:
+            example: Standard
+            type: string
+        required:
+        - coverageAmount
+        type: object
+      managerId:
+        example: 10
+        type: integer
+      productId:
+        example: 4
+        type: integer
+      productType:
+        example: HEALTH
+        type: string
+    type: object
+  domain.CreateApplicationRequestSwaggerHome:
+    properties:
+      data:
+        properties:
+          address:
+            example: ул. Ленина, 1
+            type: string
+          area:
+            example: "120"
+            type: string
+          buildYear:
+            example: "2000"
+            type: string
+          coverageAmount:
+            example: "5000000"
+            type: string
+          floor:
+            example: "5"
+            type: string
+          propertyType:
+            example: Квартира
+            type: string
+        required:
+        - coverageAmount
+        type: object
+      managerId:
+        example: 10
+        type: integer
+      productId:
+        example: 2
+        type: integer
+      productType:
+        example: HOME
+        type: string
+    type: object
+  domain.CreateApplicationRequestSwaggerLife:
+    properties:
+      data:
+        properties:
+          age:
+            example: "35"
+            type: string
+          chronicDiseases:
+            example: "No"
+            type: string
+          coverageAmount:
+            example: "2000000"
+            type: string
+          gender:
+            example: M
+            type: string
+          smoking:
+            example: "No"
+            type: string
+          termYears:
+            example: "10"
+            type: string
+        required:
+        - coverageAmount
+        type: object
+      managerId:
+        example: 10
+        type: integer
+      productId:
+        example: 3
+        type: integer
+      productType:
+        example: LIFE
+        type: string
+    type: object
+  domain.CreateApplicationRequestSwaggerTravel:
+    properties:
+      data:
+        properties:
+          activeLeisure:
+            example: "Yes"
+            type: string
+          country:
+            example: Italy
+            type: string
+          coverageAmount:
+            example: "1000000"
+            type: string
+          endDate:
+            example: "2026-06-15"
+            type: string
+          startDate:
+            example: "2026-06-01"
+            type: string
+          travelers:
+            example: "2"
+            type: string
+        required:
+        - coverageAmount
+        type: object
+      managerId:
+        example: 10
+        type: integer
+      productId:
+        example: 5
+        type: integer
+      productType:
+        example: TRAVEL
+        type: string
     type: object
   domain.DashboardResponse:
     properties:
@@ -579,6 +728,8 @@ definitions:
         example: APPROVED
         type: string
     required:
+    - comment
+    - rejectionReason
     - status
     type: object
   domain.UpdateApplicationStatusResponse:
@@ -601,6 +752,10 @@ definitions:
       fullName:
         example: Иванов Иван Иванович
         type: string
+    required:
+    - address
+    - email
+    - fullName
     type: object
 host: localhost:8080
 info:
@@ -677,12 +832,31 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Application data
+      - description: AUTO product
         in: body
-        name: request
-        required: true
+        name: autoRequest
         schema:
-          $ref: '#/definitions/domain.CreateApplicationRequest'
+          $ref: '#/definitions/domain.CreateApplicationRequestSwaggerAuto'
+      - description: HOME product
+        in: body
+        name: homeRequest
+        schema:
+          $ref: '#/definitions/domain.CreateApplicationRequestSwaggerHome'
+      - description: LIFE product
+        in: body
+        name: lifeRequest
+        schema:
+          $ref: '#/definitions/domain.CreateApplicationRequestSwaggerLife'
+      - description: HEALTH product
+        in: body
+        name: healthRequest
+        schema:
+          $ref: '#/definitions/domain.CreateApplicationRequestSwaggerHealth'
+      - description: TRAVEL product
+        in: body
+        name: travelRequest
+        schema:
+          $ref: '#/definitions/domain.CreateApplicationRequestSwaggerTravel'
       produces:
       - application/json
       responses:
@@ -711,7 +885,7 @@ paths:
           schema:
             $ref: '#/definitions/domain.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal Server Error"м
           schema:
             $ref: '#/definitions/domain.ErrorResponse'
       summary: Create a new application

@@ -236,11 +236,11 @@ var (
 )
 
 type RegisterRequest struct {
-	Email     string `json:"email" example:"user@mail.ru" validate:"required,email"`
-	Password  string `json:"password" example:"StrongPass123" validate:"required,min=8"`
-	FullName  string `json:"fullName" example:"Иванов Иван Иванович" validate:"required"`
-	Phone     string `json:"phone" example:"+79991234567" validate:"required"`
-	BirthDate string `json:"birthDate" example:"1990-01-01" validate:"required,datetime=2006-01-02"`
+	Email     string `json:"email" example:"user@mail.ru" binding:"required" validate:"required,email"`
+	Password  string `json:"password" example:"StrongPass123" binding:"required" validate:"required,min=8"`
+	FullName  string `json:"fullName" example:"Иванов Иван Иванович" binding:"required" validate:"required"`
+	Phone     string `json:"phone" example:"+79991234567" binding:"required" validate:"required"`
+	BirthDate string `json:"birthDate" example:"1990-01-01" binding:"required" validate:"required,datetime=2006-01-02"`
 }
 
 type RegisterResponse struct {
@@ -250,8 +250,8 @@ type RegisterResponse struct {
 }
 
 type LoginRequest struct {
-	Email    string `json:"email" example:"user@mail.ru" validate:"required,email"`
-	Password string `json:"password" example:"StrongPass123" validate:"required"`
+	Email    string `json:"email" example:"user@mail.ru" binding:"required" validate:"required,email"`
+	Password string `json:"password" example:"StrongPass123" binding:"required" validate:"required"`
 }
 
 type LoginResponse struct {
@@ -268,7 +268,7 @@ type FieldsForLogin struct {
 }
 
 type RefreshRequest struct {
-	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." validate:"required"`
+	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." binding:"required" validate:"required"`
 }
 
 type RefreshResponse struct {
@@ -277,7 +277,7 @@ type RefreshResponse struct {
 }
 
 type LogoutRequest struct {
-	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." validate:"required"`
+	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." binding:"required" validate:"required"`
 }
 
 type LogoutResponse struct {
@@ -344,16 +344,86 @@ type GetUserResponse struct {
 }
 
 type UpdateUserRequest struct {
-	FullName string `json:"fullName" example:"Иванов Иван Иванович" validate:"omitempty"`
-	Email    string `json:"email" example:"new@mail.ru" validate:"omitempty,email"`
-	Address  string `json:"address" example:"г. Москва, ул. Ленина, д. 1" validate:"omitempty"`
+	FullName string `json:"fullName" example:"Иванов Иван Иванович" binding:"required" validate:"omitempty"`
+	Email    string `json:"email" example:"new@mail.ru" binding:"required" validate:"omitempty,email"`
+	Address  string `json:"address" example:"г. Москва, ул. Ленина, д. 1" binding:"required" validate:"omitempty"`
 }
 
 type CreateApplicationRequest struct {
-	ProductType string `json:"productType" example:"AUTO" validate:"required,oneof=AUTO HOME LIFE HEALTH TRAVEL"`
-	ProductID   int32  `json:"productId" example:"1" validate:"required,gt=0"`
-	ManagerID   int32  `json:"managerId" example:"10" validate:"required,gt=0"`
-	Data        string `json:"data" example:"{\"carModel\":\"Toyota Camry\",\"year\":2020}" validate:"required"`
+	ProductType string `json:"productType" example:"AUTO" binding:"required" validate:"required,oneof=AUTO HOME LIFE HEALTH TRAVEL"`
+	ProductID   int32  `json:"productId" example:"1" binding:"required" validate:"required,gt=0"`
+	ManagerID   int32  `json:"managerId" example:"10" binding:"required" validate:"required,gt=0"`
+	Data        string `json:"data" binding:"required" example:"{\"carModel\":\"Toyota Camry\",\"year\":2020}" validate:"required"`
+}
+
+type CreateApplicationRequestSwaggerAuto struct {
+	ProductType string `json:"productType" example:"AUTO"`
+	ProductID   int32  `json:"productId" example:"1"`
+	ManagerID   int32  `json:"managerId" example:"10"`
+	Data        struct {
+		Vin               string `json:"vin,omitempty" example:"X123ABC"`
+		Year              string `json:"year,omitempty" example:"2020"`
+		Brand             string `json:"brand,omitempty" example:"Toyota"`
+		Model             string `json:"model,omitempty" example:"Camry"`
+		PlateNumber       string `json:"plateNumber,omitempty" example:"A123BC77"`
+		InsuranceType     string `json:"insuranceType,omitempty" example:"КАСКО"`
+		DrivingExperience string `json:"drivingExperience,omitempty" example:"5"`
+		CoverageAmount    string `json:"coverageAmount" binding:"required" example:"1000000"`
+	} `json:"data"`
+}
+
+type CreateApplicationRequestSwaggerHome struct {
+	ProductType string `json:"productType" example:"HOME"`
+	ProductID   int32  `json:"productId" example:"2"`
+	ManagerID   int32  `json:"managerId" example:"10"`
+	Data        struct {
+		Area           string `json:"area,omitempty" example:"120"`
+		Floor          string `json:"floor,omitempty" example:"5"`
+		Address        string `json:"address,omitempty" example:"ул. Ленина, 1"`
+		BuildYear      string `json:"buildYear,omitempty" example:"2000"`
+		PropertyType   string `json:"propertyType,omitempty" example:"Квартира"`
+		CoverageAmount string `json:"coverageAmount" binding:"required" example:"5000000"`
+	} `json:"data"`
+}
+
+type CreateApplicationRequestSwaggerLife struct {
+	ProductType string `json:"productType" example:"LIFE"`
+	ProductID   int32  `json:"productId" example:"3"`
+	ManagerID   int32  `json:"managerId" example:"10"`
+	Data        struct {
+		Age             string `json:"age,omitempty" example:"35"`
+		Gender          string `json:"gender,omitempty" example:"M"`
+		Smoking         string `json:"smoking,omitempty" example:"No"`
+		TermYears       string `json:"termYears,omitempty" example:"10"`
+		ChronicDiseases string `json:"chronicDiseases,omitempty" example:"No"`
+		CoverageAmount  string `json:"coverageAmount" binding:"required" example:"2000000"`
+	} `json:"data"`
+}
+
+type CreateApplicationRequestSwaggerHealth struct {
+	ProductType string `json:"productType" example:"HEALTH"`
+	ProductID   int32  `json:"productId" example:"4"`
+	ManagerID   int32  `json:"managerId" example:"10"`
+	Data        struct {
+		Program         string `json:"program,omitempty" example:"Standard"`
+		Dentistry       string `json:"dentistry,omitempty" example:"Yes"`
+		Hospitalization string `json:"hospitalization,omitempty" example:"Yes"`
+		CoverageAmount  string `json:"coverageAmount" binding:"required" example:"1000000"`
+	} `json:"data"`
+}
+
+type CreateApplicationRequestSwaggerTravel struct {
+	ProductType string `json:"productType" example:"TRAVEL"`
+	ProductID   int32  `json:"productId" example:"5"`
+	ManagerID   int32  `json:"managerId" example:"10"`
+	Data        struct {
+		Country        string `json:"country,omitempty" example:"Italy"`
+		StartDate      string `json:"startDate,omitempty" example:"2026-06-01"`
+		EndDate        string `json:"endDate,omitempty" example:"2026-06-15"`
+		Travelers      string `json:"travelers,omitempty" example:"2"`
+		ActiveLeisure  string `json:"activeLeisure,omitempty" example:"Yes"`
+		CoverageAmount string `json:"coverageAmount" binding:"required" example:"1000000"`
+	} `json:"data"`
 }
 
 type Application struct {
@@ -495,9 +565,9 @@ type ApplicationComment struct {
 }
 
 type UpdateApplicationStatusRequest struct {
-	Status          string  `json:"status" example:"APPROVED" validate:"required,oneof=NEW UNDER_REVIEW APPROVED REJECTED"`
-	Comment         string  `json:"comment" example:"Документы проверены" validate:"omitempty"`
-	RejectionReason *string `json:"rejectionReason" example:"Недостаточно документов" validate:"omitempty"`
+	Status          string  `json:"status" example:"APPROVED" binding:"required" validate:"required,oneof=NEW UNDER_REVIEW APPROVED REJECTED"`
+	Comment         string  `json:"comment" example:"Документы проверены" binding:"required" validate:"omitempty"`
+	RejectionReason *string `json:"rejectionReason" example:"Недостаточно документов" binding:"required" validate:"omitempty"`
 }
 
 type UpdateApplicationStatusResponse struct {
@@ -507,7 +577,7 @@ type UpdateApplicationStatusResponse struct {
 }
 
 type CreateApplicationCommentRequest struct {
-	Comment string `json:"comment" example:"Пожалуйста, загрузите дополнительные документы" validate:"required"`
+	Comment string `json:"comment" binding:"required" example:"Пожалуйста, загрузите дополнительные документы" validate:"required"`
 }
 
 type CreateApplicationCommentResponse struct {
