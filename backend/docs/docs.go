@@ -208,7 +208,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.ApplicationDetail"
+                            "$ref": "#/definitions/domain.ApplicationDetailForSwagger"
                         }
                     },
                     "400": {
@@ -574,7 +574,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.ManagerApplicationDetail"
+                            "$ref": "#/definitions/domain.ManagerApplicationDetailForSwagger"
                         }
                     },
                     "400": {
@@ -1236,7 +1236,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ApplicationDetail": {
+        "domain.ApplicationDetailForSwagger": {
             "type": "object",
             "properties": {
                 "calculatedPrice": {
@@ -1246,10 +1246,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "object",
+                    "additionalProperties": true
                 },
                 "id": {
                     "type": "integer"
@@ -1271,13 +1269,13 @@ const docTemplate = `{
         "domain.ApplicationStatus": {
             "type": "object",
             "properties": {
-                "changedAt": {
-                    "type": "string"
-                },
                 "changedBy": {
                     "type": "integer"
                 },
                 "comment": {
+                    "type": "string"
+                },
+                "createdAt": {
                     "type": "string"
                 },
                 "newStatus": {
@@ -1386,9 +1384,13 @@ const docTemplate = `{
         },
         "domain.CreateApplicationCommentRequest": {
             "type": "object",
+            "required": [
+                "comment"
+            ],
             "properties": {
                 "comment": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Пожалуйста, загрузите дополнительные документы"
                 }
             }
         },
@@ -1411,21 +1413,35 @@ const docTemplate = `{
         },
         "domain.CreateApplicationRequest": {
             "type": "object",
+            "required": [
+                "data",
+                "managerId",
+                "productId",
+                "productType"
+            ],
             "properties": {
                 "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string",
+                    "example": "{\"carModel\":\"Toyota Camry\",\"year\":2020}"
                 },
                 "managerId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 10
                 },
                 "productId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "productType": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "AUTO",
+                        "HOME",
+                        "LIFE",
+                        "HEALTH",
+                        "TRAVEL"
+                    ],
+                    "example": "AUTO"
                 }
             }
         },
@@ -1510,13 +1526,34 @@ const docTemplate = `{
         "domain.FormField": {
             "type": "object",
             "properties": {
+                "affectsPrice": {
+                    "type": "boolean"
+                },
+                "after": {
+                    "type": "string"
+                },
+                "dependsOn": {
+                    "type": "string"
+                },
                 "label": {
                     "type": "string"
                 },
                 "max": {
                     "type": "integer"
                 },
+                "maxDate": {
+                    "type": "string"
+                },
+                "maxLength": {
+                    "type": "integer"
+                },
                 "min": {
+                    "type": "integer"
+                },
+                "minDate": {
+                    "type": "string"
+                },
+                "minLength": {
                     "type": "integer"
                 },
                 "name": {
@@ -1528,11 +1565,20 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "pattern": {
+                    "type": "string"
+                },
                 "required": {
                     "type": "boolean"
                 },
                 "type": {
                     "type": "string"
+                },
+                "visibleIf": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -1607,6 +1653,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "password_hash": {
+                    "type": "string"
+                },
                 "phone": {
                     "type": "string"
                 },
@@ -1617,12 +1666,18 @@ const docTemplate = `{
         },
         "domain.LoginRequest": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@mail.ru"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "StrongPass123"
                 }
             }
         },
@@ -1645,9 +1700,13 @@ const docTemplate = `{
         },
         "domain.LogoutRequest": {
             "type": "object",
+            "required": [
+                "refreshToken"
+            ],
             "properties": {
                 "refreshToken": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
             }
         },
@@ -1682,7 +1741,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.ManagerApplicationDetail": {
+        "domain.ManagerApplicationDetailForSwagger": {
             "type": "object",
             "properties": {
                 "calculatedPrice": {
@@ -1701,10 +1760,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "object",
+                    "additionalProperties": true
                 },
                 "id": {
                     "type": "integer"
@@ -1893,9 +1950,13 @@ const docTemplate = `{
         },
         "domain.RefreshRequest": {
             "type": "object",
+            "required": [
+                "refreshToken"
+            ],
             "properties": {
                 "refreshToken": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 }
             }
         },
@@ -1912,21 +1973,34 @@ const docTemplate = `{
         },
         "domain.RegisterRequest": {
             "type": "object",
+            "required": [
+                "birthDate",
+                "email",
+                "fullName",
+                "password",
+                "phone"
+            ],
             "properties": {
                 "birthDate": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "1990-01-01"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@mail.ru"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Иванов Иван Иванович"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "StrongPass123"
                 },
                 "phone": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "+79991234567"
                 }
             }
         },
@@ -1934,13 +2008,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "1@mail.ru"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Ivanov Ivan Ivanovich"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
@@ -1951,13 +2028,22 @@ const docTemplate = `{
             ],
             "properties": {
                 "comment": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Документы проверены"
                 },
                 "rejectionReason": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Недостаточно документов"
                 },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "NEW",
+                        "UNDER_REVIEW",
+                        "APPROVED",
+                        "REJECTED"
+                    ],
+                    "example": "APPROVED"
                 }
             }
         },
@@ -1979,13 +2065,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "г. Москва, ул. Ленина, д. 1"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "new@mail.ru"
                 },
                 "fullName": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Иванов Иван Иванович"
                 }
             }
         }

@@ -41,16 +41,15 @@ definitions:
       id:
         type: integer
     type: object
-  domain.ApplicationDetail:
+  domain.ApplicationDetailForSwagger:
     properties:
       calculatedPrice:
         type: integer
       createdAt:
         type: string
       data:
-        items:
-          type: integer
-        type: array
+        additionalProperties: true
+        type: object
       id:
         type: integer
       productType:
@@ -64,11 +63,11 @@ definitions:
     type: object
   domain.ApplicationStatus:
     properties:
-      changedAt:
-        type: string
       changedBy:
         type: integer
       comment:
+        type: string
+      createdAt:
         type: string
       newStatus:
         type: string
@@ -140,7 +139,10 @@ definitions:
   domain.CreateApplicationCommentRequest:
     properties:
       comment:
+        example: Пожалуйста, загрузите дополнительные документы
         type: string
+    required:
+    - comment
     type: object
   domain.CreateApplicationCommentResponse:
     properties:
@@ -156,15 +158,28 @@ definitions:
   domain.CreateApplicationRequest:
     properties:
       data:
-        items:
-          type: integer
-        type: array
+        example: '{"carModel":"Toyota Camry","year":2020}'
+        type: string
       managerId:
+        example: 10
         type: integer
       productId:
+        example: 1
         type: integer
       productType:
+        enum:
+        - AUTO
+        - HOME
+        - LIFE
+        - HEALTH
+        - TRAVEL
+        example: AUTO
         type: string
+    required:
+    - data
+    - managerId
+    - productId
+    - productType
     type: object
   domain.DashboardResponse:
     properties:
@@ -218,11 +233,25 @@ definitions:
     type: object
   domain.FormField:
     properties:
+      affectsPrice:
+        type: boolean
+      after:
+        type: string
+      dependsOn:
+        type: string
       label:
         type: string
       max:
         type: integer
+      maxDate:
+        type: string
+      maxLength:
+        type: integer
       min:
+        type: integer
+      minDate:
+        type: string
+      minLength:
         type: integer
       name:
         type: string
@@ -230,10 +259,16 @@ definitions:
         items:
           type: string
         type: array
+      pattern:
+        type: string
       required:
         type: boolean
       type:
         type: string
+      visibleIf:
+        additionalProperties:
+          type: string
+        type: object
     type: object
   domain.GetApplicationsResponse:
     properties:
@@ -281,6 +316,8 @@ definitions:
         type: string
       id:
         type: integer
+      password_hash:
+        type: string
       phone:
         type: string
       role:
@@ -289,9 +326,14 @@ definitions:
   domain.LoginRequest:
     properties:
       email:
+        example: user@mail.ru
         type: string
       password:
+        example: StrongPass123
         type: string
+    required:
+    - email
+    - password
     type: object
   domain.LoginResponse:
     properties:
@@ -307,7 +349,10 @@ definitions:
   domain.LogoutRequest:
     properties:
       refreshToken:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
+    required:
+    - refreshToken
     type: object
   domain.LogoutResponse:
     properties:
@@ -329,7 +374,7 @@ definitions:
       status:
         type: string
     type: object
-  domain.ManagerApplicationDetail:
+  domain.ManagerApplicationDetailForSwagger:
     properties:
       calculatedPrice:
         type: integer
@@ -342,9 +387,8 @@ definitions:
       createdAt:
         type: string
       data:
-        items:
-          type: integer
-        type: array
+        additionalProperties: true
+        type: object
       id:
         type: integer
       productType:
@@ -469,7 +513,10 @@ definitions:
   domain.RefreshRequest:
     properties:
       refreshToken:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
+    required:
+    - refreshToken
     type: object
   domain.RefreshResponse:
     properties:
@@ -481,32 +528,55 @@ definitions:
   domain.RegisterRequest:
     properties:
       birthDate:
+        example: "1990-01-01"
         type: string
       email:
+        example: user@mail.ru
         type: string
       fullName:
+        example: Иванов Иван Иванович
         type: string
       password:
+        example: StrongPass123
+        minLength: 8
         type: string
       phone:
+        example: "+79991234567"
         type: string
+    required:
+    - birthDate
+    - email
+    - fullName
+    - password
+    - phone
     type: object
   domain.RegisterResponse:
     properties:
       email:
+        example: 1@mail.ru
         type: string
       fullName:
+        example: Ivanov Ivan Ivanovich
         type: string
       id:
+        example: 1
         type: integer
     type: object
   domain.UpdateApplicationStatusRequest:
     properties:
       comment:
+        example: Документы проверены
         type: string
       rejectionReason:
+        example: Недостаточно документов
         type: string
       status:
+        enum:
+        - NEW
+        - UNDER_REVIEW
+        - APPROVED
+        - REJECTED
+        example: APPROVED
         type: string
     required:
     - status
@@ -523,10 +593,13 @@ definitions:
   domain.UpdateUserRequest:
     properties:
       address:
+        example: г. Москва, ул. Ленина, д. 1
         type: string
       email:
+        example: new@mail.ru
         type: string
       fullName:
+        example: Иванов Иван Иванович
         type: string
     type: object
 host: localhost:8080
@@ -666,7 +739,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.ApplicationDetail'
+            $ref: '#/definitions/domain.ApplicationDetailForSwagger'
         "400":
           description: Bad Request — invalid application ID
           schema:
@@ -908,7 +981,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.ManagerApplicationDetail'
+            $ref: '#/definitions/domain.ManagerApplicationDetailForSwagger'
         "400":
           description: Invalid application ID
           schema:

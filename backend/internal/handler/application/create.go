@@ -34,6 +34,16 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 		return utils.SendError(c, fiber.StatusBadRequest, "BAD_REQUEST", "Invalid request body", nil)
 	}
 
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			utils.ValidationErrors(err),
+		)
+	}
+
 	userIDVal := c.Locals("user_id")
 	if userIDVal == nil {
 		h.logger.Error("User ID isn't in context.")

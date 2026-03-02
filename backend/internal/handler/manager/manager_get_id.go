@@ -18,7 +18,7 @@ import (
 // @Produce      json
 // @Param        Authorization  header    string  true  "Bearer {accessToken}"
 // @Param        id             path      int     true  "Application ID"
-// @Success      200  {object}  domain.ManagerApplicationDetail
+// @Success      200  {object}  domain.ManagerApplicationDetailForSwagger
 // @Failure      400  {object}  domain.ErrorResponse  "Invalid application ID"
 // @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
 // @Failure      404  {object}  domain.ErrorResponse  "Application not found"

@@ -39,6 +39,16 @@ func (h *Handler) UpdateUser(c *fiber.Ctx) error {
 		)
 	}
 
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			utils.ValidationErrors(err),
+		)
+	}
+
 	userIDVal := c.Locals("user_id")
 	if userIDVal == nil {
 		return utils.SendError(

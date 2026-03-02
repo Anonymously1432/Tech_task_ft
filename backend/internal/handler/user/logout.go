@@ -36,6 +36,16 @@ func (h *Handler) Logout(c *fiber.Ctx) error {
 		)
 	}
 
+	if err := h.validator.Struct(req); err != nil {
+		return utils.SendError(
+			c,
+			fiber.StatusUnprocessableEntity,
+			"VALIDATION_ERROR",
+			"validation failed",
+			utils.ValidationErrors(err),
+		)
+	}
+
 	if err := h.Uc.Logout(c.Context(), req.RefreshToken); err != nil {
 		h.logger.Error("Logout error", zap.Error(err))
 
