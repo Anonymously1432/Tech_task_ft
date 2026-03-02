@@ -15,7 +15,7 @@ import (
 // @Produce      json
 // @Success      200  {object}  domain.GetProductsResponse
 // @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/products [get]
+// @Router       /products [get]
 func (h *Handler) Get(c *fiber.Ctx) error {
 	res, err := h.Uc.GetProducts(c.Context())
 	if err != nil {

@@ -20,7 +20,7 @@ import (
 // @Failure      400    {object}  domain.ErrorResponse  "Bad Request — missing or invalid product type"
 // @Failure      404    {object}  domain.ErrorResponse  "Not Found — product not found"
 // @Failure      500    {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/products/{type} [get]
+// @Router       /products/{type} [get]
 func (h *Handler) GetProduct(c *fiber.Ctx) error {
 	productType := c.Params("type")
 	if productType == "" {

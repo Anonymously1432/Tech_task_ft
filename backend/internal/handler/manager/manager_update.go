@@ -25,7 +25,7 @@ import (
 // @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
 // @Failure      422  {object}  domain.ErrorResponse  "rejectionReason required for REJECTED status"
 // @Failure      500  {object}  domain.ErrorResponse  "Internal server error"
-// @Router       /api/v1/manager/applications/{id}/status [patch]
+// @Router       /manager/applications/{id}/status [patch]
 func (h *Handler) UpdateApplicationStatus(c *fiber.Ctx) error {
 	userID := c.Locals("user_id")
 	if userID == nil {

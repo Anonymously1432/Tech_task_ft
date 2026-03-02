@@ -23,7 +23,7 @@ import (
 // @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
 // @Failure      422  {object}  domain.ErrorResponse  "Invalid period"
 // @Failure      500  {object}  domain.ErrorResponse  "Failed to retrieve statistics"
-// @Router       /api/v1/manager/statistics [get]
+// @Router      /manager/statistics [get]
 func (h *Handler) GetStatistics(c *fiber.Ctx) error {
 	period := c.Query("period", "month")
 

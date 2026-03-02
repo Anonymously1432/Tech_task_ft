@@ -24,7 +24,7 @@ import (
 // @Failure      404  {object}  domain.ErrorResponse  "Not Found — application not found"
 // @Failure      422  {object}  domain.ErrorResponse  "Unprocessable Entity — validation error"
 // @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/applications/{id} [get]
+// @Router       /applications/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.Atoi(idStr)

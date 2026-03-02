@@ -350,10 +350,10 @@ type UpdateUserRequest struct {
 }
 
 type CreateApplicationRequest struct {
-	ProductType string `json:"productType" example:"AUTO" binding:"required" validate:"required,oneof=AUTO HOME LIFE HEALTH TRAVEL"`
-	ProductID   int32  `json:"productId" example:"1" binding:"required" validate:"required,gt=0"`
-	ManagerID   int32  `json:"managerId" example:"10" binding:"required" validate:"required,gt=0"`
-	Data        string `json:"data" binding:"required" example:"{\"carModel\":\"Toyota Camry\",\"year\":2020}" validate:"required"`
+	ProductType string          `json:"productType" example:"AUTO" binding:"required" validate:"required,oneof=AUTO HOME LIFE HEALTH TRAVEL"`
+	ProductID   int32           `json:"productId" example:"1" binding:"required" validate:"required,gt=0"`
+	ManagerID   int32           `json:"managerId" example:"10" binding:"required" validate:"required,gt=0"`
+	Data        json.RawMessage `json:"data" binding:"required" example:"{\"carModel\":\"Toyota Camry\",\"year\":2020}" validate:"required"`
 }
 
 type CreateApplicationRequestSwaggerAuto struct {

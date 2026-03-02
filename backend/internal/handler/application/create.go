@@ -29,8 +29,8 @@ import (
 // @Failure      404  {object}  domain.ErrorResponse  "Not Found — resource not found"
 // @Failure      409  {object}  domain.ErrorResponse  "Conflict — resource conflict (e.g. duplicate)"
 // @Failure      422  {object}  domain.ErrorResponse  "Unprocessable Entity — validation error"
-// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"м
-// @Router       /api/v1/applications [post]
+// @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
+// @Router       /applications [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
 	req := new(domain.CreateApplicationRequest)
 	if err := c.BodyParser(req); err != nil {

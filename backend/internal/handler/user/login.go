@@ -21,7 +21,7 @@ import (
 // @Failure      400   {object}  domain.ErrorResponse  "Invalid request body"
 // @Failure      401   {object}  domain.ErrorResponse  "Unauthorized"
 // @Failure      500   {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/auth/login [post]
+// @Router       /auth/login [post]
 func (h *Handler) Login(c *fiber.Ctx) error {
 	req := new(domain.LoginRequest)
 	if err := c.BodyParser(req); err != nil {

@@ -22,7 +22,7 @@ import (
 // @Failure      400            {object}  domain.ErrorResponse  "Invalid request body"
 // @Failure      401            {object}  domain.ErrorResponse  "Unauthorized"
 // @Failure      500            {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/auth/logout [post]
+// @Router       /auth/logout [post]
 func (h *Handler) Logout(c *fiber.Ctx) error {
 	req := new(domain.LogoutRequest)
 	if err := c.BodyParser(req); err != nil {

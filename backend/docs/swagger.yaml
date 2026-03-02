@@ -766,7 +766,7 @@ info:
   title: Buggy Insurance Backend API
   version: "1"
 paths:
-  /api/v1/applications:
+  /applications:
     get:
       consumes:
       - application/json
@@ -885,13 +885,13 @@ paths:
           schema:
             $ref: '#/definitions/domain.ErrorResponse'
         "500":
-          description: Internal Server Error"м
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/domain.ErrorResponse'
       summary: Create a new application
       tags:
       - Applications
-  /api/v1/applications/{id}:
+  /applications/{id}:
     get:
       consumes:
       - application/json
@@ -937,7 +937,7 @@ paths:
       summary: Get application by ID
       tags:
       - Applications
-  /api/v1/auth/login:
+  /auth/login:
     post:
       consumes:
       - application/json
@@ -971,7 +971,7 @@ paths:
       summary: User login
       tags:
       - Auth
-  /api/v1/auth/logout:
+  /auth/logout:
     post:
       consumes:
       - application/json
@@ -1010,7 +1010,7 @@ paths:
       summary: User logout
       tags:
       - Auth
-  /api/v1/auth/refresh:
+  /auth/refresh:
     post:
       consumes:
       - application/json
@@ -1040,7 +1040,7 @@ paths:
       summary: Refresh access token
       tags:
       - Auth
-  /api/v1/auth/register:
+  /auth/register:
     post:
       consumes:
       - application/json
@@ -1070,7 +1070,7 @@ paths:
       summary: Register a new user
       tags:
       - Auth
-  /api/v1/manager/applications:
+  /manager/applications:
     get:
       consumes:
       - application/json
@@ -1133,7 +1133,7 @@ paths:
       summary: List manager applications
       tags:
       - Manager
-  /api/v1/manager/applications/{id}:
+  /manager/applications/{id}:
     get:
       consumes:
       - application/json
@@ -1175,7 +1175,7 @@ paths:
       summary: Get application details
       tags:
       - Manager
-  /api/v1/manager/applications/{id}/comments:
+  /manager/applications/{id}/comments:
     post:
       consumes:
       - application/json
@@ -1227,7 +1227,7 @@ paths:
       summary: Create a comment for an application
       tags:
       - Manager
-  /api/v1/manager/applications/{id}/status:
+  /manager/applications/{id}/status:
     patch:
       consumes:
       - application/json
@@ -1276,7 +1276,7 @@ paths:
       summary: Update application status
       tags:
       - Manager
-  /api/v1/manager/dashboard:
+  /manager/dashboard:
     get:
       consumes:
       - application/json
@@ -1305,7 +1305,7 @@ paths:
       summary: Get manager dashboard
       tags:
       - Manager
-  /api/v1/manager/statistics:
+  /manager/statistics:
     get:
       consumes:
       - application/json
@@ -1344,7 +1344,7 @@ paths:
       summary: Get manager statistics
       tags:
       - Manager
-  /api/v1/policies:
+  /policies:
     get:
       consumes:
       - application/json
@@ -1394,7 +1394,7 @@ paths:
       summary: Get user policies
       tags:
       - Policies
-  /api/v1/products:
+  /products:
     get:
       consumes:
       - application/json
@@ -1413,7 +1413,7 @@ paths:
       summary: Get all products
       tags:
       - Products
-  /api/v1/products/{type}:
+  /products/{type}:
     get:
       consumes:
       - application/json
@@ -1446,7 +1446,7 @@ paths:
       summary: Get product by type
       tags:
       - Products
-  /api/v1/users/dashboard:
+  /users/dashboard:
     get:
       consumes:
       - application/json
@@ -1480,7 +1480,7 @@ paths:
       summary: Get user dashboard
       tags:
       - Users
-  /api/v1/users/me:
+  /users/me:
     get:
       consumes:
       - application/json

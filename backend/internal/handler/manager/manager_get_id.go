@@ -23,7 +23,7 @@ import (
 // @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
 // @Failure      404  {object}  domain.ErrorResponse  "Application not found"
 // @Failure      500  {object}  domain.ErrorResponse  "Failed to retrieve application"
-// @Router       /api/v1/manager/applications/{id} [get]
+// @Router       /manager/applications/{id} [get]
 func (h *Handler) GetManagerApplicationByID(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	applicationID, err := strconv.Atoi(idStr)

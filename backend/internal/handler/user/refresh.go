@@ -20,7 +20,7 @@ import (
 // @Success      200   {object}  domain.RefreshResponse
 // @Failure      400   {object}  domain.ErrorResponse  "Invalid request body"
 // @Failure      500   {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/auth/refresh [post]
+// @Router       /auth/refresh [post]
 func (h *Handler) Refresh(c *fiber.Ctx) error {
 	req := new(domain.RefreshRequest)
 	if err := c.BodyParser(req); err != nil {

@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/applications": {
+        "/applications": {
             "get": {
                 "description": "Retrieve a paginated list of applications for the authenticated user",
                 "consumes": [
@@ -198,7 +198,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error\"м",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/domain.ErrorResponse"
                         }
@@ -206,7 +206,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/applications/{id}": {
+        "/applications/{id}": {
             "get": {
                 "description": "Retrieve details of a specific application by its ID",
                 "consumes": [
@@ -275,7 +275,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/login": {
+        "/auth/login": {
             "post": {
                 "description": "Authenticate user and get access/refresh tokens",
                 "consumes": [
@@ -327,7 +327,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/logout": {
+        "/auth/logout": {
             "post": {
                 "description": "Invalidate refresh token to log out the user",
                 "consumes": [
@@ -386,7 +386,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/refresh": {
+        "/auth/refresh": {
             "post": {
                 "description": "Refresh JWT access token using a valid refresh token",
                 "consumes": [
@@ -432,7 +432,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/register": {
+        "/auth/register": {
             "post": {
                 "description": "Create a new user account",
                 "consumes": [
@@ -478,7 +478,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/manager/applications": {
+        "/manager/applications": {
             "get": {
                 "description": "Retrieve a paginated list of applications with filters",
                 "consumes": [
@@ -572,7 +572,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/manager/applications/{id}": {
+        "/manager/applications/{id}": {
             "get": {
                 "description": "Retrieve detailed information for a specific application",
                 "consumes": [
@@ -635,7 +635,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/manager/applications/{id}/comments": {
+        "/manager/applications/{id}/comments": {
             "post": {
                 "description": "Allows a manager to add a comment to a specific application",
                 "consumes": [
@@ -713,7 +713,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/manager/applications/{id}/status": {
+        "/manager/applications/{id}/status": {
             "patch": {
                 "description": "Change the status of an application (e.g., APPROVED, REJECTED) with optional comment",
                 "consumes": [
@@ -785,7 +785,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/manager/dashboard": {
+        "/manager/dashboard": {
             "get": {
                 "description": "Retrieve overview stats for the manager",
                 "consumes": [
@@ -829,7 +829,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/manager/statistics": {
+        "/manager/statistics": {
             "get": {
                 "description": "Retrieve application statistics by period (week, month, quarter, year)",
                 "consumes": [
@@ -886,7 +886,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/policies": {
+        "/policies": {
             "get": {
                 "description": "Retrieve a paginated list of policies for the currently authenticated user, optionally filtered by status",
                 "consumes": [
@@ -960,7 +960,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/products": {
+        "/products": {
             "get": {
                 "description": "Retrieve a list of all available products",
                 "consumes": [
@@ -989,7 +989,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/products/{type}": {
+        "/products/{type}": {
             "get": {
                 "description": "Retrieve details for a specific product by its type",
                 "consumes": [
@@ -1039,7 +1039,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/dashboard": {
+        "/users/dashboard": {
             "get": {
                 "description": "Retrieve statistics and recent activity for the currently authenticated user",
                 "consumes": [
@@ -1089,7 +1089,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/me": {
+        "/users/me": {
             "get": {
                 "description": "Retrieve information about the currently authenticated user",
                 "consumes": [

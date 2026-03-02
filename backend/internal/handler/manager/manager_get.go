@@ -29,7 +29,7 @@ import (
 // @Failure      400  {object}  domain.ErrorResponse  "Invalid query parameters"
 // @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
 // @Failure      500  {object}  domain.ErrorResponse  "Internal server error"
-// @Router       /api/v1/manager/applications [get]
+// @Router       /manager/applications [get]
 func (h *Handler) GetManagerApplications(c *fiber.Ctx) error {
 	time.Sleep(7 * time.Second)
 	status := c.Query("status")

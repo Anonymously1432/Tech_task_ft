@@ -28,7 +28,7 @@ import (
 // @Failure      422            {object}  domain.ErrorResponse  "Comment is required"
 // @Failure      404            {object}  domain.ErrorResponse  "Manager or application not found"
 // @Failure      500            {object}  domain.ErrorResponse  "Internal server error"
-// @Router       /api/v1/manager/applications/{id}/comments [post]
+// @Router       /manager/applications/{id}/comments [post]
 func (h *Handler) CreateApplicationComment(c *fiber.Ctx) error {
 	req := new(domain.CreateApplicationCommentRequest)
 	if err := c.BodyParser(req); err != nil {

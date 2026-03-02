@@ -5,6 +5,7 @@ import (
 	"buggy_insurance/internal/errors"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -14,7 +15,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (u *UseCase) Create(ctx context.Context, data string, userID, productID, managerID int32, productType string) (*domain.Application, error) {
+func (u *UseCase) Create(ctx context.Context, data json.RawMessage, userID, productID, managerID int32, productType string) (*domain.Application, error) {
 	price := RandomInt(30000, 50000)
 
 	var calculatedPrice pgtype.Numeric
@@ -26,7 +27,7 @@ func (u *UseCase) Create(ctx context.Context, data string, userID, productID, ma
 	application, err := u.repo.CreateApplication(ctx, &application_repository.CreateApplicationParams{
 		UserID:          &userID,
 		ProductID:       &productID,
-		Data:            []byte(data),
+		Data:            data,
 		CalculatedPrice: calculatedPrice,
 		ManagerID:       &managerID,
 	})

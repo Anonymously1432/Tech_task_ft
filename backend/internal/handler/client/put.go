@@ -25,7 +25,7 @@ import (
 // @Failure      401  {object}  domain.ErrorResponse  "Unauthorized — authentication required or invalid user ID"
 // @Failure      409  {object}  domain.ErrorResponse  "Conflict — email already exists"
 // @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/users/me [put]
+// @Router      /users/me [put]
 func (h *Handler) UpdateUser(c *fiber.Ctx) error {
 	req := new(domain.UpdateUserRequest)
 	if err := c.BodyParser(req); err != nil {

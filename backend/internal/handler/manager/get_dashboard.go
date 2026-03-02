@@ -19,7 +19,7 @@ import (
 // @Success      200  {object}  domain.ManagerDashboardResponse
 // @Failure      401  {object}  domain.ErrorResponse  "Unauthorized"
 // @Failure      500  {object}  domain.ErrorResponse  "Failed to retrieve dashboard"
-// @Router       /api/v1/manager/dashboard [get]
+// @Router       /manager/dashboard [get]
 func (h *Handler) GetManagerDashboard(c *fiber.Ctx) error {
 	userID := c.Locals("user_id")
 	if userID == nil {

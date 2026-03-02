@@ -27,7 +27,7 @@ import (
 // @Failure      404  {object}  domain.ErrorResponse  "Not Found — resource not found"
 // @Failure      422  {object}  domain.ErrorResponse  "Unprocessable Entity — validation error"
 // @Failure      500  {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/applications [get]
+// @Router      /applications [get]
 func (h *Handler) Get(c *fiber.Ctx) error {
 	userID := c.Locals("user_id")
 	if userID == nil {

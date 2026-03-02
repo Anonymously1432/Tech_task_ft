@@ -21,7 +21,7 @@ import (
 // @Success      201   {object}  domain.RegisterResponse
 // @Failure      400   {object}  domain.ErrorResponse  "Invalid request body"
 // @Failure      500   {object}  domain.ErrorResponse  "Internal Server Error"
-// @Router       /api/v1/auth/register [post]
+// @Router       /auth/register [post]
 func (h *Handler) Register(c *fiber.Ctx) error {
 	req := new(domain.RegisterRequest)
 	if err := c.BodyParser(req); err != nil {

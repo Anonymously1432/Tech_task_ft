@@ -4,12 +4,13 @@ import (
 	"buggy_insurance/internal/domain"
 	application_repository "buggy_insurance/internal/repository/application"
 	"context"
+	"encoding/json"
 
 	"go.uber.org/zap"
 )
 
 type IUseCase interface {
-	Create(ctx context.Context, data string, userID, productID, managerID int32, productType string) (*domain.Application, error)
+	Create(ctx context.Context, data json.RawMessage, userID, productID, managerID int32, productType string) (*domain.Application, error)
 	Get(ctx context.Context, userID, page, limit, offset int32, status *string) (*domain.GetApplicationsResponse, error)
 	GetByID(ctx context.Context, applicationID int32) (*domain.ApplicationDetail, error)
 }
