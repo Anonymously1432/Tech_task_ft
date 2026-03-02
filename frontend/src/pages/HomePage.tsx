@@ -36,19 +36,20 @@ export default function HomePage() {
     };
 
     return (
-        <div className="container" style={{ paddingTop: '2rem', paddingBottom: '0' }}> {/* Убрал нижний отступ, будет в футере */}
+        <div className="container" style={{ paddingTop: 0, paddingBottom: 0 }}> {/* Убираем все внутренние отступы */}
 
-            {/* HERO СЕКЦИЯ - обновил стиль, сделал акцентнее */}
+            {/* HERO СЕКЦИЯ - теперь без верхнего отступа */}
             <section style={{
                 textAlign: 'center',
                 padding: '5rem 1rem 6rem 1rem',
+                marginTop: 0, // Убираем верхний отступ
                 marginBottom: '5rem',
-                background: 'radial-gradient(circle at 70% 30%, #f0f4ff, #e6ecf8 90%)', // Более глубокий градиент
-                borderRadius: '0 0 48px 48px', // Скругление только снизу, как бы "баннер"
+                background: 'radial-gradient(circle at 70% 30%, #f0f4ff, #e6ecf8 90%)',
+                borderRadius: '0 0 48px 48px',
                 position: 'relative',
                 overflow: 'hidden',
             }}>
-                {/* Абстрактные фоновые элементы как на skinive.com/sptnk.pro */}
+                {/* Абстрактные фоновые элементы */}
                 <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(102, 126, 234, 0.1)', filter: 'blur(60px)' }}></div>
                 <div style={{ position: 'absolute', bottom: '-30px', left: '-30px', width: '150px', height: '150px', borderRadius: '50%', background: 'rgba(118, 75, 162, 0.1)', filter: 'blur(50px)' }}></div>
 
@@ -130,7 +131,8 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* ПРЕИМУЩЕСТВА - добавил текст и визуально улучшил */}
+            {/* Остальные секции без изменений */}
+            {/* ПРЕИМУЩЕСТВА */}
             <section style={{ marginBottom: '6rem' }}>
                 <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 700, marginBottom: '1rem' }}>
                     Почему выбирают нас
@@ -193,7 +195,7 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* ТИПЫ СТРАХОВОК - стиль продуктов */}
+            {/* ТИПЫ СТРАХОВОК */}
             <section style={{ marginBottom: '6rem' }}>
                 <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 700, marginBottom: '1rem' }}>
                     Виды страхования
@@ -254,7 +256,7 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* НОВЫЙ БЛОК: FAQ */}
+            {/* FAQ */}
             <section style={{ marginBottom: '6rem', background: '#f9fafc', padding: '4rem 2rem', borderRadius: '48px' }}>
                 <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 700, marginBottom: '1rem' }}>
                     Часто задаваемые вопросы
@@ -275,7 +277,7 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* НОВЫЙ БЛОК: Призыв к действию (как на skinive.com) */}
+            {/* CTA БЛОК */}
             <section style={{
                 marginBottom: '6rem',
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -308,17 +310,17 @@ export default function HomePage() {
                 </Link>
             </section>
 
-            {/* НОВЫЙ ШИРОКИЙ ФУТЕР */}
+            {/* ШИРОКИЙ ФУТЕР */}
             <footer style={{
-                marginTop: '2rem',
+                marginTop: 0, // Убираем верхний отступ
                 padding: '4rem 0 2rem 0',
-                backgroundColor: '#0b0f18', // Темный фон как на sptnk.pro
+                backgroundColor: '#0b0f18',
                 color: '#a0aec0',
                 borderTopLeftRadius: '48px',
                 borderTopRightRadius: '48px',
-                marginLeft: '-1rem', // Компенсация container padding для полной ширины
+                marginLeft: '-1rem',
                 marginRight: '-1rem',
-                paddingLeft: 'calc(1rem + 15px)', // Возвращаем отступы контента
+                paddingLeft: 'calc(1rem + 15px)',
                 paddingRight: 'calc(1rem + 15px)',
             }}>
                 <div style={{
@@ -351,7 +353,7 @@ export default function HomePage() {
                     ))}
                 </div>
 
-                {/* Нижняя часть футера с копирайтом и иконками */}
+                {/* Нижняя часть футера */}
                 <div style={{
                     maxWidth: '1200px',
                     margin: '0 auto',
