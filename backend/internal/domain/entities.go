@@ -392,10 +392,10 @@ type CreateApplicationRequestSwaggerLife struct {
 	ManagerID   int32  `json:"managerId" example:"10"`
 	Data        struct {
 		Age             string `json:"age,omitempty" example:"35"`
-		Gender          string `json:"gender,omitempty" example:"M"`
-		Smoking         string `json:"smoking,omitempty" example:"No"`
+		Gender          string `json:"gender,omitempty" example:"Male"`
+		Smoking         bool   `json:"smoking,omitempty" example:"true"`
 		TermYears       string `json:"termYears,omitempty" example:"10"`
-		ChronicDiseases string `json:"chronicDiseases,omitempty" example:"No"`
+		ChronicDiseases bool   `json:"chronicDiseases,omitempty" example:"true"`
 		CoverageAmount  string `json:"coverageAmount" binding:"required" example:"2000000"`
 	} `json:"data"`
 }
@@ -406,8 +406,8 @@ type CreateApplicationRequestSwaggerHealth struct {
 	ManagerID   int32  `json:"managerId" example:"10"`
 	Data        struct {
 		Program         string `json:"program,omitempty" example:"Standard"`
-		Dentistry       string `json:"dentistry,omitempty" example:"Yes"`
-		Hospitalization string `json:"hospitalization,omitempty" example:"Yes"`
+		Dentistry       bool   `json:"dentistry,omitempty" example:"true"`
+		Hospitalization bool   `json:"hospitalization,omitempty" example:"true"`
 		CoverageAmount  string `json:"coverageAmount" binding:"required" example:"1000000"`
 	} `json:"data"`
 }
@@ -421,7 +421,7 @@ type CreateApplicationRequestSwaggerTravel struct {
 		StartDate      string `json:"startDate,omitempty" example:"2026-06-01"`
 		EndDate        string `json:"endDate,omitempty" example:"2026-06-15"`
 		Travelers      string `json:"travelers,omitempty" example:"2"`
-		ActiveLeisure  string `json:"activeLeisure,omitempty" example:"Yes"`
+		ActiveLeisure  bool   `json:"activeLeisure,omitempty" example:"true"`
 		CoverageAmount string `json:"coverageAmount" binding:"required" example:"1000000"`
 	} `json:"data"`
 }

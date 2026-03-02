@@ -1513,12 +1513,12 @@ const docTemplate = `{
                             "example": "1000000"
                         },
                         "dentistry": {
-                            "type": "string",
-                            "example": "Yes"
+                            "type": "boolean",
+                            "example": true
                         },
                         "hospitalization": {
-                            "type": "string",
-                            "example": "Yes"
+                            "type": "boolean",
+                            "example": true
                         },
                         "program": {
                             "type": "string",
@@ -1603,8 +1603,8 @@ const docTemplate = `{
                             "example": "35"
                         },
                         "chronicDiseases": {
-                            "type": "string",
-                            "example": "No"
+                            "type": "boolean",
+                            "example": true
                         },
                         "coverageAmount": {
                             "type": "string",
@@ -1612,11 +1612,11 @@ const docTemplate = `{
                         },
                         "gender": {
                             "type": "string",
-                            "example": "M"
+                            "example": "Male"
                         },
                         "smoking": {
-                            "type": "string",
-                            "example": "No"
+                            "type": "boolean",
+                            "example": true
                         },
                         "termYears": {
                             "type": "string",
@@ -1648,8 +1648,8 @@ const docTemplate = `{
                     ],
                     "properties": {
                         "activeLeisure": {
-                            "type": "string",
-                            "example": "Yes"
+                            "type": "boolean",
+                            "example": true
                         },
                         "country": {
                             "type": "string",

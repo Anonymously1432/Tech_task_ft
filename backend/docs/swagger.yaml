@@ -204,11 +204,11 @@ definitions:
             example: "1000000"
             type: string
           dentistry:
-            example: "Yes"
-            type: string
+            example: true
+            type: boolean
           hospitalization:
-            example: "Yes"
-            type: string
+            example: true
+            type: boolean
           program:
             example: Standard
             type: string
@@ -268,17 +268,17 @@ definitions:
             example: "35"
             type: string
           chronicDiseases:
-            example: "No"
-            type: string
+            example: true
+            type: boolean
           coverageAmount:
             example: "2000000"
             type: string
           gender:
-            example: M
+            example: Male
             type: string
           smoking:
-            example: "No"
-            type: string
+            example: true
+            type: boolean
           termYears:
             example: "10"
             type: string
@@ -300,8 +300,8 @@ definitions:
       data:
         properties:
           activeLeisure:
-            example: "Yes"
-            type: string
+            example: true
+            type: boolean
           country:
             example: Italy
             type: string

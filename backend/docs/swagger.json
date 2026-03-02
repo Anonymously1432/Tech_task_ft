@@ -1507,12 +1507,12 @@
                             "example": "1000000"
                         },
                         "dentistry": {
-                            "type": "string",
-                            "example": "Yes"
+                            "type": "boolean",
+                            "example": true
                         },
                         "hospitalization": {
-                            "type": "string",
-                            "example": "Yes"
+                            "type": "boolean",
+                            "example": true
                         },
                         "program": {
                             "type": "string",
@@ -1597,8 +1597,8 @@
                             "example": "35"
                         },
                         "chronicDiseases": {
-                            "type": "string",
-                            "example": "No"
+                            "type": "boolean",
+                            "example": true
                         },
                         "coverageAmount": {
                             "type": "string",
@@ -1606,11 +1606,11 @@
                         },
                         "gender": {
                             "type": "string",
-                            "example": "M"
+                            "example": "Male"
                         },
                         "smoking": {
-                            "type": "string",
-                            "example": "No"
+                            "type": "boolean",
+                            "example": true
                         },
                         "termYears": {
                             "type": "string",
@@ -1642,8 +1642,8 @@
                     ],
                     "properties": {
                         "activeLeisure": {
-                            "type": "string",
-                            "example": "Yes"
+                            "type": "boolean",
+                            "example": true
                         },
                         "country": {
                             "type": "string",
