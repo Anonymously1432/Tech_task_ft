@@ -84,7 +84,6 @@ function formatValue(value: unknown): string {
 }
 
 function ApplicationDetails({ data }: { data: Record<string, unknown> | string }) {
-    // Парсим данные, если это строка
     let parsedData: Record<string, unknown> = {};
 
     if (typeof data === 'string') {
@@ -202,7 +201,6 @@ export default function ClientApplicationDetailPage() {
             paddingBottom: '4rem',
         }}>
             <div className="container" style={{ maxWidth: '800px' }}>
-                {/* Навигация */}
                 <div style={{
                     marginBottom: '1.5rem',
                     display: 'flex',
@@ -230,7 +228,6 @@ export default function ClientApplicationDetailPage() {
                     <span style={{ color: '#1e293b', fontWeight: 500 }}>Заявка #{app.id}</span>
                 </div>
 
-                {/* Заголовок и статус */}
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
