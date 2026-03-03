@@ -26,7 +26,6 @@ export default function ProfilePage() {
         try {
             await usersApi.updateMe(form);
             setSuccess('Изменения успешно сохранены');
-            // Обновляем данные пользователя
             const updatedUser = await usersApi.getMe();
             setUser(updatedUser);
         } catch (err) {
@@ -39,7 +38,6 @@ export default function ProfilePage() {
     };
 
     const confirmDelete = async () => {
-        // Здесь должен быть вызов API для удаления
         alert('Функция удаления профиля не реализована');
         setShowDeleteConfirm(false);
     };
@@ -69,7 +67,6 @@ export default function ProfilePage() {
         </div>
     );
 
-    // Форматирование даты
     const formatDate = (dateString: string) => {
         if (!dateString) return '';
         try {
@@ -366,9 +363,8 @@ export default function ProfilePage() {
                         {/* Кнопки действий */}
                         <div style={{
                             display: 'flex',
-                            gap: '1rem',
-                            flexWrap: 'wrap',
-                            alignItems: 'center',
+                            flexDirection: 'column',
+                            gap: '0.5rem',
                         }}>
                             <button
                                 type="submit"
@@ -383,8 +379,7 @@ export default function ProfilePage() {
                                     cursor: 'pointer',
                                     boxShadow: '0 10px 20px -8px rgba(102, 126, 234, 0.5)',
                                     transition: 'transform 0.2s, box-shadow 0.2s',
-                                    flex: 1,
-                                    minWidth: '200px',
+                                    width: '100%',
                                 }}
                                 onMouseOver={(e) => {
                                     e.currentTarget.style.transform = 'translateY(-2px)';
@@ -398,29 +393,47 @@ export default function ProfilePage() {
                                 Сохранить изменения
                             </button>
 
-                            {/* Скрытая кнопка удаления профиля - видна только в консоли/инспекторе */}
+                            {/* СКРЫТАЯ НО КЛИКАБЕЛЬНАЯ КНОПКА УДАЛЕНИЯ
+                                Находится сразу под основной кнопкой, имеет класс delete-button
+                                Чтобы найти: ищи в инспекторе "удалить профиль" или класс "delete-button"
+                                Она кликабельна, но визуально скрыта */}
                             <button
                                 type="button"
                                 onClick={handleDeleteProfile}
+                                className="delete-button"
+                                data-testid="delete-profile"
                                 style={{
-                                    opacity: 0,
-                                    width: 0,
-                                    height: 0,
-                                    padding: 0,
+                                    height: '1px',
+                                    width: '100%',
+                                    opacity: 0.01,
+                                    padding: '1px 0',
                                     margin: 0,
                                     border: 'none',
-                                    pointerEvents: 'none', // Делаем её некликабельной через обычный интерфейс
-                                    position: 'absolute', // Убираем из потока документа
-                                    overflow: 'hidden',
+                                    background: 'transparent',
+                                    fontSize: '1px',
+                                    color: 'transparent',
+                                    cursor: 'pointer', // Курсор меняется при наведении, но кнопка почти невидима
+                                    position: 'relative',
+                                    zIndex: 1,
                                 }}
-                                aria-hidden="true" // Скрываем от скринридеров
-                                tabIndex={-1} // Убираем из навигации по Tab
-                            />
+                                title="Удалить профиль (скрытая кнопка)"
+                                onMouseOver={(e) => {
+                                    // Делаем чуть более заметной при наведении для отладки
+                                    e.currentTarget.style.opacity = '0.1';
+                                    e.currentTarget.style.background = '#ff0000';
+                                }}
+                                onMouseOut={(e) => {
+                                    e.currentTarget.style.opacity = '0.01';
+                                    e.currentTarget.style.background = 'transparent';
+                                }}
+                            >
+                                удалить профиль (скрытая кликабельная кнопка для тестирования)
+                            </button>
+
                         </div>
                     </form>
                 </div>
 
-                {/* Диалог подтверждения удаления */}
                 {showDeleteConfirm && (
                     <div style={{
                         position: 'fixed',
